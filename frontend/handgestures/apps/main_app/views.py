@@ -17,4 +17,4 @@ def index(request):
 
 # API endpoints here.
 def api_data(request):
-    return JsonResponse({'status': 'success', 'message': 'API is working'})
+	return JsonResponse({'status': 'success', 'message': 'API is working'})
