@@ -9,9 +9,12 @@ app_name = 'main_app'
 
 # URL patterns to process for the application
 urlpatterns = [
-     # Home page
-    path("", views.index, name="index"),
-    path('api/data/', views.api_data, name='api_data'),  # API testing
+	# Home page
+	path("", views.index, name="index"),
+	path('api/data/', views.api_data, name='api_data'),  # API testing
+	#path('api/report/', views.api_report, name='api_report'),  # Example
+ 
+	# Regex matcher
 	#re_path(r'^$', views.index, name='index'),
 	#re_path(r'^course/add$', views.course_add, name='course_add'),
 	#re_path(r'^course/destroy/(?P<course_id>\d+)$', views.course_destroy, name='destroy'),
