@@ -12,21 +12,21 @@ from django.http import JsonResponse, HttpResponse
 
 # Create your views here.
 def index(request):
-	return render(request, 'main_app/index.html')
-	#pass
+    return render(request, 'main_app/index.html')
+    #pass
 
 # API endpoints here.
 def api_data(request):
-	return JsonResponse({'status': 'success', 'message': 'API is working'})
+    return JsonResponse({'status': 'success', 'message': 'API is working'})
 
 
 def summary(request):
-    return HttpResponse("summary page")
+    return render(request, 'main_app/summary.html')
 
 
 def structure(request):
-    return HttpResponse("structure page")
+    return render(request, 'main_app/structure.html')
 
 
 def content(request):
-    return HttpResponse("content page")
+    return render(request, 'main_app/content.html')
