@@ -12,6 +12,9 @@ urlpatterns = [
 	# Home page
 	path("", views.index, name="index"),
 	path('api/data/', views.api_data, name='api_data'),  # API testing
+	path("summary/", views.summary, name="summary"),
+	path("structure/", views.structure, name="structure"),
+	path("content/", views.content, name="content"),
 	#path('api/report/', views.api_report, name='api_report'),  # Example
  
 	# Regex matcher

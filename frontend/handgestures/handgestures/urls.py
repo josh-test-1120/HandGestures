@@ -17,6 +17,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include, re_path
 
+
 urlpatterns = [
     #re_path(r'^main_app', include('apps.main_app.urls', namespace='main_app')),
     path('admin/', admin.site.urls),

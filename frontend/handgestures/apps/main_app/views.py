@@ -2,7 +2,7 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.urls import reverse, resolve, NoReverseMatch
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 
 # Import your models for this application
 # from .models import Course, Description, Comment
@@ -18,3 +18,15 @@ def index(request):
 # API endpoints here.
 def api_data(request):
 	return JsonResponse({'status': 'success', 'message': 'API is working'})
+
+
+def summary(request):
+    return HttpResponse("summary page")
+
+
+def structure(request):
+    return HttpResponse("structure page")
+
+
+def content(request):
+    return HttpResponse("content page")
