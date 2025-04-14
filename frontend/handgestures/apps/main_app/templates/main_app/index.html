@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Test Landing Page</title>
+    <title>CS481</title>
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -59,14 +59,33 @@
 </head>
 <body>
     <div class="container">
-        <h1>Welcome to Django!</h1>
-        
+        <h1>Welcome to Out Group Project!</h1>
+        <!-- 
         <div class="status success">
             ✔ Successfully loaded test landing page
         </div>
+     -->
 
-        <h2>Quick Links</h2>
-        <a href="/admin" class="btn">Admin Panel</a>
+        <h2>Project Overview: </h2>
+        <p>
+            This Capstone project focuses on developing a system to detect epileptic seizure by analyzing
+            gesture data collected from wearable devices equipped with Inertial Measurement Units (IMUs). The project
+            is emphasizing data collection, feature extraction, and modeling. The final deliverable for this phase includes a functional website that visually presents the collected IMU data, extracted features, and initial modeling results,
+            along with a detailed report documenting the methodology and deployment process.
+
+
+        </p>
+
+        <h2>Quick Link</h2>
+        
+        <a href="{% url 'main_app:index' %}" class="btn">Home</a>
+        <a href="{% url 'main_app:summary' %}" class="btn">Summary</a>
+        <a href="{% url 'main_app:structure' %}" class="btn">Structure</a>
+        <a href="{% url 'main_app:content' %}" class="btn">Content</a>
+        <a href="{% url 'main_app:demo' %}" class="btn">Demo</a>
+        <a href="{% url 'main_app:live_demo' %}" class="btn">Live Demo</a>
+
+
         <a href="{% url 'main_app:api_data' %}" class="btn">API Test</a>
         
         <div class="debug-info">
