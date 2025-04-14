@@ -3,9 +3,46 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>SUMMARY PAGE PLACEHOLDER TITLE</title>
+        <title>STRUCTURE PAGE PLACEHOLDER TITLE</title>
+        {% load static %}
+        <link rel="stylesheet" href="{% static 'main_app/css/style.css' %}" media="screen" title="no title" charset="utf-8">
     </head>
     <body>
-        <p>SUMMARY PAGE PLACEHOLDER</p>
+        <div class="container">
+            <!-- navbar -->
+            <a href="{% url 'main_app:index' %}" class="btn">Home</a>
+            <a href="{% url 'main_app:summary' %}" class="btn">Summary</a>
+            <a href="{% url 'main_app:structure' %}" class="btn">Structure</a>
+            <a href="{% url 'main_app:content' %}" class="btn">Content</a>
+            <a href="{% url 'main_app:demo' %}" class="btn">Demo</a>
+            <a href="{% url 'main_app:live_demo' %}" class="btn">Live Demo</a>
+        </div>
+        <div class="container">
+            <p>
+                SUMMARY 1 SUMMARY 1 SUMMARY 1 SUMMARY 1 SUMMARY 1
+                SUMMARY 1 SUMMARY 1 SUMMARY 1 SUMMARY 1 SUMMARY 1
+                SUMMARY 1 SUMMARY 1 SUMMARY 1 SUMMARY 1 SUMMARY 1
+                SUMMARY 1 SUMMARY 1 SUMMARY 1 SUMMARY 1 SUMMARY 1
+                SUMMARY 1 SUMMARY 1 SUMMARY 1 SUMMARY 1 SUMMARY 1
+            </p>
+        </div>
+        <div class="container">
+            <p>
+                SUMMARY 2 SUMMARY 2 SUMMARY 2 SUMMARY 2 SUMMARY 2
+                SUMMARY 2 SUMMARY 2 SUMMARY 2 SUMMARY 2 SUMMARY 2
+                SUMMARY 2 SUMMARY 2 SUMMARY 2 SUMMARY 2 SUMMARY 2
+                SUMMARY 2 SUMMARY 2 SUMMARY 2 SUMMARY 2 SUMMARY 2
+                SUMMARY 2 SUMMARY 2 SUMMARY 2 SUMMARY 2 SUMMARY 2
+            </p>
+        </div>
+        <div class="container">
+            <p>
+                SUMMARY 3 SUMMARY 3 SUMMARY 3 SUMMARY 3 SUMMARY 3
+                SUMMARY 3 SUMMARY 3 SUMMARY 3 SUMMARY 3 SUMMARY 3
+                SUMMARY 3 SUMMARY 3 SUMMARY 3 SUMMARY 3 SUMMARY 3
+                SUMMARY 3 SUMMARY 3 SUMMARY 3 SUMMARY 3 SUMMARY 3
+                SUMMARY 3 SUMMARY 3 SUMMARY 3 SUMMARY 3 SUMMARY 3
+            </p>
+        </div>
     </body>
 </html>
