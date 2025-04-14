@@ -1,3 +1,7 @@
+<<<<<<< HEAD
+=======
+
+>>>>>>> c7f8511 (Added the CSS file and image)
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     line-height: 1.6;
@@ -47,4 +51,19 @@ h1 {
 }
 .btn:hover {
     background: #2980b9;
+<<<<<<< HEAD
 }
+=======
+}
+.header-row {
+     display: flex;
+     justify-content: space-between;
+     align-items: flex-start;
+}   
+
+.top-image {
+     width: 150px;
+     height: auto;
+    margin-left: 1rem;
+}
+>>>>>>> c7f8511 (Added the CSS file and image)

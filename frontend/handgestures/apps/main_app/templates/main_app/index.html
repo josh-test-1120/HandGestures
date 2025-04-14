@@ -5,12 +5,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CS481</title>
     {% load static %}
+<<<<<<< HEAD
     <!-- The line above tells Django to be ready to listen for static files for stylesheets -->
     <link rel="stylesheet" href="{% static 'main_app/css/style.css' %}" media="screen" title="no title" charset="utf-8">
+=======
+    <link rel="stylesheet" href="{% static 'main_app/css/style.css' %}">
+    
+>>>>>>> c7f8511 (Added the CSS file and image)
 </head>
 <body>
     <div class="container">
-        <h1>Welcome to Out Group Project!</h1>
+        <div class="header-row">
+        <h1>Welcome to Our Group Project!</h1>
+        <img src={% static 'main_app/img/CWU.png' %} alt="Logo" class="top-image">
+        </div>
         <!-- 
         <div class="status success">
             ✔ Successfully loaded test landing page

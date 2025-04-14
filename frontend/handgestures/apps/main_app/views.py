@@ -33,7 +33,7 @@ def content(request):
 
 
 def demo(request):
-    return HttpResponse("demo page")
+    return render(request, 'main_app/demo.html')
 
 
 def live_demo(request):
