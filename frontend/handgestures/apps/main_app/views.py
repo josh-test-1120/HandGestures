@@ -30,3 +30,11 @@ def structure(request):
 
 def content(request):
     return render(request, 'main_app/content.html')
+
+
+def demo(request):
+    return render(request, 'main_app/demo.html')
+
+
+def live_demo(request):
+    return HttpResponse("live demo page")

@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>DEMO</title>
+    </head>
+    <style>
+         .btn {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            background: #3498db;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            margin: 0.5rem 0;
+        }
+        .btn:hover {
+            background: #2980b9;
+        }
+
+    </style>
+    <body>
+        <p>DEMO PAGE</p>
+    </body>
+    <a href="{% url 'main_app:index' %}" class="btn"> Back To Home</a>
+</html>

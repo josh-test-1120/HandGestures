@@ -3,70 +3,43 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Test Landing Page</title>
-    <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            line-height: 1.6;
-            margin: 0;
-            padding: 0;
-            color: #333;
-            background-color: #f5f5f5;
-        }
-        .container {
-            max-width: 800px;
-            margin: 2rem auto;
-            padding: 2rem;
-            background: white;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
-            border-radius: 8px;
-        }
-        h1 {
-            color: #2c3e50;
-            border-bottom: 2px solid #eee;
-            padding-bottom: 0.5rem;
-        }
-        .status {
-            padding: 1rem;
-            margin: 1rem 0;
-            border-radius: 4px;
-        }
-        .success {
-            background-color: #d4edda;
-            color: #155724;
-        }
-        .debug-info {
-            margin-top: 2rem;
-            padding: 1rem;
-            background-color: #f8f9fa;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            font-family: monospace;
-        }
-        .btn {
-            display: inline-block;
-            padding: 0.5rem 1rem;
-            background: #3498db;
-            color: white;
-            text-decoration: none;
-            border-radius: 4px;
-            margin: 0.5rem 0;
-        }
-        .btn:hover {
-            background: #2980b9;
-        }
-    </style>
+    <title>CS481</title>
+    {% load static %}
+    <!-- The line above tells Django to be ready to listen for static files for stylesheets -->
+    <link rel="stylesheet" href="{% static 'main_app/css/style.css' %}" media="screen" title="no title" charset="utf-8">
 </head>
 <body>
     <div class="container">
-        <h1>Welcome to Django!</h1>
-        
+        <div class="header-row">
+        <h1>Welcome to Our Group Project!</h1>
+        <img src={% static 'main_app/img/CWU.png' %} alt="Logo" class="top-image">
+        </div>
+        <!-- 
         <div class="status success">
             ✔ Successfully loaded test landing page
         </div>
+        -->
 
-        <h2>Quick Links</h2>
-        <a href="/admin" class="btn">Admin Panel</a>
+        <h2>Project Overview: </h2>
+        <p>
+            This Capstone project focuses on developing a system to detect epileptic seizure by analyzing
+            gesture data collected from wearable devices equipped with Inertial Measurement Units (IMUs). The project
+            is emphasizing data collection, feature extraction, and modeling. The final deliverable for this phase includes a functional website that visually presents the collected IMU data, extracted features, and initial modeling results,
+            along with a detailed report documenting the methodology and deployment process.
+
+
+        </p>
+
+        <h2>Quick Link</h2>
+        
+        <a href="{% url 'main_app:index' %}" class="btn">Home</a>
+        <a href="{% url 'main_app:summary' %}" class="btn">Summary</a>
+        <a href="{% url 'main_app:structure' %}" class="btn">Structure</a>
+        <a href="{% url 'main_app:content' %}" class="btn">Content</a>
+        <a href="{% url 'main_app:demo' %}" class="btn">Demo</a>
+        <a href="{% url 'main_app:live_demo' %}" class="btn">Live Demo</a>
+
+
         <a href="{% url 'main_app:api_data' %}" class="btn">API Test</a>
         
         <div class="debug-info">

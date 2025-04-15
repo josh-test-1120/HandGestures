@@ -18,3 +18,12 @@ python manage.py migrate
 Run the following command to start the Django Server
 
 python manage.py runserver
+
+
+# Note on depedency export
+If you are using a virtual environment for building the
+requirements.txt, the following command is required
+to ensure the versions are proper displayed for
+global installations:
+
+pip list --format=freeze | grep -v "@" > requirements.txt
