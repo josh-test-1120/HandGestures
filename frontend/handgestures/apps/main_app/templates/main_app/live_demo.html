@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live Demo - Arduino Data</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'main_app/css/style.css' %}" media="screen" title="no title" charset="utf-8">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        /* styles unique to live_demo.html*/
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        .chart-container {
+            position: relative;
+            height: 400px;
+            width: 100%;
+            margin: 2rem 0;
+        }
+        .controls {
+            margin: 1rem 0;
+            padding: 1rem;
+            background-color: #f8f9fa;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Arduino Live Data Demo</h1>
+        
+        <div id="connection-status" class="status">
+            Connecting to Arduino...
+        </div>
+
+        <div class="chart-container">
+            <canvas id="dataChart"></canvas>
+        </div>
+
+        <!-- Control buttons for the live demo -->
+        <div class="controls">
+            <button id="connectBtn" class="btn">Connect to Arduino</button>
+            <button id="startBtn" class="btn">Start Monitoring</button>
+            <button id="stopBtn" class="btn">Stop Monitoring</button>
+            <button id="clearBtn" class="btn">Clear Data</button>
+        </div>
+        
+        <a href="{% url 'main_app:index' %}" class="btn">Back to Home</a>
+
+        <div class="debug-info">
+            <h3>Debug Information</h3>
+            <p><strong>Template Path:</strong> main_app/live_demo.html</p>
+            <p><strong>Current Time:</strong> {% now "DATETIME_FORMAT" %}</p>
+            <p><strong>Connection Status:</strong> <span id="debug-connection">Not connected</span></p>
+        </div>
+    </div>
+
+    <script>
+        //initializes chart with empty data
+        const ctx = document.getElementById('dataChart').getContext('2d');
+        let chart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: [],
+                datasets: [{
+                    label: 'Arduino Sensor Data',
+                    data: [],
+                    backgroundColor: 'rgba(52, 152, 219, 0.2)',
+                    borderColor: 'rgba(52, 152, 219, 1)',
+                    borderWidth: 1,
+                    pointRadius: 2,
+                    tension: 0.4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+
+        //basic variables for data handling
+        let isConnected = false;
+        let isMonitoring = false;
+        let dataPoints = [];
+        let dataLabels = [];
+        let dataInterval;
+        const statusElement = document.getElementById('connection-status');
+        const debugConnection = document.getElementById('debug-connection');
+
+        //TODO: touch up/refine this function which connects to Arduino board's API endpoint
+        async function connectToArduino() {
+            try {
+                //TODO:replace with the actual API endpoint
+                const response = await fetch('/api/arduino/status');
+                
+                if (response.ok) {
+                    isConnected = true;
+                    statusElement.textContent = '✔ Connected to Arduino board';
+                    statusElement.className = 'status success';
+                    debugConnection.textContent = 'Connected';
+                    return true;
+                } else {
+                    throw new Error('Connection failed');
+                }
+            } catch (error) {
+                isConnected = false;
+                statusElement.textContent = '✘ Failed to connect to Arduino board';
+                statusElement.className = 'status error';
+                debugConnection.textContent = 'Connection error';
+                return false;
+            }
+        }
+        
+        //TODO: function to fetch data from Arduino board's API endpoint
+        
+        //TODO: add event listeners for buttons
+
+        //connection attempt
+        connectToArduino();
+    </script>
+</body>
+</html>

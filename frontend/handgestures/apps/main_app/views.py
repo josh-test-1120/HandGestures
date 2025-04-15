@@ -37,4 +37,4 @@ def demo(request):
 
 
 def live_demo(request):
-    return HttpResponse("live demo page")
+    return render(request, 'main_app/live_demo.html')
