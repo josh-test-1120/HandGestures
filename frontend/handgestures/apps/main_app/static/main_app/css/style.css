@@ -1,5 +1,10 @@
 body {
-    border-top: 5px solid red; /* CLEAR TEST */
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    line-height: 1.6;
+    margin: 0;
+    padding: 0;
+    color: #333;
+    background-color: #f5f5f5;
 }
 .container {
     max-width: 800px;
