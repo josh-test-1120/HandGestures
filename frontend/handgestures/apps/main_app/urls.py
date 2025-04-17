@@ -16,6 +16,7 @@ urlpatterns = [
 	path("structure/", views.structure, name="structure"),
 	path("demo/",views.demo, name="demo"),
 	path("live-demo/", views.live_demo, name="live_demo"),
+    path("contact/",views.contact, name ='contact'),
 	#path('api/report/', views.api_report, name='api_report'),  # Example
  
 	# Regex matcher

@@ -34,3 +34,6 @@ def demo(request):
 
 def live_demo(request):
     return render(request, 'main_app/live_demo.html')
+
+def contact(request):
+    return render(request, 'main_app/contact.html')
