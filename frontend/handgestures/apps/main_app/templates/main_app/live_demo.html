@@ -66,14 +66,14 @@
     </div>
 
     <script>
-        //initializes chart with empty data
-        const ctx = document.getElementById('dataChart').getContext('2d');
-        let chart = new Chart(ctx, {
+        // Accelerometer Chart
+        const accCtx = document.getElementById('accelerometerChart').getContext('2d');
+        let accelerometerChart = new Chart(accCtx, {
             type: 'line',
             data: {
                 labels: [],
                 datasets: [{
-                    label: 'Arduino Sensor Data',
+                    label: 'Accelerometer',
                     data: [],
                     backgroundColor: 'rgba(52, 152, 219, 0.2)',
                     borderColor: 'rgba(52, 152, 219, 1)',
@@ -85,11 +85,53 @@
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
-                scales: {
-                    y: {
-                        beginAtZero: true
-                    }
-                }
+                scales: { y: { beginAtZero: true } }
+            }
+        });
+
+        // Gyroscope Chart
+        const gyroCtx = document.getElementById('gyroscopeChart').getContext('2d');
+        let gyroscopeChart = new Chart(gyroCtx, {
+            type: 'line',
+            data: {
+                labels: [],
+                datasets: [{
+                    label: 'Gyroscope',
+                    data: [],
+                    backgroundColor: 'rgba(155, 89, 182, 0.2)',
+                    borderColor: 'rgba(155, 89, 182, 1)',
+                    borderWidth: 1,
+                    pointRadius: 2,
+                    tension: 0.4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: { y: { beginAtZero: true } }
+            }
+        });
+
+        // LiDAR Chart
+        const lidarCtx = document.getElementById('lidarChart').getContext('2d');
+        let lidarChart = new Chart(lidarCtx, {
+            type: 'line',
+            data: {
+                labels: [],
+                datasets: [{
+                    label: 'LiDAR',
+                    data: [],
+                    backgroundColor: 'rgba(39, 174, 96, 0.2)',
+                    borderColor: 'rgba(39, 174, 96, 1)',
+                    borderWidth: 1,
+                    pointRadius: 2,
+                    tension: 0.4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: { y: { beginAtZero: true } }
             }
         });
 
