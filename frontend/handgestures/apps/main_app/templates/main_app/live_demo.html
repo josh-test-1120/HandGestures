@@ -71,9 +71,9 @@
                     <div class="card-body">
                         <h5 class="card-title">Accelerometer</h5>
                         <div class="d-flex justify-content-between mb-3">
-                            <div><span class="fw-bold">1.2g</span><br>X-Axis</div>
-                            <div><span class="fw-bold">0.8g</span><br>Y-Axis</div>
-                            <div><span class="fw-bold">9.8g</span><br>Z-Axis</div>
+                            <div><span class="fw-bold">(Placeholder)</span><br>X-Axis</div>
+                            <div><span class="fw-bold">(Placeholder)</span><br>Y-Axis</div>
+                            <div><span class="fw-bold">(Placeholder)</span><br>Z-Axis</div>
                         </div>
                         <div class="chart-container">
                             <canvas id="accelerometerChart"></canvas>
@@ -86,9 +86,9 @@
                     <div class="card-body">
                         <h5 class="card-title">Gyroscope</h5>
                         <div class="d-flex justify-content-between mb-3">
-                            <div><span class="fw-bold">15°</span><br>Roll</div>
-                            <div><span class="fw-bold">5°</span><br>Pitch</div>
-                            <div><span class="fw-bold">180°</span><br>Yaw</div>
+                            <div><span class="fw-bold">(Placeholder)</span><br>X-Axis</div>
+                            <div><span class="fw-bold">(Placeholder)</span><br>Y-Axis</div>
+                            <div><span class="fw-bold">(Placeholder)</span><br>Z-Axis</div>
                         </div>
                         <div class="chart-container">
                             <canvas id="gyroscopeChart"></canvas>
@@ -103,13 +103,10 @@
             <div class="card-body">
                 <div class="d-flex justify-content-between align-items-center mb-3">
                     <h5 class="card-title mb-0">LiDAR Scanner</h5>
-                    <span class="text-muted small">Refresh Rate: 10Hz</span>
+                    <span class="text-muted small">Refresh Rate: (Placeholder)</span>
                 </div>
                 <div class="d-flex justify-content-between mb-3">
-                    <div><span class="fw-bold">2.5m</span><br>Distance</div>
-                    <div><span class="fw-bold">120°</span><br>FOV</div>
-                    <div><span class="fw-bold">±2cm</span><br>Accuracy</div>
-                    <div><span class="fw-bold">1000</span><br>Points/sec</div>
+                    <div><span class="fw-bold">(Placeholder)</span><br>Distance (cm)</div>
                 </div>
                 <div class="chart-container">
                     <canvas id="lidarChart"></canvas>
@@ -124,7 +121,6 @@
                     <h5 class="card-title mb-0">Data Export</h5>
                     <div>
                         <button class="btn btn-outline-primary btn-sm">Export CSV</button>
-                        <button class="btn btn-primary btn-sm">Start Recording</button>
                     </div>
                 </div>
                 <table class="table table-sm">
@@ -138,27 +134,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td>2025-01-20 14:30:25</td>
-                            <td>ARD-001</td>
-                            <td>Accelerometer</td>
-                            <td>1.2, 0.8, 9.8</td>
-                            <td>g</td>
-                        </tr>
-                        <tr>
-                            <td>2025-01-20 14:30:24</td>
-                            <td>ARD-002</td>
-                            <td>Gyroscope</td>
-                            <td>15, 5, 180</td>
-                            <td>degrees</td>
-                        </tr>
-                        <tr>
-                            <td>2025-01-20 14:30:23</td>
-                            <td>ARD-001</td>
-                            <td>LiDAR</td>
-                            <td>2.5</td>
-                            <td>meters</td>
-                        </tr>
+                        <!-- TODO: Data will be populated here -->
                     </tbody>
                 </table>
             </div>
