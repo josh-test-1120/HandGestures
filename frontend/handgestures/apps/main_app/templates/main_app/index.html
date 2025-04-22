@@ -18,7 +18,7 @@
     <div class="container mt-5 px-4">
         <div class="row align-items-center">
             
-            <div class="col-md-6">
+            <div class="col-lg-6">
                 <h1>Early Detection of Epileptic Seizures<br>Through Motion Analysis</h1>
                 <p>
                     This Capstone project focuses on developing a system to detect epileptic seizure by analyzing
@@ -26,6 +26,8 @@
                     emphasizes data collection, feature extraction, and modeling. The final deliverable includes a functional website
                     that visually presents collected IMU data, extracted features, initial modeling results, and a detailed methodology report.
                 </p>
+                <a href="{% url 'main_app:summary' %}" class="btn btn-primary">Learn More</a>
+                <a href="{% url 'main_app:structure' %}" class="btn btn-outline-primary ms-2">View Research</a>
             </div>
 
             
@@ -33,7 +35,59 @@
                 <img src="{% static 'main_app/img/circuit_image.png' %}" alt="Hand Detection" class="img-fluid" style="max-width: 100%; height: auto;">
             </div>
         </div>
+        <h3 class ="text-center">How it works</h3>
+        <div class="row text-center mt-4">
+            <!-- Arduino Hardware -->
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <i class="bi bi-cpu" style="font-size: 2rem;"></i> <!-- optional icon -->
+                        </div>
+                        <h5 class="card-title">Arduino Hardware</h5>
+                        <p class="card-text">
+                            Custom-designed Arduino-based system with precise motion and acceleration sensors for accurate hand movement tracking.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        
+            <!-- Motion Detection -->
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <i class="bi bi-activity" style="font-size: 2rem;"></i>
+                        </div>
+                        <h5 class="card-title">Motion Detection</h5>
+                        <p class="card-text">
+                            Advanced algorithms analyze hand movements in real-time to detect patterns associated with epileptic seizures.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        
+            <!-- Data Analysis -->
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <i class="bi bi-graph-up" style="font-size: 2rem;"></i>
+                        </div>
+                        <h5 class="card-title">Data Analysis</h5>
+                        <p class="card-text">
+                            Machine learning models process sensor data to identify early warning signs and predict potential seizure onset.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+       
     </div>
+     
+   
+ 
     
 
 </body>
