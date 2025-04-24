@@ -169,7 +169,20 @@
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
-                scales: { y: { beginAtZero: true } }
+                scales: {
+                    x: {
+                        type: 'linear',
+                        title: {
+                            display: true,
+                            text: 'Time (s)'
+                        },
+                        ticks: {
+                            stepSize: 5,
+                            callback: function(value) { return value + 's'; }
+                        }
+                    },
+                    y: { beginAtZero: true }
+                }
             }
         });
 
@@ -192,7 +205,20 @@
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
-                scales: { y: { beginAtZero: true } }
+                scales: {
+                    x: {
+                        type: 'linear',
+                        title: {
+                            display: true,
+                            text: 'Time (s)'
+                        },
+                        ticks: {
+                            stepSize: 5,
+                            callback: function(value) { return value + 's'; }
+                        }
+                    },
+                    y: { beginAtZero: true }
+                }
             }
         });
 
@@ -215,7 +241,20 @@
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
-                scales: { y: { beginAtZero: true } }
+                scales: {
+                    x: {
+                        type: 'linear',
+                        title: {
+                            display: true,
+                            text: 'Time (s)'
+                        },
+                        ticks: {
+                            stepSize: 5,
+                            callback: function(value) { return value + 's'; }
+                        }
+                    },
+                    y: { beginAtZero: true }
+                }
             }
         });
 
