@@ -56,6 +56,16 @@
     <div class="container mt-4">
         <h1>Arduino Live Data Demo</h1>
 
+        <!-- File input for CSV import -->
+        <input type="file" id="csvFileInput" accept=".csv" style="display:none;">
+        <!-- Loading spinner/message -->
+        <div id="loadingSpinner" style="display:none; text-align:center; margin:10px;">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+            <div>Loading and parsing CSV...</div>
+        </div>
+
         <!-- Control buttons for the live demo -->
         <div class="controls">
             <button id="importCSV" class="btn">Import CSV</button>
@@ -98,18 +108,18 @@
             </div>
         </div>
 
-        <!-- LiDAR Scanner -->
+        <!-- Ultrasonic Sensor -->
         <div class="card mb-4">
             <div class="card-body">
                 <div class="d-flex justify-content-between align-items-center mb-3">
-                    <h5 class="card-title mb-0">LiDAR Scanner</h5>
+                    <h5 class="card-title mb-0">Ultrasonic Sensor</h5>
                     <span class="text-muted small">Refresh Rate: (Placeholder)</span>
                 </div>
                 <div class="d-flex justify-content-between mb-3">
                     <div><span class="fw-bold">(Placeholder)</span><br>Distance (cm)</div>
                 </div>
                 <div class="chart-container">
-                    <canvas id="lidarChart"></canvas>
+                    <canvas id="ultrasonicChart"></canvas>
                 </div>
             </div>
         </div>
@@ -144,7 +154,6 @@
             <h3>Debug Information</h3>
             <p><strong>Template Path:</strong> main_app/live_demo.html</p>
             <p><strong>Current Time:</strong> {% now "DATETIME_FORMAT" %}</p>
-            <p><strong>Connection Status:</strong> <span id="debug-connection">Not connected</span></p>
         </div>
     </div>
 
@@ -169,7 +178,20 @@
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
-                scales: { y: { beginAtZero: true } }
+                scales: {
+                    x: {
+                        type: 'linear',
+                        title: {
+                            display: true,
+                            text: 'Time (s)'
+                        },
+                        ticks: {
+                            stepSize: 5,
+                            callback: function(value) { return value + 's'; }
+                        }
+                    },
+                    y: { beginAtZero: true }
+                }
             }
         });
 
@@ -192,18 +214,31 @@
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
-                scales: { y: { beginAtZero: true } }
+                scales: {
+                    x: {
+                        type: 'linear',
+                        title: {
+                            display: true,
+                            text: 'Time (s)'
+                        },
+                        ticks: {
+                            stepSize: 5,
+                            callback: function(value) { return value + 's'; }
+                        }
+                    },
+                    y: { beginAtZero: true }
+                }
             }
         });
 
-        //LiDAR Scanner Chart
-        const lidarCtx = document.getElementById('lidarChart').getContext('2d');
-        let lidarChart = new Chart(lidarCtx, {
+        //Ultrasonic Sensor Chart
+        const ultrasonicCtx = document.getElementById('ultrasonicChart').getContext('2d');
+        let ultrasonicChart = new Chart(ultrasonicCtx, {
             type: 'line',
             data: {
                 labels: [],
                 datasets: [{
-                    label: 'LiDAR',
+                    label: 'Ultrasonic',
                     data: [],
                     backgroundColor: 'rgba(39, 174, 96, 0.2)',
                     borderColor: 'rgba(39, 174, 96, 1)',
@@ -215,7 +250,20 @@
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
-                scales: { y: { beginAtZero: true } }
+                scales: {
+                    x: {
+                        type: 'linear',
+                        title: {
+                            display: true,
+                            text: 'Time (s)'
+                        },
+                        ticks: {
+                            stepSize: 5,
+                            callback: function(value) { return value + 's'; }
+                        }
+                    },
+                    y: { beginAtZero: true }
+                }
             }
         });
 
@@ -228,36 +276,182 @@
         const statusElement = document.getElementById('connection-status');
         const debugConnection = document.getElementById('debug-connection');
 
-        //TODO: touch up/refine this function which connects to Arduino board's API endpoint
-        async function connectToArduino() {
-            try {
-                //TODO:replace with the actual API endpoint
-                const response = await fetch('/api/arduino/status');
-                
-                if (response.ok) {
-                    isConnected = true;
-                    statusElement.textContent = '✔ Connected to Arduino board';
-                    statusElement.className = 'status success';
-                    debugConnection.textContent = 'Connected';
-                    return true;
-                } else {
-                    throw new Error('Connection failed');
-                }
-            } catch (error) {
-                isConnected = false;
-                statusElement.textContent = '✘ Failed to connect to Arduino board';
-                statusElement.className = 'status error';
-                debugConnection.textContent = 'Connection error';
-                return false;
-            }
-        }
-        
-        //TODO: function to fetch data from Arduino board's API endpoint
-        
-        //TODO: add event listeners for buttons
+        //CSV Data Storage
+        let csvData = null;
+        let csvParsed = false;
+        let csvTime = [];
+        let csvAccel = { x: [], y: [], z: [] };
+        let csvGyro = { x: [], y: [], z: [] };
+        let csvUltrasonic = [];
 
-        //connection attempt
-        connectToArduino();
+        //File input and spinner
+        const csvFileInput = document.getElementById('csvFileInput');
+        const loadingSpinner = document.getElementById('loadingSpinner');
+        const importCSVBtn = document.getElementById('importCSV');
+        const startBtn = document.getElementById('startBtn');
+
+        //Helper: Parse CSV text to arrays
+        function parseCSV(text) {
+            const lines = text.trim().split(/\r?\n/);
+            const header = lines[0].split(',');
+            const idx = {
+                //parsed columns: time, accelX, accelY, accelZ, gyroX, gyroY, gyroZ, distance
+                time: header.indexOf('Timestamp(ms)'),
+                ax: header.indexOf('AccelX(g)'),
+                ay: header.indexOf('AccelY(g)'),
+                az: header.indexOf('AccelZ(g)'),
+                gx: header.indexOf('GyroX(deg/s)'),
+                gy: header.indexOf('GyroY(deg/s)'),
+                gz: header.indexOf('GyroZ(deg/s)'),
+                dist: header.indexOf('Distance(cm)')
+            };
+            let t0 = null;
+            let timeArr = [], axArr = [], ayArr = [], azArr = [], gxArr = [], gyArr = [], gzArr = [], distArr = [];
+            for (let i = 1; i < lines.length; i++) {
+                const row = lines[i].split(',');
+                if (row.length < header.length) continue;
+                const t = parseInt(row[idx.time]);
+                if (t0 === null) t0 = t;
+                timeArr.push(((t - t0) / 1000).toFixed(2)); // seconds, relative to first row
+                axArr.push(parseFloat(row[idx.ax]));
+                ayArr.push(parseFloat(row[idx.ay]));
+                azArr.push(parseFloat(row[idx.az]));
+                gxArr.push(parseFloat(row[idx.gx]));
+                gyArr.push(parseFloat(row[idx.gy]));
+                gzArr.push(parseFloat(row[idx.gz]));
+                distArr.push(parseFloat(row[idx.dist]));
+            }
+            return { //return parsed data
+                time: timeArr,
+                accel: { x: axArr, y: ayArr, z: azArr },
+                gyro: { x: gxArr, y: gyArr, z: gzArr },
+                ultrasonic: distArr
+            };
+        }
+
+
+        //ADDED EVENT LISTENERS FOR BUTTONS 4-24-2025 (SCRUM Sprint 3)
+
+        //Event: Import CSV
+        importCSVBtn.addEventListener('click', function() {
+            csvFileInput.value = '';
+            csvFileInput.click();
+        });
+        csvFileInput.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            loadingSpinner.style.display = 'block';
+            const reader = new FileReader(); //FileReader API is used to read the contents of a file
+            reader.onload = function(evt) {
+                try {
+                    const parsed = parseCSV(evt.target.result);
+                    csvTime = parsed.time;
+                    csvAccel = parsed.accel;
+                    csvGyro = parsed.gyro;
+                    csvUltrasonic = parsed.ultrasonic;
+                    csvParsed = true;
+                    loadingSpinner.style.display = 'none';
+                    alert('CSV loaded! Press Start Demo to visualize.');
+                } catch (err) {
+                    loadingSpinner.style.display = 'none';
+                    alert('Error parsing CSV: ' + err.message);
+                }
+            };
+            reader.readAsText(file);
+        });
+
+        //Event: Start Demo
+        startBtn.addEventListener('click', function() {
+            if (!csvParsed) {
+                alert('Please import a CSV file first!');
+                return;
+            }
+            //Accelerometer: 3 lines (x, y, z)
+            accelerometerChart.data.labels = csvTime.map(Number);
+            accelerometerChart.data.datasets = [
+                {
+                    label: 'Accel X',
+                    data: csvAccel.x,
+                    borderColor: 'rgba(52, 152, 219, 1)',
+                    backgroundColor: 'rgba(52, 152, 219, 0.2)',
+                    borderWidth: 1,
+                    pointRadius: 2,
+                    tension: 0.4
+                },
+                {
+                    label: 'Accel Y',
+                    data: csvAccel.y,
+                    borderColor: 'rgba(39, 174, 96, 1)',
+                    backgroundColor: 'rgba(39, 174, 96, 0.2)',
+                    borderWidth: 1,
+                    pointRadius: 2,
+                    tension: 0.4
+                },
+                {
+                    label: 'Accel Z',
+                    data: csvAccel.z,
+                    borderColor: 'rgba(231, 76, 60, 1)',
+                    backgroundColor: 'rgba(231, 76, 60, 0.2)',
+                    borderWidth: 1,
+                    pointRadius: 2,
+                    tension: 0.4
+                }
+            ];
+            accelerometerChart.update();
+
+            //Gyroscope: 3 lines (x, y, z)
+            gyroscopeChart.data.labels = csvTime.map(Number);
+            gyroscopeChart.data.datasets = [
+                {
+                    label: 'Gyro X',
+                    data: csvGyro.x,
+                    borderColor: 'rgba(155, 89, 182, 1)',
+                    backgroundColor: 'rgba(155, 89, 182, 0.2)',
+                    borderWidth: 1,
+                    pointRadius: 2,
+                    tension: 0.4
+                },
+                {
+                    label: 'Gyro Y',
+                    data: csvGyro.y,
+                    borderColor: 'rgba(241, 196, 15, 1)',
+                    backgroundColor: 'rgba(241, 196, 15, 0.2)',
+                    borderWidth: 1,
+                    pointRadius: 2,
+                    tension: 0.4
+                },
+                {
+                    label: 'Gyro Z',
+                    data: csvGyro.z,
+                    borderColor: 'rgba(26, 188, 156, 1)',
+                    backgroundColor: 'rgba(26, 188, 156, 0.2)',
+                    borderWidth: 1,
+                    pointRadius: 2,
+                    tension: 0.4
+                }
+            ];
+            gyroscopeChart.update();
+
+            //Ultrasonic: 1 line
+            ultrasonicChart.data.labels = csvTime.map(Number);
+            ultrasonicChart.data.datasets = [
+                {
+                    label: 'Distance (cm)',
+                    data: csvUltrasonic,
+                    borderColor: 'rgba(39, 174, 96, 1)',
+                    backgroundColor: 'rgba(39, 174, 96, 0.2)',
+                    borderWidth: 1,
+                    pointRadius: 2,
+                    tension: 0.4
+                }
+            ];
+            ultrasonicChart.update();
+        });
+
+        //TODO
+        //Event: Stop Demo
+        //Event: Clear Data
+
     </script>
 </body>
 </html>
