@@ -20,6 +20,7 @@
 #define TRIG_PIN_RIGHT 5
 #define ECHO_PIN_RIGHT 6
 #define SD_CS_PIN 4
+#define DATA_FILENAME "data.csv"
 
 // Initialize variables
 MPU6050 mpu; // MPU object
@@ -39,9 +40,13 @@ void setup() {
     mpu.setFullScaleAccelRange(MPU6050_ACCEL_FS_2);
     mpu.setFullScaleGyroRange(MPU6050_GYRO_FS_250);
 
-    // Initialize HC-SR04
-    pinMode(TRIG_PIN, OUTPUT);
-    pinMode(ECHO_PIN, INPUT);
+    // Initialize HC-SR04 Left
+    pinMode(TRIG_PIN_LEFT, OUTPUT);
+    pinMode(ECHO_PIN_LEFT, INPUT);
+
+    // Initialize HC-SR04 Right
+    pinMode(TRIG_PIN_RIGHT, OUTPUT);
+    pinMode(ECHO_PIN_RIGHT, INPUT);
 
     // Initialize SD card with detailed error reporting
     Serial.println("Initializing SD card...");
@@ -73,7 +78,7 @@ void setup() {
     // Create new CSV file
     dataFile = SD.open("data.csv", FILE_WRITE);
     if (dataFile) {
-      dataFile.println("Timestamp(ms),AccelX(g),AccelY(g),AccelZ(g),GyroX(deg/s),GyroY(deg/s),GyroZ(deg/s),Distance(cm)");
+      dataFile.println("Timestamp(ms),AccelX(g),AccelY(g),AccelZ(g),GyroX(deg/s),GyroY(deg/s),GyroZ(deg/s),DistanceLeft(cm),DistanceRight(cm)");
       dataFile.close();
       Serial.println("CSV header written");
     } else {
@@ -98,16 +103,27 @@ void loop() {
     float gyt = gy / 131.0;
     float gzt = gz / 131.0;
     
-    // Get HC-SR04 Data
-    long duration, distance;
-    digitalWrite(TRIG_PIN, LOW);
+    // Get HC-SR04 Data Left
+    long duration_left, distance_left;
+    digitalWrite(TRIG_PIN_LEFT, LOW);
     delayMicroseconds(2);
-    digitalWrite(TRIG_PIN, HIGH);
+    digitalWrite(TRIG_PIN_LEFT, HIGH);
     delayMicroseconds(10);
-    digitalWrite(TRIG_PIN, LOW);
+    digitalWrite(TRIG_PIN_LEFT, LOW);
     // Get the values and calculate distance
-    duration = pulseIn(ECHO_PIN, HIGH);
-    distance = duration * 0.034 / 2;  // Convert to cm
+    duration_left = pulseIn(ECHO_PIN_LEFT, HIGH);
+    distance_left = duration_left * 0.034 / 2;  // Convert to cm
+
+    // Get HC-SR04 Data Right
+    long duration_right, distance_right;
+    digitalWrite(TRIG_PIN_RIGHT, LOW);
+    delayMicroseconds(2);
+    digitalWrite(TRIG_PIN_RIGHT, HIGH);
+    delayMicroseconds(10);
+    digitalWrite(TRIG_PIN_RIGHT, LOW);
+    // Get the values and calculate distance
+    duration_right = pulseIn(ECHO_PIN_RIGHT, HIGH);
+    distance_right = duration_right * 0.034 / 2;  // Convert to cm
 
     // Open CSV file and append data
     dataFile = SD.open("data.csv", FILE_WRITE);
@@ -119,8 +135,10 @@ void loop() {
       dataFile.print(gxt, 3); dataFile.print(",");
       dataFile.print(gyt, 3); dataFile.print(",");
       dataFile.print(gzt, 3); dataFile.print(",");
-      dataFile.print(distance, 1); dataFile.println();
+      dataFile.print(distance_left, 1); dataFile.println();
+      dataFile.print(distance_right, 1); dataFile.println();
       dataFile.close();
+      if (count % 100 == 0) Serial.println("Wrote 100 rows into CSV. Continuing... ");
       if (count >= 500) Serial.println("Wrote 500 rows into CSV: ");
       count++;
     }
