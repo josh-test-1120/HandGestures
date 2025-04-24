@@ -19,7 +19,7 @@
         <div class="row align-items-center">
             
             <div class="col-lg-6">
-                <h1>Early Detection of Epileptic Seizures<br>Through Motion Analysis</h1>
+                <h1>CWU Des Moines Group: <br>Detection of Epileptic Seizures<br>Through Motion Analysis</h1>
                 <p>
                     This Capstone project focuses on developing a system to detect epileptic seizure by analyzing
                     gesture data collected from wearable devices equipped with Inertial Measurement Units (IMUs). The project
@@ -83,7 +83,38 @@
             </div>
         </div>
         
-       
+        <div class="row align-items-center mt-5">
+            <div class="col-md-6 text-center">
+                <img src="{% static 'main_app/img/circuit.png' %}" 
+                     alt="Hand Detection" 
+                     class="img-fluid" 
+                     style="width: 400px; height: auto;">
+            </div>
+            <div class="col-md-6">
+                <h4 class="fw-bold mb-3">Technical Implementation</h4>
+                <ul class="list-unstyled">
+                  <li class="mb-3">
+                    <span class="text-success fw-bold">✔ MPU6050 Sensor Integration</span><br>
+                    <small>6-axis motion tracking device for precise acceleration and gyroscope data collection</small>
+                  </li>
+                  <li class="mb-3">
+                    <span class="text-success fw-bold">✔ Real-time Data Processing</span><br>
+                    <small>Continuous monitoring and analysis of movement patterns using Arduino’s processing capabilities</small>
+                  </li>
+                  <li>
+                    <span class="text-success fw-bold">✔ Wireless Data Transmission</span><br>
+                    <small>Bluetooth module for seamless data transfer to monitoring devices and cloud storage</small>
+                  </li>
+                </ul>   
+            </div>
+            
+        </div>
+        
+        
+        
+        
+
+
     </div>
      
    
@@ -93,30 +124,3 @@
 </body>
 </html>
 
-<!--
-<h1>Welcome to Our Group Project!</h1>
-        <img src="{% static 'main_app/img/CWU.png' %}" alt="Logo" class="top-image">
-        
-        <h2>Project Overview:</h2>
-        <p>
-            This Capstone project focuses on developing a system to detect epileptic seizure by analyzing
-            gesture data collected from wearable devices equipped with Inertial Measurement Units (IMUs). The project
-            emphasizes data collection, feature extraction, and modeling. The final deliverable includes a functional website
-            that visually presents collected IMU data, extracted features, initial modeling results, and a detailed methodology report.
-        </p>
-        
-        <div class="debug-info">
-            <h3>Debug Information</h3>
-            <p><strong>Template Path:</strong> main_app/index.html</p>
-            <p><strong>Current Time:</strong> {% now "DATETIME_FORMAT" %}</p>
-
-            {% if request.user.is_authenticated %}
-                <p><strong>User:</strong> {{ request.user.username }}</p>
-            {% else %}
-                <p><strong>User:</strong> Not logged in</p>
-            {% endif %}
-        </div>
-        
-        
-        
--->
