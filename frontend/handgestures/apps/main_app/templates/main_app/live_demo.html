@@ -98,18 +98,18 @@
             </div>
         </div>
 
-        <!-- LiDAR Scanner -->
+        <!-- Ultrasonic Sensor -->
         <div class="card mb-4">
             <div class="card-body">
                 <div class="d-flex justify-content-between align-items-center mb-3">
-                    <h5 class="card-title mb-0">LiDAR Scanner</h5>
+                    <h5 class="card-title mb-0">Ultrasonic Sensor</h5>
                     <span class="text-muted small">Refresh Rate: (Placeholder)</span>
                 </div>
                 <div class="d-flex justify-content-between mb-3">
                     <div><span class="fw-bold">(Placeholder)</span><br>Distance (cm)</div>
                 </div>
                 <div class="chart-container">
-                    <canvas id="lidarChart"></canvas>
+                    <canvas id="ultrasonicChart"></canvas>
                 </div>
             </div>
         </div>
@@ -196,14 +196,14 @@
             }
         });
 
-        //LiDAR Scanner Chart
-        const lidarCtx = document.getElementById('lidarChart').getContext('2d');
-        let lidarChart = new Chart(lidarCtx, {
+        //Ultrasonic Sensor Chart
+        const ultrasonicCtx = document.getElementById('ultrasonicChart').getContext('2d');
+        let ultrasonicChart = new Chart(ultrasonicCtx, {
             type: 'line',
             data: {
                 labels: [],
                 datasets: [{
-                    label: 'LiDAR',
+                    label: 'Ultrasonic',
                     data: [],
                     backgroundColor: 'rgba(39, 174, 96, 0.2)',
                     borderColor: 'rgba(39, 174, 96, 1)',
