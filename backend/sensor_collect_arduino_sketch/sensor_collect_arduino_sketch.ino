@@ -19,8 +19,10 @@
 #define ECHO_PIN_LEFT 10
 #define TRIG_PIN_RIGHT 5
 #define ECHO_PIN_RIGHT 6
-#define SD_CS_PIN 4
+#define SD_CS_PIN 10
 #define DATA_FILENAME "data.csv"
+#define LIVE_OUTPUT 1
+#define LOOP_DELAY 500 // in milliseconds
 
 // Initialize variables
 MPU6050 mpu; // MPU object
@@ -112,7 +114,10 @@ void loop() {
     digitalWrite(TRIG_PIN_LEFT, LOW);
     // Get the values and calculate distance
     duration_left = pulseIn(ECHO_PIN_LEFT, HIGH);
+    if (LIVE_OUTPUT)
+      Serial.print("This is the duration from left ultrasonics: "); Serial.println(duration_left);
     distance_left = duration_left * 0.034 / 2;  // Convert to cm
+    delay(50);  // Short pause before next sensor
 
     // Get HC-SR04 Data Right
     long duration_right, distance_right;
@@ -123,6 +128,8 @@ void loop() {
     digitalWrite(TRIG_PIN_RIGHT, LOW);
     // Get the values and calculate distance
     duration_right = pulseIn(ECHO_PIN_RIGHT, HIGH);
+    if (LIVE_OUTPUT)
+      Serial.print("This is the duration from right ultrasonics: "); Serial.println(duration_right);
     distance_right = duration_right * 0.034 / 2;  // Convert to cm
 
     // Open CSV file and append data
@@ -135,13 +142,20 @@ void loop() {
       dataFile.print(gxt, 3); dataFile.print(",");
       dataFile.print(gyt, 3); dataFile.print(",");
       dataFile.print(gzt, 3); dataFile.print(",");
-      dataFile.print(distance_left, 1); dataFile.println();
+      dataFile.print(distance_left, 1); dataFile.print(",");
       dataFile.print(distance_right, 1); dataFile.println();
       dataFile.close();
-      if (count % 100 == 0) Serial.println("Wrote 100 rows into CSV. Continuing... ");
       if (count >= 500) Serial.println("Wrote 500 rows into CSV: ");
       count++;
+      if (count % 100 == 0) Serial.println("Wrote 100 rows into CSV. Continuing... ");
     }
-    // 5 microsecond delay
-    delay(500);
+    // Output Debug
+    if (LIVE_OUTPUT) {
+      Serial.println("Timestamp(ms), AccelX(g), AccelY(g), AccelZ(g), GyroX(deg/s), GyroY(deg/s), GyroZ(deg/s), DistanceLeft(cm), DistanceRight(cm)");
+      Serial.print(millis()); Serial.print(", "); Serial.print(axt, 3); Serial.print(", "); Serial.print(ayt, 3); Serial.print(", "); Serial.print(azt, 3); Serial.print(", ");
+      Serial.print(gxt, 3); Serial.print(", "); Serial.print(gyt, 3); Serial.print(", "); Serial.print(gzt, 3); Serial.print(", "); Serial.print(distance_left, 3); 
+      Serial.print(", "); Serial.println(distance_right, 3);
+    }
+    // 5 millisecond delay
+    delay(LOOP_DELAY);
 }
