@@ -17,17 +17,17 @@
             <div style='display: flex; justify-content: space-between; margin-bottom: 40px;'>
                 <div style='text-align: center; margin-left: 100px;'>
                     <p style='text-align: left;'>participants</p>
-                    <div style='font-size: 24px; color: blue;'>123</div>
+                    <div id='participants-text' style='font-size: 24px; color: blue;'>0</div>
                     <p style='text-align: left;'>Total study participants</p>
                 </div>
                 <div style='text-align: center;'>
                     <p style='text-align: left;'>data points</p>
-                    <div style='font-size: 24px; color: green;'>45,678</div>
+                    <div id='data-points-text' style='font-size: 24px; color: green;'>0</div>
                     <p style='text-align: left;'>Collected measurements</p>
                 </div>
                 <div style='text-align: center; margin-right: 100px;'>
                     <p style='text-align: left;'>prediction accuracy</p>
-                    <div style='font-size: 24px; color: purple;'>90.1%</div>
+                    <div id='prediction-accuracy-text' style='font-size: 24px; color: purple;'>0%</div>
                     <p style='text-align: left;'>Current model accuracy</p>
                 </div>
             </div>
@@ -93,5 +93,24 @@
                 </div>
             </div>
         </div>
+        <script>
+            function updateSummaryInfo() {
+                fetch('/summary_page_update/')
+                    .then(response => response.json())
+                    .then(data => {
+                        document.getElementById('participants-text').innerHTML = `${data.participants}`;
+                        document.getElementById('data-points-text').innerHTML = `${data.data_points}`;
+                        document.getElementById('prediction-accuracy-text').innerHTML = `${data.prediction_accuracy}`;
+                        setTimeout(updateSummaryInfo, 1000);
+                    })
+                    .catch(
+                        error => {
+                            console.error('Error:', error);
+                            setTimeout(updateSummaryInfo, 1000);
+                        }
+                    );
+            }
+            updateSummaryInfo();
+        </script>
     </body>
 </html>
