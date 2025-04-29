@@ -4,6 +4,8 @@ from django.contrib import messages
 from django.urls import reverse, resolve, NoReverseMatch
 from django.http import JsonResponse, HttpResponse
 
+import random
+
 # Import your models for this application
 # from .models import Course, Description, Comment
 
@@ -13,7 +15,7 @@ from django.http import JsonResponse, HttpResponse
 # Create your views here.
 def index(request):
     return render(request, 'main_app/index.html')
-    #pass
+
 
 # API endpoints here.
 def api_data(request):
@@ -35,5 +37,16 @@ def demo(request):
 def live_demo(request):
     return render(request, 'main_app/live_demo.html')
 
+
 def contact(request):
     return render(request, 'main_app/contact.html')
+
+
+def summary_page_update(request):
+    summary_data = {
+        "participants": "{:,}".format(random.randrange(1000)),
+        "data_points": "{:,}".format(random.randrange(10000, 100000)),
+        "prediction_accuracy": (percent_str := str(random.uniform(0, 100)))[:percent_str.find(".") + 3] + "%"
+    }
+    
+    return JsonResponse(summary_data)

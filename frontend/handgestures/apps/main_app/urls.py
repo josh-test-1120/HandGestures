@@ -13,12 +13,13 @@ urlpatterns = [
 	path("", views.index, name="index"),
 	path('api/data/', views.api_data, name='api_data'),  # API testing
 	path("summary/", views.summary, name="summary"),
+	path("summary_page_update/", views.summary_page_update, name="summary_page_update"),
 	path("structure/", views.structure, name="structure"),
 	path("demo/",views.demo, name="demo"),
 	path("live-demo/", views.live_demo, name="live_demo"),
-    path("contact/",views.contact, name ='contact'),
+	path("contact/",views.contact, name ='contact'),
 	#path('api/report/', views.api_report, name='api_report'),  # Example
- 
+
 	# Regex matcher
 	#re_path(r'^$', views.index, name='index'),
 	#re_path(r'^course/add$', views.course_add, name='course_add'),
