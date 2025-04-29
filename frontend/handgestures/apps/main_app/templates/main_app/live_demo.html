@@ -81,9 +81,9 @@
                     <div class="card-body">
                         <h5 class="card-title">Accelerometer</h5>
                         <div class="d-flex justify-content-between mb-3">
-                            <div><span class="fw-bold">(Placeholder)</span><br>X-Axis(g)</div>
-                            <div><span class="fw-bold">(Placeholder)</span><br>Y-Axis(g)</div>
-                            <div><span class="fw-bold">(Placeholder)</span><br>Z-Axis(g)</div>
+                            <div><span class="fw-bold" id="acc-x-value">-</span><br>X-Axis(g)</div>
+                            <div><span class="fw-bold" id="acc-y-value">-</span><br>Y-Axis(g)</div>
+                            <div><span class="fw-bold" id="acc-z-value">-</span><br>Z-Axis(g)</div>
                         </div>
                         <div class="chart-container">
                             <canvas id="accelerometerChart"></canvas>
@@ -96,9 +96,9 @@
                     <div class="card-body">
                         <h5 class="card-title">Gyroscope</h5>
                         <div class="d-flex justify-content-between mb-3">
-                            <div><span class="fw-bold">(Placeholder)</span><br>X-Axis(deg/s)</div>
-                            <div><span class="fw-bold">(Placeholder)</span><br>Y-Axis(deg/s)</div>
-                            <div><span class="fw-bold">(Placeholder)</span><br>Z-Axis(deg/s)</div>
+                            <div><span class="fw-bold" id="gyro-x-value">-</span><br>X-Axis(deg/s)</div>
+                            <div><span class="fw-bold" id="gyro-y-value">-</span><br>Y-Axis(deg/s)</div>
+                            <div><span class="fw-bold" id="gyro-z-value">-</span><br>Z-Axis(deg/s)</div>
                         </div>
                         <div class="chart-container">
                             <canvas id="gyroscopeChart"></canvas>
@@ -116,7 +116,7 @@
                     <span class="text-muted small">Refresh Rate: (Placeholder)</span>
                 </div>
                 <div class="d-flex justify-content-between mb-3">
-                    <div><span class="fw-bold">(Placeholder)</span><br>Distance (cm)</div>
+                    <div><span class="fw-bold" id="ultrasonic-value">-</span><br>Distance (cm)</div>
                 </div>
                 <div class="chart-container">
                     <canvas id="ultrasonicChart"></canvas>
@@ -452,6 +452,58 @@
         //Event: Stop Demo
         //Event: Clear Data
 
+        //helper functions to update value dynamically based on chart data position (implemented 4-29-2025)
+        function updateAccValues(x, y, z) {
+            document.getElementById('acc-x-value').textContent = x !== undefined ? x : '-';
+            document.getElementById('acc-y-value').textContent = y !== undefined ? y : '-';
+            document.getElementById('acc-z-value').textContent = z !== undefined ? z : '-';
+        }
+        function updateGyroValues(x, y, z) {
+            document.getElementById('gyro-x-value').textContent = x !== undefined ? x : '-';
+            document.getElementById('gyro-y-value').textContent = y !== undefined ? y : '-';
+            document.getElementById('gyro-z-value').textContent = z !== undefined ? z : '-';
+        }
+        function updateUltrasonicValue(val) {
+            document.getElementById('ultrasonic-value').textContent = val !== undefined ? val : '-';
+        }
+
+        //Chart.js hover event for Accelerometer
+        accelerometerChart.options.onHover = function(event, chartElement) {
+            if (chartElement.length > 0) {
+                const idx = chartElement[0].index;
+                updateAccValues(
+                    accelerometerChart.data.datasets[0].data[idx],
+                    accelerometerChart.data.datasets[1].data[idx],
+                    accelerometerChart.data.datasets[2].data[idx]
+                );
+            } else {
+                updateAccValues();
+            }
+        };
+
+        //Chart.js hover event for Gyroscope
+        gyroscopeChart.options.onHover = function(event, chartElement) {
+            if (chartElement.length > 0) {
+                const idx = chartElement[0].index;
+                updateGyroValues(
+                    gyroscopeChart.data.datasets[0].data[idx],
+                    gyroscopeChart.data.datasets[1].data[idx],
+                    gyroscopeChart.data.datasets[2].data[idx]
+                );
+            } else {
+                updateGyroValues();
+            }
+        };
+
+        //Chart.js hover event for Ultrasonic
+        ultrasonicChart.options.onHover = function(event, chartElement) {
+            if (chartElement.length > 0) {
+                const idx = chartElement[0].index;
+                updateUltrasonicValue(ultrasonicChart.data.datasets[0].data[idx]);
+            } else {
+                updateUltrasonicValue();
+            }
+        };
     </script>
 </body>
 </html>
