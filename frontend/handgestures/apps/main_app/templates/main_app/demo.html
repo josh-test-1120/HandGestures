@@ -3,29 +3,217 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CS481</title>
+    <title>Demo - Arduino Data</title>
     {% load static %}
     <link rel="stylesheet" href="{% static 'main_app/css/style.css' %}">
     <link rel="stylesheet" href="{% static 'main_app/css/style2.css' %}">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>   
 </head>
-
 <body>
     {% include 'main_app/navbar.html' %}
     <div style="margin-top:20px;"></div>
+    <div class="container mt-4">
+        <h1>Arduino Data Demo</h1>
+
+        
+
+        <!-- Loading spinner -->
+        <div id="loadingSpinner" style="display:none; text-align:center; margin:10px;">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+            <div>Loading CSV from backend...</div>
+        </div>
+
+        <!-- File input for manual CSV import (optional) -->
+        <input type="file" id="csvFileInput" accept=".csv" style="display:none;">
+
+        <!-- Charts -->
+        <div class="row mb-4">
+            <div class="col-md-6">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">Accelerometer</h5>
+                        <div class="chart-container">
+                            <canvas id="accelerometerChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">Gyroscope</h5>
+                        <div class="chart-container">
+                            <canvas id="gyroscopeChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card mb-4">
+            <div class="card-body">
+                <h5 class="card-title">Ultrasonic Sensor</h5>
+                <div class="chart-container">
+                    <canvas id="ultrasonicChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        
+    </div>
+
+    <script>
+        // Chart setup (Accelerometer, Gyroscope, Ultrasonic)
+        const accCtx = document.getElementById('accelerometerChart').getContext('2d');
+        const gyroCtx = document.getElementById('gyroscopeChart').getContext('2d');
+        const ultrasonicCtx = document.getElementById('ultrasonicChart').getContext('2d');
+
+        let accelerometerChart = new Chart(accCtx, {
+            type: 'line',
+            data: { labels: [], datasets: [] },
+            options: { responsive: true, maintainAspectRatio: false, scales: { x: { type: 'linear', title: { display: true, text: 'Time (s)' } }, y: { beginAtZero: true } } }
+        });
+
+        let gyroscopeChart = new Chart(gyroCtx, {
+            type: 'line',
+            data: { labels: [], datasets: [] },
+            options: { responsive: true, maintainAspectRatio: false, scales: { x: { type: 'linear', title: { display: true, text: 'Time (s)' } }, y: { beginAtZero: true } } }
+        });
+
+        let ultrasonicChart = new Chart(ultrasonicCtx, {
+            type: 'line',
+            data: { labels: [], datasets: [] },
+            options: { responsive: true, maintainAspectRatio: false, scales: { x: { type: 'linear', title: { display: true, text: 'Time (s)' } }, y: { beginAtZero: true } } }
+        });
+
+        // Variables
+        let csvParsed = false;
+        let csvTime = [], csvAccel = { x: [], y: [], z: [] }, csvGyro = { x: [], y: [], z: [] }, csvUltrasonic = [];
+        const csvFileInput = document.getElementById('csvFileInput');
+        const loadingSpinner = document.getElementById('loadingSpinner');
+        const startBtn = document.getElementById('startBtn');
+
+        function parseCSV(text) {
+            const lines = text.trim().split(/\r?\n/);
+            const header = lines[0].split(',');
+            const idx = {
+                time: header.indexOf('Timestamp(ms)'),
+                ax: header.indexOf('AccelX(g)'),
+                ay: header.indexOf('AccelY(g)'),
+                az: header.indexOf('AccelZ(g)'),
+                gx: header.indexOf('GyroX(deg/s)'),
+                gy: header.indexOf('GyroY(deg/s)'),
+                gz: header.indexOf('GyroZ(deg/s)'),
+                dist: header.indexOf('Distance(cm)')
+            };
+            let t0 = null;
+            let timeArr = [], axArr = [], ayArr = [], azArr = [], gxArr = [], gyArr = [], gzArr = [], distArr = [];
+            for (let i = 1; i < lines.length; i++) {
+                const row = lines[i].split(',');
+                if (row.length < header.length) continue;
+                const t = parseInt(row[idx.time]);
+                if (t0 === null) t0 = t;
+                timeArr.push(((t - t0) / 1000).toFixed(2));
+                axArr.push(parseFloat(row[idx.ax]));
+                ayArr.push(parseFloat(row[idx.ay]));
+                azArr.push(parseFloat(row[idx.az]));
+                gxArr.push(parseFloat(row[idx.gx]));
+                gyArr.push(parseFloat(row[idx.gy]));
+                gzArr.push(parseFloat(row[idx.gz]));
+                distArr.push(parseFloat(row[idx.dist]));
+            }
+            return {
+                time: timeArr,
+                accel: { x: axArr, y: ayArr, z: azArr },
+                gyro: { x: gxArr, y: gyArr, z: gzArr },
+                ultrasonic: distArr
+            };
+        }
+
+        window.addEventListener('DOMContentLoaded', function () {
+    const csvStaticURL = "{% static 'main_app/data/data-sample.csv' %}";
+    loadingSpinner.style.display = 'block';
+
+    fetch(csvStaticURL)
+        .then(response => response.text())
+        .then(text => {
+            const parsed = parseCSV(text);
+            csvTime = parsed.time;
+            csvAccel = parsed.accel;
+            csvGyro = parsed.gyro;
+            csvUltrasonic = parsed.ultrasonic;
+
+            // Accelerometer
+            accelerometerChart.data.labels = csvTime.map(Number);
+            accelerometerChart.data.datasets = [
+                { label: 'Accel X', data: csvAccel.x, borderColor: 'rgba(52,152,219,1)', backgroundColor: 'rgba(52,152,219,0.2)', tension: 0.4, pointRadius: 2 },
+                { label: 'Accel Y', data: csvAccel.y, borderColor: 'rgba(39,174,96,1)', backgroundColor: 'rgba(39,174,96,0.2)', tension: 0.4, pointRadius: 2 },
+                { label: 'Accel Z', data: csvAccel.z, borderColor: 'rgba(231,76,60,1)', backgroundColor: 'rgba(231,76,60,0.2)', tension: 0.4, pointRadius: 2 }
+            ];
+            accelerometerChart.update();
+
+            // Gyroscope
+            gyroscopeChart.data.labels = csvTime.map(Number);
+            gyroscopeChart.data.datasets = [
+                { label: 'Gyro X', data: csvGyro.x, borderColor: 'rgba(155,89,182,1)', backgroundColor: 'rgba(155,89,182,0.2)', tension: 0.4, pointRadius: 2 },
+                { label: 'Gyro Y', data: csvGyro.y, borderColor: 'rgba(241,196,15,1)', backgroundColor: 'rgba(241,196,15,0.2)', tension: 0.4, pointRadius: 2 },
+                { label: 'Gyro Z', data: csvGyro.z, borderColor: 'rgba(26,188,156,1)', backgroundColor: 'rgba(26,188,156,0.2)', tension: 0.4, pointRadius: 2 }
+            ];
+            gyroscopeChart.update();
+
+            // Ultrasonic
+            ultrasonicChart.data.labels = csvTime.map(Number);
+            ultrasonicChart.data.datasets = [
+                { label: 'Distance (cm)', data: csvUltrasonic, borderColor: 'rgba(39,174,96,1)', backgroundColor: 'rgba(39,174,96,0.2)', tension: 0.4, pointRadius: 2 }
+            ];
+            ultrasonicChart.update();
+
+            loadingSpinner.style.display = 'none';
+        })
+        .catch(error => {
+            loadingSpinner.style.display = 'none';
+            alert('Failed to load backend CSV: ' + error);
+        });
+});
+
+    </script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ <!--
     <div class="container mt-5">
         <div sylte ="margin-top:30px;"></div>
         
             <h1 class="card-title">Arduino Data Demo</h1>
-            <!--Add the section first-->
+            Add the section first
             <div class="row mb-5">
                 <div class="col-md-3 mt-3">
                     <div class="card h-80">
                         <div class="card-body">
                             <h5 class="card-title">Active Sensor</h5>
-                            <!-- You can add sensor data or description here -->
+                           You can add sensor data or description here 
                         </div>
                     </div>
                 </div>
@@ -33,7 +221,7 @@
                     <div class="card h-80">
                         <div class="card-body">
                             <h5 class="card-title">Data Points</h5>
-                            <!-- You can add sensor data or description here -->
+                             You can add sensor data or description here 
                         </div>
                     </div>
                 </div>
@@ -41,7 +229,7 @@
                     <div class="card h-80">
                         <div class="card-body">
                             <h5 class="card-title">Accuracy Rate</h5>
-                            <!-- You can add sensor data or description here -->
+                            You can add sensor data or description here 
                         </div>
                     </div>
                 </div>
@@ -49,17 +237,17 @@
                     <div class="card h-80">
                         <div class="card-body">
                             <h5 class="card-title">Processing Time</h5>
-                            <!-- You can add sensor data or description here -->
+                           You can add sensor data or description here 
                         </div>
                     </div>
                 </div>
             </div>
-            <!--Add the next section-->
+            Add the next section
 
-            <!--Trainning Progress and Category Distribution-->
+            rainning Progress and Category Distribution
            
     <div class="row">
-    <!-- Training Progress -->
+    Training Progress 
     <div class="col-md-6">
         <div class="card mb-4">
             <div class="card-body">
@@ -86,7 +274,7 @@
         </div>
     </div>
 
-    <!-- Category Distribution -->
+     Category Distribution 
     <div class="col-md-6">
         <div class="card mb-4">
             <div class="card-body">
@@ -156,7 +344,5 @@
 
         
     </div>
-
-
-
-</body>
+    
+    -->
