@@ -68,12 +68,20 @@ h1 {
     margin-left: 1rem;
 }
 
+h1, h3, h4, h5 {
+    font-family: 'Segoe UI', sans-serif;
+}
+.hero-section {
+    padding-top: 60px;
+    padding-bottom: 40px;
+}
+.img-fluid {
+    border-radius: 10px;
+}
 .card {
     border-radius: 15px;
-    transition: transform 0.2s ease;
+    transition: transform 0.3s ease;
 }
-
 .card:hover {
     transform: translateY(-5px);
 }
-
