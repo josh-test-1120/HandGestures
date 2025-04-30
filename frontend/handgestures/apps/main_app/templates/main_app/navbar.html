@@ -1,4 +1,4 @@
-<nav class="navbar navbar-expand-lg bg-body-tertiary">
+<nav class="navbar navbar-expand-lg bg-body-tertiary" id="mainNavbar">
   <div class="container-fluid">
     <a class="navbar-brand" href="{% url 'main_app:index' %}">Hand Gesture</a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -27,6 +27,45 @@
           <a class="nav-link" href="{% url 'main_app:contact' %}">Contacts</a>
         </li>
       </ul>
+      <button id="themeToggle" class="btn bg-transparent border-0 ms-3" style="font-size: 1.25rem;">🌙</button>
     </div>
   </div>
 </nav>
+<script>
+  const toggleButton = document.getElementById('themeToggle');
+  const body = document.body;
+  const navbar = document.getElementById('mainNavbar');
+
+  // Persist dark mode using localStorage
+  document.addEventListener('DOMContentLoaded', () => {
+    const theme = localStorage.getItem('theme');
+    if (theme === 'dark') enableDarkMode();
+  });
+
+  toggleButton?.addEventListener('click', () => {
+    const isDark = body.classList.contains('bg-dark');
+    isDark ? disableDarkMode() : enableDarkMode();
+  });
+
+  function enableDarkMode() {
+    body.classList.add('bg-dark', 'text-white');
+    body.classList.remove('bg-light', 'text-dark');
+    navbar?.classList.add('bg-dark', 'navbar-dark');
+    navbar?.classList.remove('bg-body-tertiary');
+    toggleButton.innerText = '☀️';
+    toggleButton.classList.remove('btn-outline-dark');
+    toggleButton.classList.add('btn-outline-light');
+    localStorage.setItem('theme', 'dark');
+  }
+
+  function disableDarkMode() {
+    body.classList.remove('bg-dark', 'text-white');
+    body.classList.add('bg-light', 'text-dark');
+    navbar?.classList.remove('bg-dark', 'navbar-dark');
+    navbar?.classList.add('bg-body-tertiary');
+    toggleButton.innerText = '🌙';
+    toggleButton.classList.add('btn-outline-dark');
+    toggleButton.classList.remove('btn-outline-light');
+    localStorage.setItem('theme', 'light');
+  }
+</script>
