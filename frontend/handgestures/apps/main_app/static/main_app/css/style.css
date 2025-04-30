@@ -198,3 +198,85 @@ body,
 .text-center p {
     transition: color 0.3s ease;
 }
+/* styles unique to live_demo.html*/
+.error {
+    background-color: #f8d7da;
+    color: #721c24;
+}
+.controls {
+    margin: 1rem 0;
+    padding: 1rem;
+    background-color: #f8f9fa;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+/* additional styles added 4-18-2025 (SCRUM Sprint 2)*/
+.chart-container {
+    position: relative;
+    height: 200px;
+    width: 100%;
+    margin: 1rem 0 0 0;
+}
+.card-title {
+    font-weight: 600;
+}
+.fw-bold {
+    font-weight: 600;
+}
+.controls .btn {
+    background-color: #0d6efd; /* primary blue for button color */
+    color: #fff; /* white text color */
+    border: none;
+    min-width: 120px; /* Optional: minimum width for buttons */
+}
+/* Make container background dark in dark mode */
+.bg-dark .container {
+    background-color: #1a1a1a !important;
+    color: #f0f0f0;
+}
+
+/* Card title and body in dark mode */
+.bg-dark .card-title,
+.bg-dark .card-body {
+    color: #eaeaea !important;
+}
+
+/* Chart container background */
+.bg-dark .chart-container {
+    background-color: #1e1e1e;
+    padding: 1rem;
+    border-radius: 10px;
+}
+
+/* Buttons & controls fix */
+.bg-dark .btn {
+    background-color: #444;
+    color: #fff;
+    border-color: #666;
+}
+
+.bg-dark .btn:hover {
+    background-color: #555;
+}
+
+/* Table and debug info */
+.bg-dark table,
+.bg-dark .table th,
+.bg-dark .table td {
+    color: #ddd;
+    background-color: #1f1f1f;
+    border-color: #444;
+}
+
+.bg-dark .debug-info {
+    background-color: #222;
+    color: #ccc;
+    border-color: #444;
+}
+
+.bg-dark .controls {
+    background-color: #1e1e1e;
+    padding: 1rem;
+    border-radius: 8px;
+    border: 1px solid #444;
+}

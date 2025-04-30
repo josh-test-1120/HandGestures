@@ -1,65 +1,84 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CONTACT PAGE PLACEHOLDER TITLE</title>
-    {% load static %}
-    <link rel="stylesheet" href="{% static 'main_app/css/style.css' %}">
-    <link rel="stylesheet" href="{% static 'main_app/css/style2.css' %}">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <style>
-        .contact-div {display: flex; height: 200px; margin-bottom: 50px;}
-        .centered-ul {list-style: none; display: flex; height: 200px; flex-direction: column; justify-content: center;}
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Contact | Hand Gesture Project</title>
+  {% load static %}
+  <link rel="stylesheet" href="{% static 'main_app/css/style.css' %}">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </head>
-<body>
-    {% include 'main_app/navbar.html' %}
-    <div style='font-family: Arial, sans-serif; padding:20px 100px 20px 100px; background-color: #f9f9f9; border-radius: 8px;'>
-        <div class='contact-div'>
-            <img src={% static 'main_app/img/face_image.png' %} alt='Telmen Image' style='width: 200px; height: 200px;'>
-            <ul class='centered-ul'>
-                <li>Telmen Enkhtuvshin</li>
-                <li>email: placeholder@gmail.com</li>
-                <li>GitHub: https://github.com/placeholder</li>
-            </ul>
-        </div>
 
-        <div class='contact-div'>
-            <img src={% static 'main_app/img/face_image.png' %} alt='Phillip Image' style='width: 200px; height: 200px;'>
-            <ul class='centered-ul'>
-                <li>Phillip Ho</li>
-                <li>email: placeholder@gmail.com</li>
-                <li>GitHub: https://github.com/placeholder</li>
-            </ul>
-        </div>
+<body class="bg-light text-dark">
+  {% include 'main_app/navbar.html' %}
 
-        <div class='contact-div'>
-            <img src={% static 'main_app/img/face_image.png' %} alt='Hieu Image' style='width: 200px; height: 200px;'>
-            <ul class='centered-ul'>
-                <li>Hieu Luong</li>
-                <li>email: placeholder@gmail.com</li>
-                <li>GitHub: https://github.com/placeholder</li>
-            </ul>
-        </div>
+  <div class="container py-5">
+    <h1 class="text-center fw-bold mb-5">Meet the Team</h1>
 
-        <div class='contact-div'>
-            <img src={% static 'main_app/img/face_image.png' %} alt='Joshua Image' style='width: 200px; height: 200px;'>
-            <ul class='centered-ul'>
-                <li>Joshua Summers</li>
-                <li>email: placeholder@gmail.com</li>
-                <li>GitHub: https://github.com/placeholder</li>
-            </ul>
+    <!-- Front-End Team -->
+    <h2 class="text-primary mb-4">Front-End Team</h2>
+    <div class="row g-4 mb-5">
+      <div class="col-md-4">
+        <div class="card text-center shadow-sm h-100">
+          <img src="{% static 'main_app/img/face_image.png' %}" class="card-img-top mx-auto mt-3 rounded-circle" style="width: 120px; height: 120px;" alt="Jack McDonald">
+          <div class="card-body">
+            <h5 class="card-title">Jack McDonald</h5>
+            <p>Email: <a href="mailto:jack@example.com">jack@example.com</a></p>
+            <p>GitHub: <a href="https://github.com/placeholder" target="_blank">github.com/placeholder</a></p>
+          </div>
         </div>
+      </div>
 
-        <div class='contact-div'>
-            <img src={% static 'main_app/img/face_image.png' %} alt='Jack Image' style='width: 200px; height: 200px;'>
-            <ul class='centered-ul'>
-                <li>Jack McDonald</li>
-                <li>email: placeholder@gmail.com</li>
-                <li>GitHub: https://github.com/placeholder</li>
-            </ul>
+      <div class="col-md-4">
+        <div class="card text-center shadow-sm h-100">
+          <img src="{% static 'main_app/img/face_image.png' %}" class="card-img-top mx-auto mt-3 rounded-circle" style="width: 120px; height: 120px;" alt="Phillip Ho">
+          <div class="card-body">
+            <h5 class="card-title">Phillip Ho</h5>
+            <p>Email: <a href="mailto:phillip@example.com">phillip@example.com</a></p>
+            <p>GitHub: <a href="https://github.com/placeholder" target="_blank">github.com/placeholder</a></p>
+          </div>
         </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="card text-center shadow-sm h-100">
+          <img src="{% static 'main_app/img/face_image.png' %}" class="card-img-top mx-auto mt-3 rounded-circle" style="width: 120px; height: 120px;" alt="Hieu Luong">
+          <div class="card-body">
+            <h5 class="card-title">Hieu Luong</h5>
+            <p>Email: <a href="mailto:hieu@example.com">hieu@example.com</a></p>
+            <p>GitHub: <a href="https://github.com/placeholder" target="_blank">github.com/placeholder</a></p>
+          </div>
+        </div>
+      </div>
     </div>
+
+    <!-- Back-End Team -->
+    <h2 class="text-success mb-4">Back-End Team</h2>
+    <div class="row g-4">
+      <div class="col-md-4">
+        <div class="card text-center shadow-sm h-100">
+          <img src="{% static 'main_app/img/face_image.png' %}" class="card-img-top mx-auto mt-3 rounded-circle" style="width: 120px; height: 120px;" alt="Joshua Summers">
+          <div class="card-body">
+            <h5 class="card-title">Joshua Summers</h5>
+            <p>Email: <a href="mailto:joshua@example.com">joshua@example.com</a></p>
+            <p>GitHub: <a href="https://github.com/placeholder" target="_blank">github.com/placeholder</a></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="card text-center shadow-sm h-100">
+          <img src="{% static 'main_app/img/face_image.png' %}" class="card-img-top mx-auto mt-3 rounded-circle" style="width: 120px; height: 120px;" alt="Telmen Enkhtuvshin">
+          <div class="card-body">
+            <h5 class="card-title">Telmen Enkhtuvshin</h5>
+            <p>Email: <a href="mailto:telmen@example.com">telmen@example.com</a></p>
+            <p>GitHub: <a href="https://github.com/placeholder" target="_blank">github.com/placeholder</a></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
 </body>
+</html>

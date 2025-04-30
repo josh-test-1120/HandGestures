@@ -6,7 +6,6 @@
     <title>CS481 – Seizure Detection System</title>
     {% load static %}
     <link rel="stylesheet" href="{% static 'main_app/css/style.css' %}">
-    <link rel="stylesheet" href="{% static 'main_app/css/style2.css' %}">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
     <link href="https://unpkg.com/aos@2.3.4/dist/aos.css" rel="stylesheet">
@@ -102,29 +101,6 @@
             once: true
         });
     </script>
-    <script>
-        const toggleButton = document.getElementById('themeToggle');
-        const body = document.body;
-        const navbar = document.getElementById('mainNavbar');
-
-        toggleButton.addEventListener('click', () => {
-        const isDark = body.classList.toggle('bg-dark');
-        body.classList.toggle('text-white');
-
-        if (isDark) {
-             navbar.classList.remove('bg-body-tertiary');
-             navbar.classList.add('bg-dark', 'navbar-dark');
-            toggleButton.innerText = '☀️';
-         } else {
-             navbar.classList.remove('bg-dark', 'navbar-dark');
-             navbar.classList.add('bg-body-tertiary');
-             toggleButton.innerText = '🌙';
-         }
-
-         toggleButton.classList.toggle('btn-outline-dark');
-         toggleButton.classList.toggle('btn-outline-light');
-        });
-      </script>
     
 </body>
 </html>
