@@ -102,5 +102,29 @@
             once: true
         });
     </script>
+    <script>
+        const toggleButton = document.getElementById('themeToggle');
+        const body = document.body;
+        const navbar = document.getElementById('mainNavbar');
+
+        toggleButton.addEventListener('click', () => {
+        const isDark = body.classList.toggle('bg-dark');
+        body.classList.toggle('text-white');
+
+        if (isDark) {
+             navbar.classList.remove('bg-body-tertiary');
+             navbar.classList.add('bg-dark', 'navbar-dark');
+            toggleButton.innerText = '☀️';
+         } else {
+             navbar.classList.remove('bg-dark', 'navbar-dark');
+             navbar.classList.add('bg-body-tertiary');
+             toggleButton.innerText = '🌙';
+         }
+
+         toggleButton.classList.toggle('btn-outline-dark');
+         toggleButton.classList.toggle('btn-outline-light');
+        });
+      </script>
+    
 </body>
 </html>
