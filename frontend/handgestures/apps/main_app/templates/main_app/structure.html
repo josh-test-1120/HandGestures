@@ -14,20 +14,29 @@
 
         {% include 'main_app/navbar.html' %}
         <div class="container my-5">
-            
-            <div class="container">
-                <h1>DATA FLOW</h1>
-                <img src={% static 'main_app/img/data_flow_diagram.png' %} alt="data flow diagram" style="margin-bottom: 20px; width: 1200px;">
+
+            <div class="text-center mb-4">
+                <h1 class="display-5 fw-bold text-primary">Hand Gesture System Structure</h1>
+                <p class="lead text-muted">How the Hand Gesture Project Works</p>
+            </div>
+
+            <div class="container mb-5">
+                <h2 class="fw-bold text-primary mb-3">Data Flow</h2>
+                <img src="{% static 'main_app/img/data_flow_diagram.png' %}" alt="data flow diagram"
+                     class="img-fluid mx-auto d-block shadow mb-3"
+                     style="max-width: 1000px;">
                 <p>
-                    This diagram shows the data flow of the Hand Gestures system, showing the ‘entry points’ of both the backend and frontend
+                    This diagram shows the data flow of the Hand Gestures system, showing the 'entry points' of both the backend and frontend
                     teams. Sensor data is collected from an Arduino Nano/Uno, which is stored on an SD card, which is then used for both
                     frontend data visualization and backend model training, i.e., machine learning. The trained model is then deployed to
                     generate gesture predictions, which are displayed on a demo and live demo page.
                 </p>
             </div>
             <div class="container">
-                <h1>SYSTEM PIPELINE</h1>
-                <img src={% static 'main_app/img/system_pipeline.png' %} alt="system pipeline" style="margin-bottom: 20px; width: 1200px;">
+                <h2 class="fw-bold text-primary mb-3">System Pipeline</h2>
+                <img src="{% static 'main_app/img/system_pipeline.png' %}" alt="system pipeline"
+                     class="img-fluid mx-auto d-block shadow mb-3"
+                     style="max-width: 1000px;">
                 <p>
                     First the user puts on the sensor device. The device will send motion data to a local device, which will then send
                     the data to the server. In the server, the motion data will be processed and classified by a machine learning model.
