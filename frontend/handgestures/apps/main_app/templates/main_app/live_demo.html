@@ -35,6 +35,9 @@
             <button id="stopBtn" class="btn">Stop Demo</button>
             <button id="clearBtn" class="btn">Clear Data</button>
         </div>
+        <div class="alert alert-info mt-2" role="alert" style="max-width: 500px;">
+            <strong>Note:</strong> 1s of real time = 10s of demo time (i.e. 10 data points).
+        </div>
         
         <!-- Accelerometer & Gyroscope -->
         <div class="row mb-4">
@@ -75,7 +78,6 @@
             <div class="card-body">
                 <div class="d-flex justify-content-between align-items-center mb-3">
                     <h5 class="card-title mb-0">Ultrasonic Sensor</h5>
-                    <span class="text-muted small">Refresh Rate: (Placeholder)</span>
                 </div>
                 <div class="d-flex justify-content-between mb-3">
                     <div><span class="fw-bold" id="ultrasonic-value">-</span><br>Distance (cm)</div>
@@ -246,11 +248,18 @@
         let csvGyro = { x: [], y: [], z: [] };
         let csvUltrasonic = [];
 
+        //Slowdown demo variables; added 4-30-2025 (SCRUM Sprint 4)
+        let demoInterval = null; //interval for updating the demo
+        let demoIndex = 0; //index of the current data point to display
+        let demoRunning = false; //flag to check if the demo is running
+
         //File input and spinner
         const csvFileInput = document.getElementById('csvFileInput');
         const loadingSpinner = document.getElementById('loadingSpinner');
         const importCSVBtn = document.getElementById('importCSV');
         const startBtn = document.getElementById('startBtn');
+        const stopBtn = document.getElementById('stopBtn');
+        const clearBtn = document.getElementById('clearBtn');
 
         //Helper: Parse CSV text to arrays
         function parseCSV(text) {
@@ -274,7 +283,8 @@
                 if (row.length < header.length) continue;
                 const t = parseInt(row[idx.time]);
                 if (t0 === null) t0 = t;
-                timeArr.push(((t - t0) / 1000).toFixed(2)); // seconds, relative to first row
+                //Convert timestamp from milliseconds to seconds (relative to the first row), rounded to 2 decimal places
+                timeArr.push(((t - t0) / 1000).toFixed(2)); 
                 axArr.push(parseFloat(row[idx.ax]));
                 ayArr.push(parseFloat(row[idx.ay]));
                 azArr.push(parseFloat(row[idx.az]));
@@ -328,91 +338,84 @@
                 alert('Please import a CSV file first!');
                 return;
             }
-            //Accelerometer: 3 lines (x, y, z)
-            accelerometerChart.data.labels = csvTime.map(Number);
+            if (demoRunning) return; //Prevent multiple intervals
+
+            //Reset charts and index
+            accelerometerChart.data.labels = [];
             accelerometerChart.data.datasets = [
-                {
-                    label: 'Accel X',
-                    data: csvAccel.x,
-                    borderColor: 'rgba(52, 152, 219, 1)',
-                    backgroundColor: 'rgba(52, 152, 219, 0.2)',
-                    borderWidth: 1,
-                    pointRadius: 2,
-                    tension: 0.4
-                },
-                {
-                    label: 'Accel Y',
-                    data: csvAccel.y,
-                    borderColor: 'rgba(39, 174, 96, 1)',
-                    backgroundColor: 'rgba(39, 174, 96, 0.2)',
-                    borderWidth: 1,
-                    pointRadius: 2,
-                    tension: 0.4
-                },
-                {
-                    label: 'Accel Z',
-                    data: csvAccel.z,
-                    borderColor: 'rgba(231, 76, 60, 1)',
-                    backgroundColor: 'rgba(231, 76, 60, 0.2)',
-                    borderWidth: 1,
-                    pointRadius: 2,
-                    tension: 0.4
-                }
+                //condensed code into 3 lines for each axis (4-30-2025)
+                { label: 'Accel X', data: [], borderColor: 'rgba(52, 152, 219, 1)', backgroundColor: 'rgba(52, 152, 219, 0.2)', borderWidth: 1, pointRadius: 2, tension: 0.4 },
+                { label: 'Accel Y', data: [], borderColor: 'rgba(39, 174, 96, 1)', backgroundColor: 'rgba(39, 174, 96, 0.2)', borderWidth: 1, pointRadius: 2, tension: 0.4 },
+                { label: 'Accel Z', data: [], borderColor: 'rgba(231, 76, 60, 1)', backgroundColor: 'rgba(231, 76, 60, 0.2)', borderWidth: 1, pointRadius: 2, tension: 0.4 }
+            ];
+            gyroscopeChart.data.labels = [];
+            gyroscopeChart.data.datasets = [
+                //condensed code into 3 lines for each axis (4-30-2025)
+                { label: 'Gyro X', data: [], borderColor: 'rgba(155, 89, 182, 1)', backgroundColor: 'rgba(155, 89, 182, 0.2)', borderWidth: 1, pointRadius: 2, tension: 0.4 },
+                { label: 'Gyro Y', data: [], borderColor: 'rgba(241, 196, 15, 1)', backgroundColor: 'rgba(241, 196, 15, 0.2)', borderWidth: 1, pointRadius: 2, tension: 0.4 },
+                { label: 'Gyro Z', data: [], borderColor: 'rgba(26, 188, 156, 1)', backgroundColor: 'rgba(26, 188, 156, 0.2)', borderWidth: 1, pointRadius: 2, tension: 0.4 }
+            ];
+            ultrasonicChart.data.labels = [];
+            ultrasonicChart.data.datasets = [
+                { label: 'Distance (cm)', data: [], borderColor: 'rgba(39, 174, 96, 1)', backgroundColor: 'rgba(39, 174, 96, 0.2)', borderWidth: 1, pointRadius: 2, tension: 0.4 }
             ];
             accelerometerChart.update();
-
-            //Gyroscope: 3 lines (x, y, z)
-            gyroscopeChart.data.labels = csvTime.map(Number);
-            gyroscopeChart.data.datasets = [
-                {
-                    label: 'Gyro X',
-                    data: csvGyro.x,
-                    borderColor: 'rgba(155, 89, 182, 1)',
-                    backgroundColor: 'rgba(155, 89, 182, 0.2)',
-                    borderWidth: 1,
-                    pointRadius: 2,
-                    tension: 0.4
-                },
-                {
-                    label: 'Gyro Y',
-                    data: csvGyro.y,
-                    borderColor: 'rgba(241, 196, 15, 1)',
-                    backgroundColor: 'rgba(241, 196, 15, 0.2)',
-                    borderWidth: 1,
-                    pointRadius: 2,
-                    tension: 0.4
-                },
-                {
-                    label: 'Gyro Z',
-                    data: csvGyro.z,
-                    borderColor: 'rgba(26, 188, 156, 1)',
-                    backgroundColor: 'rgba(26, 188, 156, 0.2)',
-                    borderWidth: 1,
-                    pointRadius: 2,
-                    tension: 0.4
-                }
-            ];
             gyroscopeChart.update();
-
-            //Ultrasonic: 1 line
-            ultrasonicChart.data.labels = csvTime.map(Number);
-            ultrasonicChart.data.datasets = [
-                {
-                    label: 'Distance (cm)',
-                    data: csvUltrasonic,
-                    borderColor: 'rgba(39, 174, 96, 1)',
-                    backgroundColor: 'rgba(39, 174, 96, 0.2)',
-                    borderWidth: 1,
-                    pointRadius: 2,
-                    tension: 0.4
-                }
-            ];
             ultrasonicChart.update();
+
+            demoIndex = 0;
+            demoRunning = true;
+
+            demoInterval = setInterval(function() {
+                for (let i = 0; i < 10 && demoIndex < csvTime.length; i++, demoIndex++) {
+                    //Add next data point to each chart based on demoIndex (current data point to display)
+                    accelerometerChart.data.labels.push(Number(csvTime[demoIndex]));
+                    accelerometerChart.data.datasets[0].data.push(csvAccel.x[demoIndex]);
+                    accelerometerChart.data.datasets[1].data.push(csvAccel.y[demoIndex]);
+                    accelerometerChart.data.datasets[2].data.push(csvAccel.z[demoIndex]);
+
+                    gyroscopeChart.data.labels.push(Number(csvTime[demoIndex]));
+                    gyroscopeChart.data.datasets[0].data.push(csvGyro.x[demoIndex]);
+                    gyroscopeChart.data.datasets[1].data.push(csvGyro.y[demoIndex]);
+                    gyroscopeChart.data.datasets[2].data.push(csvGyro.z[demoIndex]);
+
+                    ultrasonicChart.data.labels.push(Number(csvTime[demoIndex]));
+                    ultrasonicChart.data.datasets[0].data.push(csvUltrasonic[demoIndex]);
+                }
+                accelerometerChart.update();
+                gyroscopeChart.update();
+                ultrasonicChart.update();
+                if (demoIndex >= csvTime.length) {
+                    clearInterval(demoInterval);
+                    demoRunning = false;
+                }
+            }, 1000);//1000ms = 1s in real life, 10 data points per interval
         });
 
-        //TODO
-        //Event: Stop Demo
-        //Event: Clear Data
+        //Event: Stop Demo event listener implemented 4-30-2025 (SCRUM Sprint 4)
+        stopBtn.addEventListener('click', function() {
+            if (demoInterval) clearInterval(demoInterval);
+            demoRunning = false;
+        });
+
+        //Event: Clear Data event listener implemented 4-30-2025 (SCRUM Sprint 4)
+        clearBtn.addEventListener('click', function() {
+            if (demoInterval) clearInterval(demoInterval);
+            demoRunning = false;
+            demoIndex = 0;
+            //Clear all chart data
+            accelerometerChart.data.labels = [];
+            accelerometerChart.data.datasets.forEach(ds => ds.data = []);
+            accelerometerChart.update();
+
+            gyroscopeChart.data.labels = [];
+            gyroscopeChart.data.datasets.forEach(ds => ds.data = []);
+            gyroscopeChart.update();
+
+            ultrasonicChart.data.labels = [];
+            ultrasonicChart.data.datasets.forEach(ds => ds.data = []);
+            ultrasonicChart.update();
+        });
 
         //helper functions to update value dynamically based on chart data position (implemented 4-29-2025)
         function updateAccValues(x, y, z) {
