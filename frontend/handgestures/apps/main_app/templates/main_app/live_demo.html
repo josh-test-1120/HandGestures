@@ -14,8 +14,10 @@
 </head>
 <body class="bg-light text-dark">
     {% include 'main_app/navbar.html' %}
-    <div style="margin-top:20px;"></div>
-    <div class="container mt-4">
+
+    <main class="container wide-container py-5">
+        <div style="margin-top:20px;"></div>
+    
         <h1>Arduino Live Data Demo</h1>
 
         <!-- File input for CSV import -->
@@ -119,7 +121,19 @@
             <p><strong>Template Path:</strong> main_app/live_demo.html</p>
             <p><strong>Current Time:</strong> {% now "DATETIME_FORMAT" %}</p>
         </div>
+   
+
+    </main>
+
+      <!-- Footer -->
+  <footer class="bg-dark text-white py-2 mt-5">
+    <div class="container text-center">
+      <p class="mb-0 small">© 2025 Central Washington University</p>
     </div>
+  </footer>
+
+
+    
 
     <!-- JAVASCRIPT CODE -->
     <script>
