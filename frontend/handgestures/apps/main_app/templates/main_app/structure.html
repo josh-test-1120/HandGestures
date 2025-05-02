@@ -18,9 +18,20 @@
 
     <!-- Title Section -->
     <div class="text-center mb-5">
-      <h1 class="display-5 fw-bold text-black" data-aos="fade-down">Hand Motion Recognition System Structure</h1>
+      <h1 class="display-5 fw-bold text-black" data-aos="fade-down">Hand Motion Recognition <br> System Structure</h1>
       <p class="lead text-muted" data-aos="fade-down">How the Hand Gesture Project Works</p>
     </div>
+
+    <!-- System Pipeline Section -->
+    <div class="card shadow-sm p-4 mb-5 rounded" data-aos="fade-up">
+        <h2 class="fw-bold text-primary mb-4">System Pipeline</h2>
+        <img src="{% static 'main_app/img/system_pipeline.png' %}" alt="System Pipeline"
+             class="img-fluid shadow rounded mx-auto d-block mb-3"
+             style="max-width: 1000px;">
+        <p class="text-muted">
+          The user begins by wearing a sensor-equipped device. This device transmits motion data to a local device, which forwards it to a server. On the server side, a machine learning model processes and classifies the motion data. The output is then visualized on the website to display detected gestures in real-time.
+        </p>
+      </div>
 
     <!-- Data Flow Section -->
     <div class="card shadow-sm p-4 mb-5 rounded" data-aos="fade-up">
@@ -33,21 +44,10 @@
       </p>
     </div>
 
-    <!-- System Pipeline Section -->
-    <div class="card shadow-sm p-4 mb-5 rounded" data-aos="fade-up">
-      <h2 class="fw-bold text-primary mb-4">System Pipeline</h2>
-      <img src="{% static 'main_app/img/system_pipeline.png' %}" alt="System Pipeline"
-           class="img-fluid shadow rounded mx-auto d-block mb-3"
-           style="max-width: 1000px;">
-      <p class="text-muted">
-        The user begins by wearing a sensor-equipped device. This device transmits motion data to a local device, which forwards it to a server. On the server side, a machine learning model processes and classifies the motion data. The output is then visualized on the website to display detected gestures in real-time.
-      </p>
-    </div>
-
   </main>
 
   <!-- Footer -->
-  <footer class="bg-dark text-white py-2 mt-5">
+  <footer class="bg-dark text-white py-1 mt-5">
     <div class="container text-center">
       <p class="mb-0 small">© 2025 Central Washington University</p>
     </div>

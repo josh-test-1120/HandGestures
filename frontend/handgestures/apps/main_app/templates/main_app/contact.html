@@ -9,91 +9,153 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   <link href="https://unpkg.com/aos@2.3.4/dist/aos.css" rel="stylesheet">
+  <style>
+    body {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    
+    main.container {
+      flex: 1;
+    }
+    
+    footer {
+      padding-top: 0.25rem !important;
+      padding-bottom: 0.25rem !important;
+    }
+    
+    @media (max-height: 600px) {
+      .header-logo {
+        height: 80px !important;
+      }
+      .header-title {
+        font-size: 1.8rem !important;
+      }
+      .header-subtitle {
+        font-size: 1.3rem !important;
+      }
+    }
+  </style>
 </head>
 
 <body class="bg-light text-dark">
   {% include 'main_app/navbar.html' %}
-  <main class="container wide-container py-5">
+  <main class="container wide-container py-4">
   
-    <h1 class="text-center fw-bold mb-5" data-aos="fade-down">Meet the Team</h1>
+    <div class="d-flex justify-content-center align-items-center mb-4" style="margin-left: -80px;">
+      <img src="{% static 'main_app/img/CWU.png' %}" alt="CWU Logo" style="height: 120px;" class="me-3 header-logo" data-aos="fade-down">
+      <div class="d-flex flex-column align-items-center text-center">
+        <div class="fw-bold mb-0 header-title" style="font-size: 2.2rem;" data-aos="fade-down">CWU Des Moines Group:</div>
+        <div class="fw-semibold text-muted header-subtitle" style="font-size: 1.8rem;" data-aos="fade-down">Meet the Team</div>
+      </div>
+    </div>
 
     <!-- Team Headings Row -->
-    <div class="row text-center fw-bold mb-3" data-aos="fade-up">
+    <div class="row text-center fw-bold mb-3">
       <div class="col-md-4 text-primary">Back-End Team</div>
       <div class="col-md-4 text-success">Front-End Team</div>
       <div class="col-md-4 text-danger">Client Members</div>
     </div>
 
     <!-- First Row of Members -->
-    <div class="row text-center mb-4" data-aos="fade-up">
+    <div class="row justify-content-center align-items-center text-center mb-4" data-aos="fade-up">
       <!-- Joshua Summers -->
-      <div class="col-md-4">
+      <div class="col-md-4 d-flex flex-column align-items-center">
         <img src="{% static 'main_app/img/face_image.png' %}" alt="Joshua Summers" class="rounded-circle mb-2" width="100" height="100">
-        <div class="fw-semibold">Joshua Summers</div>
-        <div><a href="mailto:joshua@example.com">joshua@example.com</a></div>
-        <div><a href="https://github.com/placeholder" target="_blank">GitHub</a></div>
+        <button class="fw-semibold btn btn-link p-0" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-joshua" aria-expanded="false" aria-controls="collapse-joshua">Joshua Summers</button>
+        <div class="collapse" id="collapse-joshua">
+          <div>
+            <a href="mailto:joshua@example.com">joshua@example.com</a><br>
+            <a href="https://github.com/placeholder" target="_blank">GitHub</a>
+          </div>
+        </div>
       </div>
-
       <!-- Hieu Luong -->
-      <div class="col-md-4">
+      <div class="col-md-4 d-flex flex-column align-items-center">
         <img src="{% static 'main_app/img/face_image.png' %}" alt="Hieu Luong" class="rounded-circle mb-2" width="100" height="100">
-        <div class="fw-semibold">Hieu Luong</div>
-        <div><a href="mailto:hieu@example.com">hieu@example.com</a></div>
-        <div><a href="https://github.com/placeholder" target="_blank">GitHub</a></div>
+        <button class="fw-semibold btn btn-link p-0" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-hieu" aria-expanded="false" aria-controls="collapse-hieu">Hieu Luong</button>
+        <div class="collapse" id="collapse-hieu">
+          <div>
+            <a href="mailto:hieu@example.com">hieu@example.com</a><br>
+            <a href="https://github.com/placeholder" target="_blank">GitHub</a>
+          </div>
+        </div>
       </div>
-
       <!-- Shangyue Zhu -->
-      <div class="col-md-4">
+      <div class="col-md-4 d-flex flex-column align-items-center">
         <img src="{% static 'main_app/img/face_image.png' %}" alt="Shangyue Zhu" class="rounded-circle mb-2" width="100" height="100">
-        <div class="fw-semibold">Shangyue Zhu</div>
-        <div><a href="mailto:shange@example.com">shange@example.com</a></div>
-        <div><a href="https://github.com/placeholder" target="_blank">GitHub</a></div>
+        <button class="fw-semibold btn btn-link p-0" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-shangyue" aria-expanded="false" aria-controls="collapse-shangyue">Shangyue Zhu</button>
+        <div class="collapse" id="collapse-shangyue">
+          <div>
+            <a href="mailto:shange@example.com">shange@example.com</a><br>
+            <a href="https://github.com/placeholder" target="_blank">GitHub</a>
+          </div>
+        </div>
       </div>
     </div>
 
     <!-- Second Row of Members -->
-    <div class="row text-center" data-aos="fade-up">
-
+    <div class="row justify-content-center align-items-center text-center" data-aos="fade-up">
       <!-- Telmen Enkhtuvshin -->
-      <div class="col-md-4">
+      <div class="col-md-4 d-flex flex-column align-items-center">
         <img src="{% static 'main_app/img/face_image.png' %}" alt="Telmen Enkhtuvshin" class="rounded-circle mb-2" width="100" height="100">
-        <div class="fw-semibold">Telmen Enkhtuvshin</div>
-        <div><a href="mailto:telmen@example.com">telmen@example.com</a></div>
-        <div><a href="https://github.com/placeholder" target="_blank">GitHub</a></div>
+        <button class="fw-semibold btn btn-link p-0" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-telmen" aria-expanded="false" aria-controls="collapse-telmen">Telmen Enkhtuvshin</button>
+        <div class="collapse" id="collapse-telmen">
+          <div>
+            <a href="mailto:telmen@example.com">telmen@example.com</a><br>
+            <a href="https://github.com/placeholder" target="_blank">GitHub</a>
+          </div>
+        </div>
       </div>
-
       <!-- Phillip Ho -->
-      <div class="col-md-4">
+      <div class="col-md-4 d-flex flex-column align-items-center">
         <img src="{% static 'main_app/img/face_image.png' %}" alt="Phillip Ho" class="rounded-circle mb-2" width="100" height="100">
-        <div class="fw-semibold">Phillip Ho</div>
-        <div><a href="mailto:phillip@example.com">phillip@example.com</a></div>
-        <div><a href="https://github.com/placeholder" target="_blank">GitHub</a></div>
+        <button class="fw-semibold btn btn-link p-0" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-phillip" aria-expanded="false" aria-controls="collapse-phillip">Phillip Ho</button>
+        <div class="collapse" id="collapse-phillip">
+          <div>
+            <a href="mailto:phillip@example.com">phillip@example.com</a><br>
+            <a href="https://github.com/placeholder" target="_blank">GitHub</a>
+          </div>
+        </div>
       </div>
-
       <!-- Chunming Gao -->
-      <div class="col-md-4">
+      <div class="col-md-4 d-flex flex-column align-items-center">
         <img src="{% static 'main_app/img/face_image.png' %}" alt="Chunming Gao" class="rounded-circle mb-2" width="100" height="100">
-        <div class="fw-semibold">Chunming Gao</div>
-        <div><a href="mailto:chunming@example.com">chunming@example.com</a></div>
-        <div><a href="https://github.com/placeholder" target="_blank">GitHub</a></div>
+        <button class="fw-semibold btn btn-link p-0" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-chunming" aria-expanded="false" aria-controls="collapse-chunming">Chunming Gao</button>
+        <div class="collapse" id="collapse-chunming">
+          <div>
+            <a href="mailto:chunming@example.com">chunming@example.com</a><br>
+            <a href="https://github.com/placeholder" target="_blank">GitHub</a>
+          </div>
+        </div>
       </div>
+      
     </div>
 
-    <div class="row text-center mb-4" data-aos="fade-up">
-      <div class="col-md-4 offset-md-4">
-        <img src="{% static 'main_app/img/face_image.png' %}" alt="Jack McDonald" class="rounded-circle mb-2" width="100" height="100">
-        <div class="fw-semibold">Jack McDonald</div>
-        <div><a href="mailto:jack@example.com">jack@example.com</a></div>
-        <div><a href="https://github.com/jacklee" target="_blank">GitHub</a></div>
+    <!-- Third Row of Members -->
+    <div class="row justify-content-center align-items-center text-center mt-4" data-aos="fade-up">
+    <!-- Jack McDonald -->
+    <div class="col-md-4 d-flex flex-column align-items-center">
+      <img src="{% static 'main_app/img/face_image.png' %}" alt="Jack McDonald" class="rounded-circle mb-2" width="100" height="100">
+      <button class="fw-semibold btn btn-link p-0" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-jack" aria-expanded="false" aria-controls="collapse-jack">Jack McDonald</button>
+      <div class="collapse" id="collapse-jack">
+        <div>
+          <a href="mailto:jack@example.com">jack@example.com</a><br>
+          <a href="https://github.com/jacklee" target="_blank">GitHub</a>
+        </div>
       </div>
     </div>
-   
+    </div>
+    
+
+
   </main>
 
    <!-- Footer -->
- <footer class="bg-dark text-white py-1 mt-4">
+ <footer class="bg-dark text-white py-1">
   <div class="container text-center">
-    <p class="mb-0">© 2025 Central Washington University</p>
+    <p class="mb-0 small">© 2025 Central Washington University</p>
   </div>
 </footer>
 
