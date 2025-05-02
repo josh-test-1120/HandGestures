@@ -46,7 +46,7 @@
 <body>
   {% include 'main_app/navbar.html' %}
 
-  <main class="container wide-container py-5">
+  <main class="container wide-container py-5 mb-5">
     <div style="margin-top: 80px"></div>
   <div class="container mb-5">
     <h1 class="text-center mb-4" data-aos="fade-down">Arduino Data Demo</h1>
@@ -67,17 +67,17 @@
     <!-- Accelerometer and Gyroscope -->
     <div class="row mb-4">
       <div class="col-md-6" data-aos="fade-up" data-aos-delay="100">
-        <div class="card p-3">
+        <div class="card shadow-sm p-4 mb-5 rounded">
           <h5 class="card-title">Accelerometer</h5>
-          <div class="chart-container">
+          <div class="chart-container" style="height: 300px;">
             <canvas id="accelerometerChart"></canvas>
           </div>
         </div>
       </div>
       <div class="col-md-6" data-aos="fade-up" data-aos-delay="200">
-        <div class="card p-3">
+        <div class="card shadow-sm p-4 mb-5 rounded">
           <h5 class="card-title">Gyroscope</h5>
-          <div class="chart-container">
+          <div class="chart-container" style="height: 300px;">
             <canvas id="gyroscopeChart"></canvas>
           </div>
         </div>
@@ -85,9 +85,9 @@
     </div>
 
     <!-- Ultrasonic -->
-    <div class="card p-3 mb-4" data-aos="fade-up" data-aos-delay="300">
+    <div class="card shadow-sm p-4 mb-5 rounded" data-aos="fade-up" data-aos-delay="300">
       <h5 class="card-title">Ultrasonic Sensor</h5>
-      <div class="chart-container">
+      <div class="chart-container" style="height: 300px;">
         <canvas id="ultrasonicChart"></canvas>
       </div>
     </div>
@@ -102,11 +102,11 @@
   </main>
 
     <!-- Footer -->
- <footer class="bg-dark text-white py-1 mt-4">
-  <div class="container text-center">
-    <p class="mb-0">© 2025 Central Washington University</p>
-  </div>
-</footer>
+  <footer class="bg-dark text-white py-1 mt-5">
+    <div class="container text-center">
+      <p class="mb-0 small">© 2025 Central Washington University</p>
+    </div>
+  </footer>
 
 
 
