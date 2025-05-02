@@ -280,3 +280,24 @@ body,
     border-radius: 8px;
     border: 1px solid #444;
 }
+
+html, body {
+    height: 100%;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+}
+
+main {
+    flex: 1;
+}
+
+footer {
+    background-color: #343a40;
+    color: white;
+}
+.wide-container {
+    max-width: 95% !important;
+  }

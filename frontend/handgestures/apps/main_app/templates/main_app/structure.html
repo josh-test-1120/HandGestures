@@ -1,48 +1,56 @@
 <!DOCTYPE html>
-    <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Structure | Hand Gesture Project</title>
-        {% load static %}
-        <link rel="stylesheet" href="{% static 'main_app/css/style.css' %}" media="screen" title="no title" charset="utf-8">
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    
-    </head>
-    <body>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Structure | Hand Gesture Project</title>
+  {% load static %}
+  <link rel="stylesheet" href="{% static 'main_app/css/style.css' %}">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</head>
 
-        {% include 'main_app/navbar.html' %}
-        <div class="container my-5">
+<body class="bg-light text-dark">
+  {% include 'main_app/navbar.html' %}
 
-            <div class="text-center mb-4">
-                <h1 class="display-5 fw-bold text-primary">Hand Gesture System Structure</h1>
-                <p class="lead text-muted">How the Hand Gesture Project Works</p>
-            </div>
+  <main class="container wide-container py-5">
 
-            <div class="container mb-5">
-                <h2 class="fw-bold text-primary mb-3">Data Flow</h2>
-                <img src="{% static 'main_app/img/data_flow_diagram.png' %}" alt="data flow diagram"
-                     class="img-fluid mx-auto d-block shadow mb-3"
-                     style="max-width: 1000px;">
-                <p>
-                    This diagram shows the data flow of the Hand Gestures system, showing the 'entry points' of both the backend and frontend
-                    teams. Sensor data is collected from an Arduino Nano/Uno, which is stored on an SD card, which is then used for both
-                    frontend data visualization and backend model training, i.e., machine learning. The trained model is then deployed to
-                    generate gesture predictions, which are displayed on a demo and live demo page.
-                </p>
-            </div>
-            <div class="container">
-                <h2 class="fw-bold text-primary mb-3">System Pipeline</h2>
-                <img src="{% static 'main_app/img/system_pipeline.png' %}" alt="system pipeline"
-                     class="img-fluid mx-auto d-block shadow mb-3"
-                     style="max-width: 1000px;">
-                <p>
-                    First the user puts on the sensor device. The device will send motion data to a local device, which will then send
-                    the data to the server. In the server, the motion data will be processed and classified by a machine learning model.
-                    After the data is processed, the output is used in visualization data.
-                </p>
-            </div>
-        </div>
-    </body>
+    <!-- Title Section -->
+    <div class="text-center mb-5">
+      <h1 class="display-5 fw-bold text-primary">Hand Motion Recognition System Structure</h1>
+      <p class="lead text-muted">How the Hand Gesture Project Works</p>
+    </div>
+
+    <!-- Data Flow Section -->
+    <section class="mb-5">
+      <h2 class="fw-bold text-primary mb-4">Data Flow</h2>
+      <img src="{% static 'main_app/img/data_flow_diagram.png' %}" alt="Data Flow Diagram"
+           class="img-fluid shadow rounded mx-auto d-block mb-3"
+           style="max-width: 1000px;">
+      <p class="text-muted">
+        This diagram illustrates the complete data flow of the Hand Gesture system. Motion data is collected from an Arduino Nano or Uno and stored on an SD card. This data is used both for frontend data visualization and backend machine learning model training. Once the model is trained, it is deployed to make real-time gesture predictions displayed on the demo pages.
+      </p>
+    </section>
+
+    <!-- System Pipeline Section -->
+    <section>
+      <h2 class="fw-bold text-primary mb-4">System Pipeline</h2>
+      <img src="{% static 'main_app/img/system_pipeline.png' %}" alt="System Pipeline"
+           class="img-fluid shadow rounded mx-auto d-block mb-3"
+           style="max-width: 1000px;">
+      <p class="text-muted">
+        The user begins by wearing a sensor-equipped device. This device transmits motion data to a local device, which forwards it to a server. On the server side, a machine learning model processes and classifies the motion data. The output is then visualized on the website to display detected gestures in real-time.
+      </p>
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-dark text-white py-2 mt-5">
+    <div class="container text-center">
+      <p class="mb-0 small">© 2025 Central Washington University</p>
+    </div>
+  </footer>
+
+</body>
 </html>
