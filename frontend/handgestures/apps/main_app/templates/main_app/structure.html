@@ -8,6 +8,7 @@
   <link rel="stylesheet" href="{% static 'main_app/css/style.css' %}">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <link href="https://unpkg.com/aos@2.3.4/dist/aos.css" rel="stylesheet">
 </head>
 
 <body class="bg-light text-dark">
@@ -17,12 +18,12 @@
 
     <!-- Title Section -->
     <div class="text-center mb-5">
-      <h1 class="display-5 fw-bold text-primary">Hand Motion Recognition System Structure</h1>
-      <p class="lead text-muted">How the Hand Gesture Project Works</p>
+      <h1 class="display-5 fw-bold text-black" data-aos="fade-down">Hand Motion Recognition System Structure</h1>
+      <p class="lead text-muted" data-aos="fade-down">How the Hand Gesture Project Works</p>
     </div>
 
     <!-- Data Flow Section -->
-    <section class="mb-5">
+    <div class="card shadow-sm p-4 mb-5 rounded" data-aos="fade-up">
       <h2 class="fw-bold text-primary mb-4">Data Flow</h2>
       <img src="{% static 'main_app/img/data_flow_diagram.png' %}" alt="Data Flow Diagram"
            class="img-fluid shadow rounded mx-auto d-block mb-3"
@@ -30,10 +31,10 @@
       <p class="text-muted">
         This diagram illustrates the complete data flow of the Hand Gesture system. Motion data is collected from an Arduino Nano or Uno and stored on an SD card. This data is used both for frontend data visualization and backend machine learning model training. Once the model is trained, it is deployed to make real-time gesture predictions displayed on the demo pages.
       </p>
-    </section>
+    </div>
 
     <!-- System Pipeline Section -->
-    <section>
+    <div class="card shadow-sm p-4 mb-5 rounded" data-aos="fade-up">
       <h2 class="fw-bold text-primary mb-4">System Pipeline</h2>
       <img src="{% static 'main_app/img/system_pipeline.png' %}" alt="System Pipeline"
            class="img-fluid shadow rounded mx-auto d-block mb-3"
@@ -41,7 +42,7 @@
       <p class="text-muted">
         The user begins by wearing a sensor-equipped device. This device transmits motion data to a local device, which forwards it to a server. On the server side, a machine learning model processes and classifies the motion data. The output is then visualized on the website to display detected gestures in real-time.
       </p>
-    </section>
+    </div>
 
   </main>
 
@@ -51,6 +52,11 @@
       <p class="mb-0 small">© 2025 Central Washington University</p>
     </div>
   </footer>
+
+  <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
+  <script>
+    AOS.init({ duration: 1000, once: true });
+  </script>
 
 </body>
 </html>
