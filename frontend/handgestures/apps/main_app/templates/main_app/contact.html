@@ -44,7 +44,7 @@
   <main class="container wide-container py-4">
   
     <div class="d-flex justify-content-center align-items-center mb-4" style="margin-left: -80px;">
-      <img src="{% static 'main_app/img/CWU.png' %}" alt="CWU Logo" style="height: 120px;" class="me-3 header-logo" data-aos="fade-down">
+      <img src="{% static 'main_app/img/cwu-athletics-logo.png' %}" alt="CWU Logo" style="height: 120px;" class="me-3 header-logo" data-aos="fade-down">
       <div class="d-flex flex-column align-items-center text-center">
         <div class="fw-bold mb-0 header-title" style="font-size: 2.2rem;" data-aos="fade-down">CWU Des Moines Group:</div>
         <div class="fw-semibold text-muted header-subtitle" style="font-size: 1.8rem;" data-aos="fade-down">Meet the Team</div>
@@ -153,11 +153,7 @@
   </main>
 
   <!--Footer-->
-  <footer id="mainFooter" class="py-1 mt-5">
-    <div class="container text-center">
-      <p class="mb-0 small">© 2025 Central Washington University</p>
-    </div>
-  </footer>
+  {% include 'main_app/footer.html' %}
 
 <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
 <script>
