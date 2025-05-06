@@ -64,33 +64,32 @@
       <div class="mt-2 text-muted">Loading and visualizing data...</div>
     </div>
 
-    <div class="row mb-4">
-      <!-- acceleration averages -->
-      <div class="col-md-6" data-aos="fade-up" data-aos-delay="100">
-        <div class="card shadow-sm p-4 mb-5 rounded">
-          <h5 class="card-title">Acceleration Data</h5>
+    <!-- First Row: Accelerometer Graph (left), Acceleration Data/Outliers (right, stacked) implemented 5-5-2025 -->
+    <div class="row mb-4 align-items-stretch">
+      <div class="col-md-6 d-flex">
+        <div class="card shadow-sm p-4 rounded h-100 w-100" data-aos="fade-up">
+          <h5 class="card-title">Accelerometer</h5>
+          <div class="d-flex justify-content-between mb-3">
+            <div><span class="fw-bold" id="acc-x-value">-</span><br>X-Axis(g)</div>
+            <div><span class="fw-bold" id="acc-y-value">-</span><br>Y-Axis(g)</div>
+            <div><span class="fw-bold" id="acc-z-value">-</span><br>Z-Axis(g)</div>
+          </div>
+          <div class="chart-container" style="height: 300px;">
+            <canvas id="accelerometerChart"></canvas>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6 d-flex flex-column h-100">
+        <!-- acceleration averages -->
+        <div class="card shadow-sm p-4 rounded flex-grow-1 mb-3" data-aos="fade-up" data-aos-delay="100">
+          <h5 class="card-title">Acceleration Data Averages</h5>
           <div id="avg-resting-accel-text">0</div>
           <div id="avg-walking-accel-text">0</div>
           <div id="avg-running-accel-text">0</div>
         </div>
-      </div>
-
-      <!-- rotation averages -->
-      <div class="col-md-6" data-aos="fade-up" data-aos-delay="200">
-        <div class="card shadow-sm p-4 mb-5 rounded">
-          <h5 class="card-title">Rotation Data</h5>
-          <div id="avg-resting-rot-text">0</div>
-          <div id="avg-walking-rot-text">0</div>
-          <div id="avg-running-rot-text">0</div>
-        </div>
-      </div>
-    </div>
-
-    <div class="row mb-4">
-      <!-- acceleration max outliers -->
-      <div class="col-md-6" data-aos="fade-up" data-aos-delay="100">
-        <div class="card shadow-sm p-4 mb-5 rounded">
-          <h5 class="card-title">Acceleration Max Outliers</h5>
+        <!-- acceleration max outliers -->
+        <div class="card shadow-sm p-4 rounded flex-grow-1" data-aos="fade-up" data-aos-delay="200">
+          <h5 class="card-title">Acceleration Data Outliers</h5>
           <div id="first-max-accel-text">0</div>
           <div id="first-max-accel-explanation-text">0</div>
           <br>
@@ -102,11 +101,34 @@
           <br>
         </div>
       </div>
+    </div>
 
-      <!-- rotation max outliers -->
-      <div class="col-md-6" data-aos="fade-up" data-aos-delay="200">
-        <div class="card shadow-sm p-4 mb-5 rounded">
-          <h5 class="card-title">Rotation Max Outliers</h5>
+    <!-- Second Row: Gyroscope Graph (left), Rotation Data/Outliers (right, stacked) -->
+    <div class="row mb-4 align-items-stretch">
+      <div class="col-md-6 d-flex">
+        <div class="card shadow-sm p-4 rounded h-100 w-100" data-aos="fade-up">
+          <h5 class="card-title">Gyroscope</h5>
+          <div class="d-flex justify-content-between mb-3">
+            <div><span class="fw-bold" id="gyro-x-value">-</span><br>X-Axis(deg/s)</div>
+            <div><span class="fw-bold" id="gyro-y-value">-</span><br>Y-Axis(deg/s)</div>
+            <div><span class="fw-bold" id="gyro-z-value">-</span><br>Z-Axis(deg/s)</div>
+          </div>
+          <div class="chart-container" style="height: 300px;">
+            <canvas id="gyroscopeChart"></canvas>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6 d-flex flex-column h-100">
+        <!-- rotation averages -->
+        <div class="card shadow-sm p-4 rounded flex-grow-1 mb-3" data-aos="fade-up" data-aos-delay="100">
+          <h5 class="card-title">Rotation Data Averages</h5>
+          <div id="avg-resting-rot-text">0</div>
+          <div id="avg-walking-rot-text">0</div>
+          <div id="avg-running-rot-text">0</div>
+        </div>
+        <!-- rotation max outliers -->
+        <div class="card shadow-sm p-4 rounded flex-grow-1" data-aos="fade-up" data-aos-delay="200">
+          <h5 class="card-title">Rotation Data Outliers</h5>
           <div id="first-max-rot-text">0</div>
           <div id="first-max-rot-explanation-text">0</div>
           <br>
@@ -120,50 +142,24 @@
       </div>
     </div>
 
-    <!-- Re-inserted Graphs Section 5-5-2025 -->
+    <!-- Third Row: Ultrasonic Chart -->
     <div class="row mb-4">
-      <div class="col-md-6">
+      <div class="col-md-12">
         <div class="card shadow-sm p-4 mb-5 rounded" data-aos="fade-up">
-          <h5 class="card-title">Accelerometer</h5>
+          <h5 class="card-title mb-0">Ultrasonic Sensor</h5>
           <div class="d-flex justify-content-between mb-3">
-            <div><span class="fw-bold" id="acc-x-value">-</span><br>X-Axis(g)</div>
-            <div><span class="fw-bold" id="acc-y-value">-</span><br>Y-Axis(g)</div>
-            <div><span class="fw-bold" id="acc-z-value">-</span><br>Z-Axis(g)</div>
+            <div><span class="fw-bold" id="ultrasonic-value">-</span><br>Distance (cm)</div>
           </div>
           <div class="chart-container" style="height: 300px;">
-            <canvas id="accelerometerChart"></canvas>
+            <canvas id="ultrasonicChart"></canvas>
           </div>
         </div>
-      </div>
-      <div class="col-md-6">
-        <div class="card shadow-sm p-4 mb-5 rounded" data-aos="fade-up">
-          <h5 class="card-title">Gyroscope</h5>
-          <div class="d-flex justify-content-between mb-3">
-            <div><span class="fw-bold" id="gyro-x-value">-</span><br>X-Axis(deg/s)</div>
-            <div><span class="fw-bold" id="gyro-y-value">-</span><br>Y-Axis(deg/s)</div>
-            <div><span class="fw-bold" id="gyro-z-value">-</span><br>Z-Axis(deg/s)</div>
-          </div>
-          <div class="chart-container" style="height: 300px;">
-            <canvas id="gyroscopeChart"></canvas>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Ultrasonic Sensor -->
-    <div class="card shadow-sm p-4 mb-5 rounded" data-aos="fade-up">
-      <h5 class="card-title mb-0">Ultrasonic Sensor</h5>
-      <div class="d-flex justify-content-between mb-3">
-        <div><span class="fw-bold" id="ultrasonic-value">-</span><br>Distance (cm)</div>
-      </div>
-      <div class="chart-container" style="height: 300px;">
-        <canvas id="ultrasonicChart"></canvas>
       </div>
     </div>
 
     <!-- Debug Info -->
     <div class="text-center text-muted mt-4 small" data-aos="fade-in">
-      <p><strong>Template:</strong> main_app/live_demo.html</p>
+      <p><strong>Template:</strong> main_app/demo.html</p>
       <p><strong>Time:</strong> {% now "DATETIME_FORMAT" %}</p>
     </div>
   </div>
