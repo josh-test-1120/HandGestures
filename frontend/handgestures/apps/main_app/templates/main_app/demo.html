@@ -120,6 +120,47 @@
       </div>
     </div>
 
+    <!-- Re-inserted Graphs Section 5-5-2025 -->
+    <div class="row mb-4">
+      <div class="col-md-6">
+        <div class="card shadow-sm p-4 mb-5 rounded" data-aos="fade-up">
+          <h5 class="card-title">Accelerometer</h5>
+          <div class="d-flex justify-content-between mb-3">
+            <div><span class="fw-bold" id="acc-x-value">-</span><br>X-Axis(g)</div>
+            <div><span class="fw-bold" id="acc-y-value">-</span><br>Y-Axis(g)</div>
+            <div><span class="fw-bold" id="acc-z-value">-</span><br>Z-Axis(g)</div>
+          </div>
+          <div class="chart-container" style="height: 300px;">
+            <canvas id="accelerometerChart"></canvas>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="card shadow-sm p-4 mb-5 rounded" data-aos="fade-up">
+          <h5 class="card-title">Gyroscope</h5>
+          <div class="d-flex justify-content-between mb-3">
+            <div><span class="fw-bold" id="gyro-x-value">-</span><br>X-Axis(deg/s)</div>
+            <div><span class="fw-bold" id="gyro-y-value">-</span><br>Y-Axis(deg/s)</div>
+            <div><span class="fw-bold" id="gyro-z-value">-</span><br>Z-Axis(deg/s)</div>
+          </div>
+          <div class="chart-container" style="height: 300px;">
+            <canvas id="gyroscopeChart"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Ultrasonic Sensor -->
+    <div class="card shadow-sm p-4 mb-5 rounded" data-aos="fade-up">
+      <h5 class="card-title mb-0">Ultrasonic Sensor</h5>
+      <div class="d-flex justify-content-between mb-3">
+        <div><span class="fw-bold" id="ultrasonic-value">-</span><br>Distance (cm)</div>
+      </div>
+      <div class="chart-container" style="height: 300px;">
+        <canvas id="ultrasonicChart"></canvas>
+      </div>
+    </div>
+
     <!-- Debug Info -->
     <div class="text-center text-muted mt-4 small" data-aos="fade-in">
       <p><strong>Template:</strong> main_app/live_demo.html</p>
@@ -190,6 +231,22 @@
           waitingForRequest = false;
         });
     }
+  </script>
+
+  <!-- Chart.js and AOS -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="{% static 'main_app/js/chart.js' %}"></script>
+  <script>
+    AOS.init({ duration: 1000, once: true });
+    //Page-specific JavaScript for demo.html
+    document.addEventListener('DOMContentLoaded', function () {
+      fetch("{% static 'main_app/data/data-sample.csv' %}")
+        .then(response => response.text())
+        .then(csvText => {
+          const data = parseCSV(csvText);
+          setupCharts(data);
+        });
+    });
   </script>
 
 <script src="{% static 'main_app/js/darkmode.js' %}"></script>
