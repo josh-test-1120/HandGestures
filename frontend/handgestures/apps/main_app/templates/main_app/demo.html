@@ -64,31 +64,59 @@
       <div class="mt-2 text-muted">Loading and visualizing data...</div>
     </div>
 
-    <!-- Accelerometer and Gyroscope -->
     <div class="row mb-4">
+      <!-- acceleration averages -->
       <div class="col-md-6" data-aos="fade-up" data-aos-delay="100">
         <div class="card shadow-sm p-4 mb-5 rounded">
-          <h5 class="card-title">Accelerometer</h5>
-          <div class="chart-container" style="height: 300px;">
-            <canvas id="accelerometerChart"></canvas>
-          </div>
+          <h5 class="card-title">Acceleration Data</h5>
+          <div id="avg-resting-accel-text">0</div>
+          <div id="avg-walking-accel-text">0</div>
+          <div id="avg-running-accel-text">0</div>
         </div>
       </div>
+
+      <!-- rotation averages -->
       <div class="col-md-6" data-aos="fade-up" data-aos-delay="200">
         <div class="card shadow-sm p-4 mb-5 rounded">
-          <h5 class="card-title">Gyroscope</h5>
-          <div class="chart-container" style="height: 300px;">
-            <canvas id="gyroscopeChart"></canvas>
-          </div>
+          <h5 class="card-title">Rotation Data</h5>
+          <div id="avg-resting-rot-text">0</div>
+          <div id="avg-walking-rot-text">0</div>
+          <div id="avg-running-rot-text">0</div>
         </div>
       </div>
     </div>
 
-    <!-- Ultrasonic -->
-    <div class="card shadow-sm p-4 mb-5 rounded" data-aos="fade-up" data-aos-delay="300">
-      <h5 class="card-title">Ultrasonic Sensor</h5>
-      <div class="chart-container" style="height: 300px;">
-        <canvas id="ultrasonicChart"></canvas>
+    <div class="row mb-4">
+      <!-- acceleration max outliers -->
+      <div class="col-md-6" data-aos="fade-up" data-aos-delay="100">
+        <div class="card shadow-sm p-4 mb-5 rounded">
+          <h5 class="card-title">Acceleration Max Outliers</h5>
+          <div id="first-max-accel-text">0</div>
+          <div id="first-max-accel-explanation-text">0</div>
+          <br>
+          <div id="second-max-accel-text">0</div>
+          <div id="second-max-accel-explanation-text">0</div>
+          <br>
+          <div id="third-max-accel-text">0</div>
+          <div id="third-max-accel-explanation-text">0</div>
+          <br>
+        </div>
+      </div>
+
+      <!-- rotation max outliers -->
+      <div class="col-md-6" data-aos="fade-up" data-aos-delay="200">
+        <div class="card shadow-sm p-4 mb-5 rounded">
+          <h5 class="card-title">Rotation Max Outliers</h5>
+          <div id="first-max-rot-text">0</div>
+          <div id="first-max-rot-explanation-text">0</div>
+          <br>
+          <div id="second-max-rot-text">0</div>
+          <div id="second-max-rot-explanation-text">0</div>
+          <br>
+          <div id="third-max-rot-text">0</div>
+          <div id="third-max-rot-explanation-text">0</div>
+          <br>
+        </div>
       </div>
     </div>
 
@@ -109,109 +137,59 @@
     AOS.init({ duration: 1000, once: true });
   </script>
 
+  <!-- Dynamic Data Script -->
   <script>
-    const accCtx = document.getElementById("accelerometerChart").getContext("2d");
-    const gyroCtx = document.getElementById("gyroscopeChart").getContext("2d");
-    const ultrasonicCtx = document.getElementById("ultrasonicChart").getContext("2d");
+    let waitingForRequest = false;
+    let demoUpdateIntervalId = 0;
 
-    let accelerometerChart = new Chart(accCtx, {
-      type: "line",
-      data: { labels: [], datasets: [] },
-      options: { responsive: true, maintainAspectRatio: false, scales: { x: { type: "linear", title: { display: true, text: "Time (s)" } }, y: { beginAtZero: true } } }
+    document.addEventListener('DOMContentLoaded', function () {
+      updateDemoInfo();
+      demoUpdateIntervalId = setInterval(updateDemoInfo, 1000);
     });
 
-    let gyroscopeChart = new Chart(gyroCtx, {
-      type: "line",
-      data: { labels: [], datasets: [] },
-      options: { responsive: true, maintainAspectRatio: false, scales: { x: { type: "linear", title: { display: true, text: "Time (s)" } }, y: { beginAtZero: true } } }
-    });
-
-    let ultrasonicChart = new Chart(ultrasonicCtx, {
-      type: "line",
-      data: { labels: [], datasets: [] },
-      options: { responsive: true, maintainAspectRatio: false, scales: { x: { type: "linear", title: { display: true, text: "Time (s)" } }, y: { beginAtZero: true } } }
-    });
-
-    const loadingSpinner = document.getElementById("loadingSpinner");
-
-    function parseCSV(text) {
-      const lines = text.trim().split(/\r?\n/);
-      const header = lines[0].split(",");
-      const idx = {
-        time: header.indexOf("Timestamp(ms)"),
-        ax: header.indexOf("AccelX(g)"),
-        ay: header.indexOf("AccelY(g)"),
-        az: header.indexOf("AccelZ(g)"),
-        gx: header.indexOf("GyroX(deg/s)"),
-        gy: header.indexOf("GyroY(deg/s)"),
-        gz: header.indexOf("GyroZ(deg/s)"),
-        dist: header.indexOf("Distance(cm)"),
-      };
-      let t0 = null;
-      let timeArr = [], axArr = [], ayArr = [], azArr = [], gxArr = [], gyArr = [], gzArr = [], distArr = [];
-      for (let i = 1; i < lines.length; i++) {
-        const row = lines[i].split(",");
-        if (row.length < header.length) continue;
-        const t = parseInt(row[idx.time]);
-        if (t0 === null) t0 = t;
-        timeArr.push(((t - t0) / 1000).toFixed(2));
-        axArr.push(parseFloat(row[idx.ax]));
-        ayArr.push(parseFloat(row[idx.ay]));
-        azArr.push(parseFloat(row[idx.az]));
-        gxArr.push(parseFloat(row[idx.gx]));
-        gyArr.push(parseFloat(row[idx.gy]));
-        gzArr.push(parseFloat(row[idx.gz]));
-        distArr.push(parseFloat(row[idx.dist]));
+    document.addEventListener('beforeunload', function () {
+      if (demoUpdateIntervalId) {
+        clearInterval(demoUpdateIntervalId);
+        demoUpdateIntervalId = 0;
       }
-      return {
-        time: timeArr,
-        accel: { x: axArr, y: ayArr, z: azArr },
-        gyro: { x: gxArr, y: gyArr, z: gzArr },
-        ultrasonic: distArr,
-      };
-    }
-
-    // Auto-load CSV when page loads
-    window.addEventListener("DOMContentLoaded", function () {
-      const csvURL = "{% static 'main_app/data/data-sample.csv' %}";
-      loadingSpinner.style.display = "block";
-
-      fetch(csvURL)
-        .then((res) => res.text())
-        .then((text) => {
-          const parsed = parseCSV(text);
-          // Accelerometer
-          accelerometerChart.data.labels = parsed.time.map(Number);
-          accelerometerChart.data.datasets = [
-            { label: "Accel X", data: parsed.accel.x, borderColor: "rgba(52,152,219,1)", backgroundColor: "rgba(52,152,219,0.2)", tension: 0.4, pointRadius: 2 },
-            { label: "Accel Y", data: parsed.accel.y, borderColor: "rgba(39,174,96,1)", backgroundColor: "rgba(39,174,96,0.2)", tension: 0.4, pointRadius: 2 },
-            { label: "Accel Z", data: parsed.accel.z, borderColor: "rgba(231,76,60,1)", backgroundColor: "rgba(231,76,60,0.2)", tension: 0.4, pointRadius: 2 }
-          ];
-          accelerometerChart.update();
-
-          // Gyroscope
-          gyroscopeChart.data.labels = parsed.time.map(Number);
-          gyroscopeChart.data.datasets = [
-            { label: "Gyro X", data: parsed.gyro.x, borderColor: "rgba(155,89,182,1)", backgroundColor: "rgba(155,89,182,0.2)", tension: 0.4, pointRadius: 2 },
-            { label: "Gyro Y", data: parsed.gyro.y, borderColor: "rgba(241,196,15,1)", backgroundColor: "rgba(241,196,15,0.2)", tension: 0.4, pointRadius: 2 },
-            { label: "Gyro Z", data: parsed.gyro.z, borderColor: "rgba(26,188,156,1)", backgroundColor: "rgba(26,188,156,0.2)", tension: 0.4, pointRadius: 2 }
-          ];
-          gyroscopeChart.update();
-
-          // Ultrasonic
-          ultrasonicChart.data.labels = parsed.time.map(Number);
-          ultrasonicChart.data.datasets = [
-            { label: "Distance (cm)", data: parsed.ultrasonic, borderColor: "rgba(39,174,96,1)", backgroundColor: "rgba(39,174,96,0.2)", tension: 0.4, pointRadius: 2 }
-          ];
-          ultrasonicChart.update();
-
-          loadingSpinner.style.display = "none";
-        })
-        .catch((err) => {
-          loadingSpinner.style.display = "none";
-          alert("Error loading CSV: " + err.message);
-        });
     });
+
+    function updateDemoInfo() {
+      if (waitingForRequest) return;
+      waitingForRequest = true;
+
+      fetch('/demo_page_update/')
+        .then(response => response.json())
+        .then(data => {
+          document.getElementById('avg-resting-accel-text').textContent = data.avg_resting_accel;
+          document.getElementById('avg-walking-accel-text').textContent = data.avg_walking_accel;
+          document.getElementById('avg-running-accel-text').textContent = data.avg_running_accel;
+          
+          document.getElementById('avg-resting-rot-text').textContent = data.avg_resting_rot;
+          document.getElementById('avg-walking-rot-text').textContent = data.avg_walking_rot;
+          document.getElementById('avg-running-rot-text').textContent = data.avg_running_rot;
+          
+          document.getElementById('first-max-accel-text').textContent = data.first_fastest_accel;
+          document.getElementById('first-max-accel-explanation-text').textContent = data.first_fastest_accel_explanation;
+          document.getElementById('second-max-accel-text').textContent = data.second_fastest_accel;
+          document.getElementById('second-max-accel-explanation-text').textContent = data.second_fastest_accel_explanation;
+          document.getElementById('third-max-accel-text').textContent = data.third_fastest_accel;
+          document.getElementById('third-max-accel-explanation-text').textContent = data.third_fastest_accel_explanation;
+          
+          document.getElementById('first-max-rot-text').textContent = data.first_fastest_rot;
+          document.getElementById('first-max-rot-explanation-text').textContent = data.first_fastest_rot_explanation;
+          document.getElementById('second-max-rot-text').textContent = data.second_fastest_rot;
+          document.getElementById('second-max-rot-explanation-text').textContent = data.second_fastest_rot_explanation;
+          document.getElementById('third-max-rot-text').textContent = data.third_fastest_rot;
+          document.getElementById('third-max-rot-explanation-text').textContent = data.third_fastest_rot_explanation;
+        })
+        .catch(error => {
+          console.error('Error getting demo info:', error);
+        })
+        .finally(() => {
+          waitingForRequest = false;
+        });
+    }
   </script>
 
 <script src="{% static 'main_app/js/darkmode.js' %}"></script>
