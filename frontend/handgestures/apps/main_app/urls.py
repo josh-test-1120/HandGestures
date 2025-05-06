@@ -14,6 +14,7 @@ urlpatterns = [
 	path('api/data/', views.api_data, name='api_data'),  # API testing
 	path("summary/", views.summary, name="summary"),
 	path("summary_page_update/", views.summary_page_update, name="summary_page_update"),
+	path("demo_page_update/", views.demo_page_update, name="demo_page_update"),
 	path("structure/", views.structure, name="structure"),
 	path("demo/",views.demo, name="demo"),
 	path("live-demo/", views.live_demo, name="live_demo"),
