@@ -6,175 +6,149 @@
   <title>Arduino Data Demo</title>
   {% load static %}
   <link rel="stylesheet" href="{% static 'main_app/css/style.css' %}" />
-  <link
-    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
-    rel="stylesheet"
-  />
-  <link
-    href="https://unpkg.com/aos@2.3.4/dist/aos.css"
-    rel="stylesheet"
-  />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://unpkg.com/aos@2.3.4/dist/aos.css" rel="stylesheet" />
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
-    .chart-container {
-      position: relative;
-      height: 300px;
-    }
-
-    .card {
-      border-radius: 15px;
-      box-shadow: 0 0 20px rgba(0, 0, 0, 0.05);
-    }
-
-    #loadingSpinner {
-      animation: fadeIn 0.8s ease-in-out;
-    }
-
+    .chart-container { position: relative; height: 300px; }
+    .card { border-radius: 15px; box-shadow: 0 0 20px rgba(0, 0, 0, 0.05); }
+    #loadingSpinner { animation: fadeIn 0.8s ease-in-out; }
     @keyframes fadeIn {
-      from {
-        opacity: 0;
-        transform: scale(0.95);
-      }
-      to {
-        opacity: 1;
-        transform: scale(1);
-      }
+      from { opacity: 0; transform: scale(0.95); }
+      to { opacity: 1; transform: scale(1); }
     }
   </style>
 </head>
-<body>
+
+<body class="bg-light text-dark">
   {% include 'main_app/navbar.html' %}
 
-  <main class="container wide-container py-5 mb-5">
-    <div style="margin-top: 80px"></div>
-  <div class="container mb-5">
-    <h1 class="text-center mb-4" data-aos="fade-down">Arduino Data Demo</h1>
+  <main class="container wide-container py-5 mb-5 mt-5">
+    <!-- Hero Section -->
+    <section class="mb-5">
+      <div class="text-center text-white p-5 rounded-4 mx-3" style="background: linear-gradient(to right, #31b3fe, #7d7676);" data-aos="fade-down">
+        <h1 class="display-5 fw-bold mb-3">Arduino Data Demo</h1>
+        <p class="lead text-light px-md-5 mt-3" style="text-align:justify">
+          This live demonstration showcases data from wearable IMU sensors used in our seizure detection system. It reflects the accuracy and responsiveness of our Arduino-powered motion analysis and machine learning integration.
+        </p>
+      </div>
+    </section>
 
     <!-- Loading Spinner -->
-    <div
-      id="loadingSpinner"
-      class="text-center my-4"
-      style="display: none"
-      data-aos="fade-up"
-    >
+    <div id="loadingSpinner" class="text-center my-4" style="display: none" data-aos="fade-up">
       <div class="spinner-border text-primary" role="status">
         <span class="visually-hidden">Loading...</span>
       </div>
       <div class="mt-2 text-muted">Loading and visualizing data...</div>
     </div>
 
-    <!-- First Row: Accelerometer Graph (left), Acceleration Data/Outliers (right, stacked) implemented 5-5-2025 -->
-    <div class="row mb-4 align-items-stretch">
-      <div class="col-md-6 d-flex">
-        <div class="card shadow-sm p-4 rounded h-100 w-100" data-aos="fade-up">
-          <h5 class="card-title">Accelerometer</h5>
-          <div class="d-flex justify-content-between mb-3">
-            <div><span class="fw-bold" id="acc-x-value">-</span><br>X-Axis(g)</div>
-            <div><span class="fw-bold" id="acc-y-value">-</span><br>Y-Axis(g)</div>
-            <div><span class="fw-bold" id="acc-z-value">-</span><br>Z-Axis(g)</div>
+    <!-- Accelerometer Section -->
+    <section class="mb-5">
+      <h3 class="text-center fw-bold mb-4" data-aos="fade-up">Accelerometer Readings</h3>
+      <div class="row mb-4 align-items-stretch">
+        <div class="col-md-6 d-flex">
+          <div class="card shadow-sm p-4 rounded h-100 w-100" data-aos="fade-up">
+            <h5 class="card-title">Accelerometer</h5>
+            <div class="d-flex justify-content-between mb-3">
+              <div><span class="fw-bold" id="acc-x-value">-</span><br>X-Axis (g)</div>
+              <div><span class="fw-bold" id="acc-y-value">-</span><br>Y-Axis (g)</div>
+              <div><span class="fw-bold" id="acc-z-value">-</span><br>Z-Axis (g)</div>
+            </div>
+            <div class="chart-container">
+              <canvas id="accelerometerChart"></canvas>
+            </div>
           </div>
-          <div class="chart-container" style="height: 300px;">
-            <canvas id="accelerometerChart"></canvas>
+        </div>
+        <div class="col-md-6 d-flex flex-column h-100">
+          <div class="card shadow-sm p-4 rounded flex-grow-1 mb-3" data-aos="fade-up" data-aos-delay="100">
+            <h5 class="card-title">Acceleration Data Averages</h5>
+            <div id="avg-resting-accel-text">0</div>
+            <div id="avg-walking-accel-text">0</div>
+            <div id="avg-running-accel-text">0</div>
+          </div>
+          <div class="card shadow-sm p-4 rounded flex-grow-1" data-aos="fade-up" data-aos-delay="200">
+            <h5 class="card-title">Acceleration Data Outliers</h5>
+            <div id="first-max-accel-text">0</div>
+            <div id="first-max-accel-explanation-text">0</div><br>
+            <div id="second-max-accel-text">0</div>
+            <div id="second-max-accel-explanation-text">0</div><br>
+            <div id="third-max-accel-text">0</div>
+            <div id="third-max-accel-explanation-text">0</div><br>
           </div>
         </div>
       </div>
-      <div class="col-md-6 d-flex flex-column h-100">
-        <!-- acceleration averages -->
-        <div class="card shadow-sm p-4 rounded flex-grow-1 mb-3" data-aos="fade-up" data-aos-delay="100">
-          <h5 class="card-title">Acceleration Data Averages</h5>
-          <div id="avg-resting-accel-text">0</div>
-          <div id="avg-walking-accel-text">0</div>
-          <div id="avg-running-accel-text">0</div>
-        </div>
-        <!-- acceleration max outliers -->
-        <div class="card shadow-sm p-4 rounded flex-grow-1" data-aos="fade-up" data-aos-delay="200">
-          <h5 class="card-title">Acceleration Data Outliers</h5>
-          <div id="first-max-accel-text">0</div>
-          <div id="first-max-accel-explanation-text">0</div>
-          <br>
-          <div id="second-max-accel-text">0</div>
-          <div id="second-max-accel-explanation-text">0</div>
-          <br>
-          <div id="third-max-accel-text">0</div>
-          <div id="third-max-accel-explanation-text">0</div>
-          <br>
-        </div>
-      </div>
-    </div>
+    </section>
 
-    <!-- Second Row: Gyroscope Graph (left), Rotation Data/Outliers (right, stacked) -->
-    <div class="row mb-4 align-items-stretch">
-      <div class="col-md-6 d-flex">
-        <div class="card shadow-sm p-4 rounded h-100 w-100" data-aos="fade-up">
-          <h5 class="card-title">Gyroscope</h5>
-          <div class="d-flex justify-content-between mb-3">
-            <div><span class="fw-bold" id="gyro-x-value">-</span><br>X-Axis(deg/s)</div>
-            <div><span class="fw-bold" id="gyro-y-value">-</span><br>Y-Axis(deg/s)</div>
-            <div><span class="fw-bold" id="gyro-z-value">-</span><br>Z-Axis(deg/s)</div>
+    <!-- Gyroscope Section -->
+    <section class="mb-5">
+      <h3 class="text-center fw-bold mb-4" data-aos="fade-up">Gyroscope Readings</h3>
+      <div class="row mb-4 align-items-stretch">
+        <div class="col-md-6 d-flex">
+          <div class="card shadow-sm p-4 rounded h-100 w-100" data-aos="fade-up">
+            <h5 class="card-title">Gyroscope</h5>
+            <div class="d-flex justify-content-between mb-3">
+              <div><span class="fw-bold" id="gyro-x-value">-</span><br>X-Axis (°/s)</div>
+              <div><span class="fw-bold" id="gyro-y-value">-</span><br>Y-Axis (°/s)</div>
+              <div><span class="fw-bold" id="gyro-z-value">-</span><br>Z-Axis (°/s)</div>
+            </div>
+            <div class="chart-container">
+              <canvas id="gyroscopeChart"></canvas>
+            </div>
           </div>
-          <div class="chart-container" style="height: 300px;">
-            <canvas id="gyroscopeChart"></canvas>
+        </div>
+        <div class="col-md-6 d-flex flex-column h-100">
+          <div class="card shadow-sm p-4 rounded flex-grow-1 mb-3" data-aos="fade-up" data-aos-delay="100">
+            <h5 class="card-title">Rotation Data Averages</h5>
+            <div id="avg-resting-rot-text">0</div>
+            <div id="avg-walking-rot-text">0</div>
+            <div id="avg-running-rot-text">0</div>
+          </div>
+          <div class="card shadow-sm p-4 rounded flex-grow-1" data-aos="fade-up" data-aos-delay="200">
+            <h5 class="card-title">Rotation Data Outliers</h5>
+            <div id="first-max-rot-text">0</div>
+            <div id="first-max-rot-explanation-text">0</div><br>
+            <div id="second-max-rot-text">0</div>
+            <div id="second-max-rot-explanation-text">0</div><br>
+            <div id="third-max-rot-text">0</div>
+            <div id="third-max-rot-explanation-text">0</div><br>
           </div>
         </div>
       </div>
-      <div class="col-md-6 d-flex flex-column h-100">
-        <!-- rotation averages -->
-        <div class="card shadow-sm p-4 rounded flex-grow-1 mb-3" data-aos="fade-up" data-aos-delay="100">
-          <h5 class="card-title">Rotation Data Averages</h5>
-          <div id="avg-resting-rot-text">0</div>
-          <div id="avg-walking-rot-text">0</div>
-          <div id="avg-running-rot-text">0</div>
-        </div>
-        <!-- rotation max outliers -->
-        <div class="card shadow-sm p-4 rounded flex-grow-1" data-aos="fade-up" data-aos-delay="200">
-          <h5 class="card-title">Rotation Data Outliers</h5>
-          <div id="first-max-rot-text">0</div>
-          <div id="first-max-rot-explanation-text">0</div>
-          <br>
-          <div id="second-max-rot-text">0</div>
-          <div id="second-max-rot-explanation-text">0</div>
-          <br>
-          <div id="third-max-rot-text">0</div>
-          <div id="third-max-rot-explanation-text">0</div>
-          <br>
-        </div>
-      </div>
-    </div>
+    </section>
 
-    <!-- Third Row: Ultrasonic Chart -->
-    <div class="row mb-4">
-      <div class="col-md-12">
-        <div class="card shadow-sm p-4 mb-5 rounded" data-aos="fade-up">
-          <h5 class="card-title mb-0">Ultrasonic Sensor</h5>
-          <div class="d-flex justify-content-between mb-3">
-            <div><span class="fw-bold" id="ultrasonic-value">-</span><br>Distance (cm)</div>
-          </div>
-          <div class="chart-container" style="height: 300px;">
-            <canvas id="ultrasonicChart"></canvas>
+    <!-- Ultrasonic Section -->
+    <section class="mb-5">
+      <h3 class="text-center fw-bold mb-4" data-aos="fade-up">Ultrasonic Sensor</h3>
+      <div class="row mb-4">
+        <div class="col-md-12">
+          <div class="card shadow-sm p-4 mb-5 rounded" data-aos="fade-up">
+            <h5 class="card-title mb-0">Ultrasonic Sensor</h5>
+            <div class="d-flex justify-content-between mb-3">
+              <div><span class="fw-bold" id="ultrasonic-value">-</span><br>Distance (cm)</div>
+            </div>
+            <div class="chart-container">
+              <canvas id="ultrasonicChart"></canvas>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </section>
 
     <!-- Debug Info -->
     <div class="text-center text-muted mt-4 small" data-aos="fade-in">
       <p><strong>Template:</strong> main_app/demo.html</p>
       <p><strong>Time:</strong> {% now "DATETIME_FORMAT" %}</p>
     </div>
-  </div>
-
   </main>
 
   {% include 'main_app/footer.html' %}
 
-  <!-- AOS + Bootstrap JS -->
+  <!-- Scripts -->
   <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
   <script>
     AOS.init({ duration: 1000, once: true });
   </script>
-
-  <!-- Dynamic Data Script -->
   <script>
     let waitingForRequest = false;
     let demoUpdateIntervalId = 0;
@@ -201,18 +175,17 @@
           document.getElementById('avg-resting-accel-text').textContent = data.avg_resting_accel;
           document.getElementById('avg-walking-accel-text').textContent = data.avg_walking_accel;
           document.getElementById('avg-running-accel-text').textContent = data.avg_running_accel;
-          
           document.getElementById('avg-resting-rot-text').textContent = data.avg_resting_rot;
           document.getElementById('avg-walking-rot-text').textContent = data.avg_walking_rot;
           document.getElementById('avg-running-rot-text').textContent = data.avg_running_rot;
-          
+
           document.getElementById('first-max-accel-text').textContent = data.first_fastest_accel;
           document.getElementById('first-max-accel-explanation-text').textContent = data.first_fastest_accel_explanation;
           document.getElementById('second-max-accel-text').textContent = data.second_fastest_accel;
           document.getElementById('second-max-accel-explanation-text').textContent = data.second_fastest_accel_explanation;
           document.getElementById('third-max-accel-text').textContent = data.third_fastest_accel;
           document.getElementById('third-max-accel-explanation-text').textContent = data.third_fastest_accel_explanation;
-          
+
           document.getElementById('first-max-rot-text').textContent = data.first_fastest_rot;
           document.getElementById('first-max-rot-explanation-text').textContent = data.first_fastest_rot_explanation;
           document.getElementById('second-max-rot-text').textContent = data.second_fastest_rot;
@@ -227,28 +200,30 @@
           waitingForRequest = false;
         });
     }
-  </script>
+ 
 
-  <!-- Chart.js and AOS -->
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script src="{% static 'main_app/js/chart.js' %}"></script>
-  <script>
-    AOS.init({ duration: 1000, once: true });
-    //Page-specific JavaScript for demo.html
-    document.addEventListener('DOMContentLoaded', function () {
-      fetch("{% static 'main_app/data/data-sample.csv' %}")
-        .then(response => response.text())
-        .then(csvText => {
-          const data = parseCSV(csvText);
-          setupCharts(data);
-        });
-    });
-  </script>
+</script>
+
+<!-- Chart.js and AOS -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="{% static 'main_app/js/chart.js' %}"></script>
+<script>
+  AOS.init({ duration: 1000, once: true });
+  //Page-specific JavaScript for demo.html
+  document.addEventListener('DOMContentLoaded', function () {
+    fetch("{% static 'main_app/data/data-sample.csv' %}")
+      .then(response => response.text())
+      .then(csvText => {
+        const data = parseCSV(csvText);
+        setupCharts(data);
+      });
+  });
+</script>
 
 <script src="{% static 'main_app/js/darkmode.js' %}"></script>
- 
 </body>
 </html>
+
 
 
 
