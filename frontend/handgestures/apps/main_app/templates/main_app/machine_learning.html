@@ -1,0 +1,47 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Machine Learning | Hand Gesture Project</title>
+  <link rel="stylesheet" href="{% static 'main_app/css/style.css' %}">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+  <link href="https://unpkg.com/aos@2.3.4/dist/aos.css" rel="stylesheet">
+</head>
+
+<body class="bg-light text-dark">
+  {% include 'main_app/navbar.html' %}
+
+  <main class="container wide-container py-5 mb-5">
+    <!-- Hero Section -->
+    <section class="mb-5">
+      <div class="text-center text-white p-5 rounded-4 mx-3" style="background: linear-gradient(to right, #31b3fe, #7d7676);" data-aos="fade-down">
+        <h1 class="fw-bold display-5 mb-4">Machine Learning Model</h1>
+        <p class="lead text-light px-md-5" style="text-align:center">
+          Explore the algorithms, data processing, and training techniques behind our real-time motion recognition system.
+        </p>
+      </div>
+    </section>
+
+    <!-- Pipeline Diagram Section -->
+    <section class="mb-5" data-aos="fade-up">
+      <div class="card shadow-lg p-4 mb-4 rounded text-center">
+        <img src="{% static 'main_app/img/ml_pipeline.png' %}" alt="Machine Learning Pipeline Diagram" class="img-fluid mx-auto d-block mb-3" style="max-width: 900px;">
+      </div>
+    </section>
+
+  </main>
+
+  {% include 'main_app/footer.html' %}
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
+  <script>
+    AOS.init({ duration: 1000, once: true });
+  </script>
+  <script src="{% static 'main_app/js/darkmode.js' %}"></script>
+</body>
+</html>
