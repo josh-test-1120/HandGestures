@@ -29,6 +29,9 @@ def summary(request):
 def structure(request):
     return render(request, 'main_app/structure.html')
 
+def machine_learning(request):
+    return render(request, 'main_app/machine_learning.html')
+
 
 def demo(request):
     return render(request, 'main_app/demo.html')
