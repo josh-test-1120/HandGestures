@@ -1,6 +1,12 @@
+{% load static %} 
 <nav class="navbar navbar-expand-lg bg-body-tertiary" id="mainNavbar">
   <div class="container-fluid">
-    <a class="navbar-brand" href="{% url 'main_app:index' %}">Hand Motion Recognition</a>
+    
+    <a class="navbar-brand d-flex align-items-center gap-2" href="{% url 'main_app:index' %}">
+      <img src="{% static 'main_app/img/cwu-athletics-logo.png' %}" alt="CWU Logo" style="height: 40px;" class="d-inline-block align-text-top">
+      <span>Hand Motion Recognition</span>
+    </a>
+    
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -11,6 +17,9 @@
         </li>
         <li class="nav-item">
           <a class="nav-link" href="{% url 'main_app:summary' %}">Summary</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'main_app:machine_learning' %}">Machine Learning</a>
         </li>
         <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -27,6 +36,7 @@
           <a class="nav-link" href="{% url 'main_app:contact' %}">Contacts</a>
         </li>
       </ul>
+      
       <button id="themeToggle" class="btn bg-transparent border-0 ms-3" style="font-size: 1.25rem;">🌙</button>
     </div>
   </div>

@@ -1,58 +1,102 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Structure | Hand Gesture Project</title>
-  {% load static %}
   <link rel="stylesheet" href="{% static 'main_app/css/style.css' %}">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
   <link href="https://unpkg.com/aos@2.3.4/dist/aos.css" rel="stylesheet">
 </head>
 
 <body class="bg-light text-dark">
   {% include 'main_app/navbar.html' %}
 
-  <main class="container wide-container py-5">
+  <main class="container wide-container py-5 mb-5">
 
-    <!-- Title Section -->
-    <div class="text-center mb-5">
-      <h1 class="display-5 fw-bold text-black" data-aos="fade-down">Hand Motion Recognition <br> System Structure</h1>
-      <p class="lead text-muted" data-aos="fade-down">How the Hand Gesture Project Works</p>
-    </div>
+    <!-- Hero Section -->
+    <section class="mb-5">
+      <div class="text-center text-white p-5 rounded-4 mx-3" style="background: linear-gradient(to right, #31b3fe, #7d7676);" data-aos="fade-down">
+        <h1 class="display-5 fw-bold mb-3">Hand Motion Recognition <br> System Structure</h1>
+        <p class="lead text-light mb-0">How the Hand Gesture Project Works</p>
+      </div>
+    </section>
 
     <!-- System Pipeline Section -->
-    <div class="card shadow-sm p-4 mb-5 rounded" data-aos="fade-up">
-        <h2 class="fw-bold text-primary mb-4">System Pipeline</h2>
-        <img src="{% static 'main_app/img/system_pipeline.png' %}" alt="System Pipeline"
-             class="img-fluid shadow rounded mx-auto d-block mb-3"
-             style="max-width: 1000px;">
-        <p class="text-muted">
-          The user begins by wearing a sensor-equipped device. This device transmits motion data to a local device, which forwards it to a server. On the server side, a machine learning model processes and classifies the motion data. The output is then visualized on the website to display detected gestures in real-time.
-        </p>
-      </div>
+    <section class="card shadow-lg p-4 mb-5 rounded" data-aos="fade-up">
+      <h2 class="fw-bold text-primary mb-4">System Pipeline</h2>
+      <img src="{% static 'main_app/img/system_pipeline.png' %}" alt="System Pipeline Diagram" class="img-fluid shadow rounded mx-auto d-block mb-3" style="max-width: 1000px;">
+      <p class="text-muted" style="text-align: justify;">
+        The user wears a sensor-equipped device that captures real-time motion data. The data is transmitted to a processing unit and eventually visualized on the front-end.
+      </p>
+      <ul class="text-muted">
+        <li>Wearable IMU sensors (MPU6050)</li>
+        <li>Arduino Nano or Uno for local processing</li>
+        <li>Bluetooth module for wireless data transfer</li>
+        <li>Web server for visualization and control</li>
+      </ul>
+    </section>
 
     <!-- Data Flow Section -->
-    <div class="card shadow-sm p-4 mb-5 rounded" data-aos="fade-up">
+    <section class="card shadow-lg p-4 mb-5 rounded" data-aos="fade-up">
       <h2 class="fw-bold text-primary mb-4">Data Flow</h2>
-      <img src="{% static 'main_app/img/data_flow_diagram.png' %}" alt="Data Flow Diagram"
-           class="img-fluid shadow rounded mx-auto d-block mb-3"
-           style="max-width: 1000px;">
-      <p class="text-muted">
+      <img src="{% static 'main_app/img/data_flow_diagram.png' %}" alt="Data Flow Diagram" class="img-fluid shadow rounded mx-auto d-block mb-3" style="max-width: 1000px;">
+      <p class="text-muted" style="text-align: justify;">
         This diagram illustrates the complete data flow of the Hand Gesture system. Motion data is collected from an Arduino Nano or Uno and stored on an SD card. This data is used both for frontend data visualization and backend machine learning model training. Once the model is trained, it is deployed to make real-time gesture predictions displayed on the demo pages.
       </p>
-    </div>
+      <ul class="text-muted">
+        <li>Sensor data collected and optionally saved to SD card</li>
+        <li>Processed data sent to web interface</li>
+        <li>Data forwarded to backend for classification</li>
+        <li>Real-time gesture output displayed in frontend dashboard</li>
+      </ul>
+    </section>
+
+    <!-- Hardware Diagram Section -->
+    <section class="card shadow-lg p-4 mb-5 rounded" data-aos="fade-up">
+      <h2 class="fw-bold text-primary mb-4">Hardware Diagram</h2>
+      <img src="{% static 'main_app/img/hardware_diagram.png' %}" alt="Hardware Diagram" class="img-fluid shadow rounded mx-auto d-block mb-3" style="max-width: 1000px;">
+      
+    </section>
+
+    <!-- Machine Learning Model Section -->
+    <section class="card shadow-lg p-4 mb-5 rounded" data-aos="fade-up">
+      <h2 class="fw-bold text-primary mb-4">Machine Learning</h2>
+      <p class="text-muted" style="text-align: justify;">
+        We have a dedicated page that explores our machine learning model in detail, including how it was developed, trained, and deployed for real-time motion recognition. To learn more about the algorithms and techniques behind our system, visit the machine learning page below.
+      </p>
+      <a href="{% url 'main_app:machine_learning' %}" class="btn btn-outline-primary btn-lg px-4">Learn More</a>
+    </section>
 
   </main>
 
   {% include 'main_app/footer.html' %}
 
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
   <script>
     AOS.init({ duration: 1000, once: true });
   </script>
   <script src="{% static 'main_app/js/darkmode.js' %}"></script>
-
 </body>
 </html>
+
+
+<!--
+
+    Machine Learning Section 
+    <section class="card shadow-lg p-4 mb-5 rounded" data-aos="fade-up">
+      <h2 class="fw-bold text-primary mb-4">Machine Learning</h2>
+      <p class="text-muted" style="text-align: justify;">
+        The motion data is used to train a supervised learning model that distinguishes seizure-related gestures from normal ones. The trained model is deployed to make real-time predictions on incoming motion patterns.
+      </p>
+      <ul class="text-muted">
+        <li>Data preprocessed into labeled gesture vectors</li>
+        <li>Feature extraction from accelerometer and gyroscope signals</li>
+        <li>Model trained using classification algorithms (e.g., Random Forest, SVM)</li>
+        <li>Live inference using trained model during demonstration</li>
+      </ul>
+    </section>-->

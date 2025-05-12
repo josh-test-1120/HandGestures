@@ -14,35 +14,97 @@
 <body class="bg-light text-dark">
   {% include 'main_app/navbar.html' %}
 
-  <main class="container wide-container py-5">
+  <main class="container wide-container py-5 mb-5">
+    
     <!-- Hero Section -->
     <section class="mb-5">
-      <div class="row justify-content-center text-center mb-4" data-aos="fade-down">
-        <div class="col-lg-10">
-          <h1 class="fw-bold display-5 mb-4">Detection of Epileptic Seizures<br>Through Motion Recognition<br> Using Machine Learning</h1>
-          <p class="lead text-muted px-md-5">
-            Our capstone project aims to identify seizure events using wearable IMU-based sensors. With real-time data collection and predictive modeling, our system offers a privacy-conscious and accessible method for non-invasive health monitoring.
-          </p>
-          <div class="d-flex justify-content-center gap-3 mt-4 flex-wrap">
-            <a href="{% url 'main_app:structure' %}" class="btn btn-primary btn-lg px-4">Learn More</a>
-            <a href="{% url 'main_app:summary' %}" class="btn btn-outline-primary btn-lg px-4">View Research</a>
-          </div>
-        </div>
-      </div>
-    
-      <div class="row justify-content-center" data-aos="fade-up">
-        <div class="col-lg-8 text-center">
-          <img src="{% static 'main_app/img/circuit_image.png' %}" alt="Detection Circuit" class="img-fluid rounded shadow-lg" style="max-width: 90%; height: auto;">
+      <div class="text-center text-white p-5 rounded-4 mx-3" style="background: linear-gradient(to right, #31b3fe, #7d7676);" data-aos="fade-down">
+        <h1 class="fw-bold display-5 mb-4">Detection of Epileptic Seizures<br>Through Motion Recognition<br>Using Machine Learning</h1>
+        <h2 class="lead text-light px-md-9" style="text-align:justify"><strong>Our Project at a Glance:</strong></h2>
+        <ul class="text-light">
+          <li class="fs-6 px-md-5" style="text-align:left"><strong>Why it matters:</strong> Epileptic seizures can happen suddenly and pose serious risks if not quickly recognized, yet current solutions often rely on cameras or bulky devices that affect comfort or privacy.</li>
+          <li class="fs-6 px-md-5" style="text-align:justify"><strong>What we're doing:</strong> We use small wearable motion sensors and a room-mounted ultrasonic device to detect seizure-related movements like tremors, stiffening, and posture changes.</li>
+          <li class="fs-6 px-md-5" style="text-align:justify"><strong>Our goal:</strong> To create a smart, real-time detection system that protects privacy and displays results through an easy-to-use website, supporting early intervention at home or in clinical settings.</li>
+        </ul>
+        <div class="d-flex justify-content-center gap-3 mt-4 flex-wrap">
+          <a href="{% url 'main_app:structure' %}" class="btn btn-primary btn-lg px-4">Learn More</a>
+          <a href="{% url 'main_app:summary' %}" class="btn btn-outline-light btn-lg px-4">View Research</a>
         </div>
       </div>
     </section>
 
-    <!-- Section Divider -->
+    <!-- Hero Image -->
+    <div class="row justify-content-center my-5" data-aos="fade-up">
+      <div class="col-lg-8 text-center">
+        <img src="{% static 'main_app/img/circuit_image.png' %}" alt="Detection Circuit" class="img-fluid rounded shadow-lg" style="max-width: 90%;">
+      </div>
+    </div>
+
+    <!-- Team Introduction Section -->
+    <section class="mb-5">
+      <div class="row justify-content-center text-center mb-4" data-aos="fade-up">
+        <div class="col-lg-10">
+          <h3 class="fw-bold mb-4">Who We Are</h3>
+          <p class="lead text-muted px-md-5" style="text-align:justify">
+            Brought together by a shared passion for innovation and impact, we are a team of five driven CWU Des Moines students who first met in CS325 (Technical Writing for Computer Science) during Fall 2023. What began as classroom collaboration quickly evolved into a mission—to harness our combined strengths in hardware and software development to address a real-world challenge.
+          </p>
+          <p class="lead text-muted px-md-5" style="text-align:justify">
+            With guidance from Dr. Zhu and Dr. Gao, we set out to design a system that empowers individuals living with epilepsy through real-time motion-based monitoring. This work represents more than just research; it’s our commitment to creating technology that protects, uplifts, and respects the dignity of every person it serves.
+          </p>
+        </div>
+      </div>
+
+      <!-- Team Members -->
+      <div class="row justify-content-center g-4 px-md-5" data-aos="zoom-in">
+        <div class="col-sm-6 col-md-4 col-lg-2 text-center">
+          <div class="card border-0 shadow-sm">
+            <div class="card-body">
+              <h6 class="fw-bold mb-1">Jack</h6>
+              <p class="text-muted small">Frontend Team</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-6 col-md-4 col-lg-2 text-center">
+          <div class="card border-0 shadow-sm">
+            <div class="card-body">
+              <h6 class="fw-bold mb-1">Hieu</h6>
+              <p class="text-muted small">Frontend Team</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-6 col-md-4 col-lg-2 text-center">
+          <div class="card border-0 shadow-sm">
+            <div class="card-body">
+              <h6 class="fw-bold mb-1">Phillip</h6>
+              <p class="text-muted small">Frontend Team</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-6 col-md-4 col-lg-2 text-center">
+          <div class="card border-0 shadow-sm">
+            <div class="card-body">
+              <h6 class="fw-bold mb-1">Joshua</h6>
+              <p class="text-muted small">Backend Team</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-6 col-md-4 col-lg-2 text-center">
+          <div class="card border-0 shadow-sm">
+            <div class="card-body">
+              <h6 class="fw-bold mb-1">Telmen</h6>
+              <p class="text-muted small">Backend Team</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <hr class="my-5">
 
     <!-- How It Works -->
     <section>
       <h3 class="text-center fw-bold mb-5" data-aos="fade-up">How It Works</h3>
+      <p class="text-center text-muted mb-5 px-md-5" data-aos="fade-up">From motion sensing to intelligent prediction, here's how our system functions step by step.</p>
       <div class="row text-center g-4">
         <div class="col-md-4" data-aos="zoom-in" data-aos-delay="100">
           <div class="card shadow-sm h-100 border-0">
@@ -74,37 +136,44 @@
       </div>
     </section>
 
-    <!-- Section Divider -->
     <hr class="my-5">
 
     <!-- Technical Implementation -->
     <section>
-      <div class="row align-items-center">
-        <div class="col-md-6 text-center mb-4 mb-md-0" data-aos="fade-right">
-          <img src="{% static 'main_app/img/circuit2.png' %}" alt="Circuit Diagram" class="img-fluid shadow rounded" style="max-width: 100%; height: auto;">
+      <h3 class="text-center fw-bold mb-5" data-aos="fade-up">Technical Implementation</h3>
+      <div class="row align-items-center mt-5">
+        <div class="col-md-6 text-center" data-aos="fade-right">
+            <img src="{% static 'main_app/img/circuit3.png' %}" alt="Circuit Diagram" class="img-fluid shadow" style="width: 400px;">
         </div>
         <div class="col-md-6" data-aos="fade-left">
-          <h4 class="fw-bold mb-4">Technical Implementation</h4>
-          <ul class="list-unstyled fs-6">
-            <li class="mb-3">
-              <span class="text-success fw-bold">✔ MPU6050 Sensor Integration</span><br>
-              <small class="text-muted">6-axis motion tracking for accurate acceleration and gyroscope readings.</small>
-            </li>
-            <li class="mb-3">
-              <span class="text-success fw-bold">✔ Real-time Data Processing</span><br>
-              <small class="text-muted">Arduino-based continuous data monitoring and signal processing.</small>
-            </li>
-            <li class="mb-3">
-              <span class="text-success fw-bold">✔ Wireless Transmission</span><br>
-              <small class="text-muted">Bluetooth connectivity for live data streaming and storage.</small>
-            </li>
-          </ul>
+            <h4 class="fw-bold mb-4">Technical Implementation</h4>
+            <ul class="list-unstyled">
+                <li class="mb-3">
+                    <span class="text-success fw-bold">✔ MPU6050 Sensor Integration</span><br>
+                    <small class="text-muted">6-axis motion tracking for accurate acceleration and gyroscope readings</small>
+                </li>
+                <li class="mb-3">
+                    <span class="text-success fw-bold">✔ Real-time Data Processing</span><br>
+                    <small class="text-muted">Arduino-based continuous data monitoring and signal processing</small>
+                </li>
+                <li class="mb-3">
+                    <span class="text-success fw-bold">✔ Wireless Transmission</span><br>
+                    <small class="text-muted">Bluetooth connectivity for live data streaming and storage</small>
+                </li>
+            </ul>
         </div>
-      </div>
+    </div>
+</div>
     </section>
+
+    <!-- Final CTA -->
+    <section class="text-center mt-5" data-aos="fade-up">
+      <h4 class="fw-bold mb-3">Experience It Live</h4>
+      <a href="{% url 'main_app:live_demo' %}" class="btn btn-primary btn-lg px-4">Try Our Live Demo</a>
+    </section>
+
   </main>
   
-  <!--Footer-->
   {% include 'main_app/footer.html' %}
 
   <!-- Scripts -->

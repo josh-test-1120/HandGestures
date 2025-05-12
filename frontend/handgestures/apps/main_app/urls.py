@@ -17,6 +17,7 @@ urlpatterns = [
 	path("demo_page_update/", views.demo_page_update, name="demo_page_update"),
 	path("structure/", views.structure, name="structure"),
 	path("demo/",views.demo, name="demo"),
+    path("machine_learning/", views.machine_learning, name="machine_learning"),
 	path("live-demo/", views.live_demo, name="live_demo"),
 	path("contact/",views.contact, name ='contact'),
 	#path('api/report/', views.api_report, name='api_report'),  # Example

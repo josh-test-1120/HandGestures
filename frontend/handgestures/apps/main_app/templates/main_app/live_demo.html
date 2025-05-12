@@ -8,19 +8,23 @@
     <link rel="stylesheet" href="{% static 'main_app/css/style.css' %}">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>   
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="{% static 'main_app/js/chart.js' %}"></script>
     <link href="https://unpkg.com/aos@2.3.4/dist/aos.css" rel="stylesheet">
 </head>
 <body class="bg-light text-dark">
     {% include 'main_app/navbar.html' %}
-    <div style="margin-top:20px;"></div>
-    <div class="container mt-4">
-
     <main class="container wide-container py-5 mb-5">
         <div style="margin-top:20px;"></div>
-    
-        <h1 class="text-center mb-4" data-aos="fade-down">Arduino Live Data Demo</h1>
-
+        <!-- Hero Section -->
+        <section class="mb-5">
+            <div class="text-center text-white p-5 rounded-4 mx-3" style="background: linear-gradient(to right, #31b3fe, #7d7676);" data-aos="fade-down">
+                <h1 class="fw-bold display-5 mb-4">Arduino Live Data Demo</h1>
+                <p class="lead text-light px-md-5" style="text-align:justify">
+                    This is a live demonstration reflecting the entire data collection process through Arduino Nano connectivity, import .CSV from SD card, and chart data population visualization through Chart.js components
+                </p>
+            </div>
+        </section>
         <!-- File input for CSV import -->
         <input type="file" id="csvFileInput" accept=".csv" style="display:none;">
         <!-- Loading spinner/message -->
@@ -30,7 +34,6 @@
             </div>
             <div>Loading and parsing CSV...</div>
         </div>
-
         <!-- Control buttons for the live demo -->
         <div class="controls">
             <button id="importCSV" class="btn">Import CSV</button>
@@ -41,7 +44,6 @@
         <div class="alert alert-info mt-2" role="alert" style="max-width: 500px;">
             <strong>Note:</strong> 1s of real time = 10s of demo time (i.e. 10 data points).
         </div>
-        
         <!-- Accelerometer & Gyroscope -->
         <div class="row mb-4">
             <div class="col-md-6">
@@ -71,7 +73,6 @@
                 </div>
             </div>
         </div>
-
         <!-- Ultrasonic Sensor -->
         <div class="card shadow-sm p-4 mb-5 rounded" data-aos="fade-up">
             <h5 class="card-title mb-0">Ultrasonic Sensor</h5>
@@ -82,7 +83,6 @@
                 <canvas id="ultrasonicChart"></canvas>
             </div>
         </div>
-
         <!-- Data Export -->
         <div class="card shadow-sm p-4 mb-5 rounded" data-aos="fade-up">
             <div class="d-flex justify-content-between align-items-center mb-2">
@@ -106,16 +106,8 @@
                 </tbody>
             </table>
         </div>
-
-       
-   
-
     </main>
-
     {% include 'main_app/footer.html' %}
-
-
-    
 
     <!-- JAVASCRIPT CODE -->
     <script>
@@ -257,47 +249,6 @@
         const stopBtn = document.getElementById('stopBtn');
         const clearBtn = document.getElementById('clearBtn');
 
-        //Helper: Parse CSV text to arrays
-        function parseCSV(text) {
-            const lines = text.trim().split(/\r?\n/);
-            const header = lines[0].split(',');
-            const idx = {
-                //parsed columns: time, accelX, accelY, accelZ, gyroX, gyroY, gyroZ, distance
-                time: header.indexOf('Timestamp(ms)'),
-                ax: header.indexOf('AccelX(g)'),
-                ay: header.indexOf('AccelY(g)'),
-                az: header.indexOf('AccelZ(g)'),
-                gx: header.indexOf('GyroX(deg/s)'),
-                gy: header.indexOf('GyroY(deg/s)'),
-                gz: header.indexOf('GyroZ(deg/s)'),
-                dist: header.indexOf('Distance(cm)')
-            };
-            let t0 = null;
-            let timeArr = [], axArr = [], ayArr = [], azArr = [], gxArr = [], gyArr = [], gzArr = [], distArr = [];
-            for (let i = 1; i < lines.length; i++) {
-                const row = lines[i].split(',');
-                if (row.length < header.length) continue;
-                const t = parseInt(row[idx.time]);
-                if (t0 === null) t0 = t;
-                //Convert timestamp from milliseconds to seconds (relative to the first row), rounded to 2 decimal places
-                timeArr.push(((t - t0) / 1000).toFixed(2)); 
-                axArr.push(parseFloat(row[idx.ax]));
-                ayArr.push(parseFloat(row[idx.ay]));
-                azArr.push(parseFloat(row[idx.az]));
-                gxArr.push(parseFloat(row[idx.gx]));
-                gyArr.push(parseFloat(row[idx.gy]));
-                gzArr.push(parseFloat(row[idx.gz]));
-                distArr.push(parseFloat(row[idx.dist]));
-            }
-            return { //return parsed data
-                time: timeArr,
-                accel: { x: axArr, y: ayArr, z: azArr },
-                gyro: { x: gxArr, y: gyArr, z: gzArr },
-                ultrasonic: distArr
-            };
-        }
-
-
         //ADDED EVENT LISTENERS FOR BUTTONS 4-24-2025 (SCRUM Sprint 3)
 
         //Event: Import CSV
@@ -412,59 +363,6 @@
             ultrasonicChart.data.datasets.forEach(ds => ds.data = []);
             ultrasonicChart.update();
         });
-
-        //helper functions to update value dynamically based on chart data position (implemented 4-29-2025)
-        function updateAccValues(x, y, z) {
-            document.getElementById('acc-x-value').textContent = x !== undefined ? x : '-';
-            document.getElementById('acc-y-value').textContent = y !== undefined ? y : '-';
-            document.getElementById('acc-z-value').textContent = z !== undefined ? z : '-';
-        }
-        function updateGyroValues(x, y, z) {
-            document.getElementById('gyro-x-value').textContent = x !== undefined ? x : '-';
-            document.getElementById('gyro-y-value').textContent = y !== undefined ? y : '-';
-            document.getElementById('gyro-z-value').textContent = z !== undefined ? z : '-';
-        }
-        function updateUltrasonicValue(val) {
-            document.getElementById('ultrasonic-value').textContent = val !== undefined ? val : '-';
-        }
-
-        //Chart.js hover event for Accelerometer
-        accelerometerChart.options.onHover = function(event, chartElement) {
-            if (chartElement.length > 0) {
-                const idx = chartElement[0].index;
-                updateAccValues(
-                    accelerometerChart.data.datasets[0].data[idx],
-                    accelerometerChart.data.datasets[1].data[idx],
-                    accelerometerChart.data.datasets[2].data[idx]
-                );
-            } else {
-                updateAccValues();
-            }
-        };
-
-        //Chart.js hover event for Gyroscope
-        gyroscopeChart.options.onHover = function(event, chartElement) {
-            if (chartElement.length > 0) {
-                const idx = chartElement[0].index;
-                updateGyroValues(
-                    gyroscopeChart.data.datasets[0].data[idx],
-                    gyroscopeChart.data.datasets[1].data[idx],
-                    gyroscopeChart.data.datasets[2].data[idx]
-                );
-            } else {
-                updateGyroValues();
-            }
-        };
-
-        //Chart.js hover event for Ultrasonic
-        ultrasonicChart.options.onHover = function(event, chartElement) {
-            if (chartElement.length > 0) {
-                const idx = chartElement[0].index;
-                updateUltrasonicValue(ultrasonicChart.data.datasets[0].data[idx]);
-            } else {
-                updateUltrasonicValue();
-            }
-        };
     </script>
     <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
     <script>
