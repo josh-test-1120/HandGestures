@@ -17,9 +17,10 @@ urlpatterns = [
 	path("demo_page_update/", views.demo_page_update, name="demo_page_update"),
 	path("structure/", views.structure, name="structure"),
 	path("demo/",views.demo, name="demo"),
-    path("machine_learning/", views.machine_learning, name="machine_learning"),
+	path("machine_learning/", views.machine_learning, name="machine_learning"),
 	path("live-demo/", views.live_demo, name="live_demo"),
-	path("contact/",views.contact, name ='contact'),
+	path("contact/", views.contact, name='contact'),
+	path("live_demo_prediction/", views.live_demo_prediction, name="live_demo_prediction")
 	#path('api/report/', views.api_report, name='api_report'),  # Example
 
 	# Regex matcher

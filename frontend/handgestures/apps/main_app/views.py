@@ -3,8 +3,13 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.urls import reverse, resolve, NoReverseMatch
 from django.http import JsonResponse, HttpResponse
+from django import forms
+from django.views.decorators.csrf import csrf_exempt
+
+import json
 
 import random
+
 
 # Import your models for this application
 # from .models import Course, Description, Comment
@@ -78,3 +83,33 @@ def demo_page_update(request):
     }
     
     return JsonResponse(demo_data)
+
+
+# TODO: consider if this needs to use CSRF tokens
+# TODO: send data to the neural network once it's made.
+@csrf_exempt
+def live_demo_prediction(request):
+    
+    sample_predictions = [0.125, 0.2, 0.375, 0.3]
+    
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        #print(*data, sep="\n")
+        
+        # replace below with neural network output once it's ready
+        predictions_this_request = len(data)
+        predictions = [None] * predictions_this_request
+        
+        for idx in range(predictions_this_request):
+            sample_predictions_idx = (round(data[idx]["time"]) % 20) // 5
+            prediction = {
+                "Shaking": sample_predictions[(sample_predictions_idx + 0) % len(sample_predictions)],
+                "Posture": sample_predictions[(sample_predictions_idx + 1) % len(sample_predictions)],
+                "Fall": sample_predictions[(sample_predictions_idx + 2) % len(sample_predictions)],
+                "Normal": sample_predictions[(sample_predictions_idx + 3) % len(sample_predictions)],
+            }
+            predictions[idx] = prediction
+        
+        return JsonResponse(dict(zip(range(predictions_this_request), predictions)))
+    
+    return JsonResponse({'error': 'Invalid request'}, status=400)
