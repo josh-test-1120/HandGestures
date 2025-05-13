@@ -310,14 +310,6 @@ footer#mainFooter {
 footer#mainFooter p {
     color: #f0f0f0 !important;
 }
-  .card {
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    max-width: 500px;
-  }
-  .card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 0.5rem 1.2rem rgba(0, 0, 0, 0.15);
-  }
 /* styles unique to live_demo.html*/
 .error {
     background-color: #f8d7da;

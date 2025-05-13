@@ -56,9 +56,19 @@
 
     <!-- Hardware Diagram Section -->
     <section class="card shadow-lg p-4 mb-5 rounded" data-aos="fade-up">
-      <h2 class="fw-bold text-primary mb-4">Hardware Diagram</h2>
+      <h2 class="fw-bold text-primary mb-4">Hardware Architecture</h2>
       <img src="{% static 'main_app/img/hardware_diagram.png' %}" alt="Hardware Diagram" class="img-fluid shadow rounded mx-auto d-block mb-3" style="max-width: 1000px;">
-      
+      <p class ="text-muted" style="text-align: justify;">
+          The hardware architecture diagram outlines the key components and interconnections in our Arduino-based Hand Motion system. The system integrates multiple sensors and interfaces to capture, process, and store motion data efficiently for real-time and offline analysis.
+      </p>
+      <ul class="text-muted">
+        <li>9V battery supplies power and is regulated to 5V for system stability</li>
+        <li>ATmega328P microcontroller acts as the central processing unit</li>
+        <li>MPU-6050 (Accelerometer/Gyroscope) connected via I2C for motion data</li>
+        <li>HC-SR04 Ultrasonic sensor connected via GPIO (Trigger/Echo)</li>
+        <li>SD Card Module connected via SPI interface for local data logging</li>
+        <li>Data from sensors is transmitted for visualization and machine learning inference</li>
+      </ul>
     </section>
 
     <!-- Machine Learning Model Section -->
