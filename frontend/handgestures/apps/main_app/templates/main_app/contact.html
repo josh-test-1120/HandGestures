@@ -15,16 +15,16 @@
       display: flex;
       flex-direction: column;
     }
-    
+   
     main.container {
       flex: 1;
     }
-    
+   
     footer {
       padding-top: 0.25rem !important;
       padding-bottom: 0.25rem !important;
     }
-    
+   
     @media (max-height: 600px) {
       .header-logo {
         height: 80px !important;
@@ -39,10 +39,12 @@
   </style>
 </head>
 
+
 <body class="bg-light text-dark">
   {% include 'main_app/navbar.html' %}
   <main class="container wide-container py-4">
-  
+ 
+
 
     <section class="mb-5">
       <div class="text-center text-white p-5 rounded-4 mx-3" style="background: linear-gradient(to right, #31b3fe, #7d7676);" data-aos="fade-down">
@@ -53,102 +55,85 @@
       </div>
     </section>
 
-    <!-- Team Headings Row -->
-    <div class="row text-center fw-bold mb-3">
-      <div class="col-md-4 text-primary">Back-End Team</div>
-      <div class="col-md-4 text-success">Front-End Team</div>
-      <div class="col-md-4 text-danger">Client Members</div>
-    </div>
 
-    <!-- First Row of Members -->
-    <div class="row justify-content-center align-items-center text-center mb-4" data-aos="fade-up">
-      <!-- Joshua Summers -->
-      <div class="col-md-4 d-flex flex-column align-items-center">
-        <img src="{% static 'main_app/img/Joshua.jpeg' %}" alt="Joshua Summers" class="rounded-circle mb-2" width="100" height="100">
-        <button class="fw-semibold btn btn-link p-0" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-joshua" aria-expanded="false" aria-controls="collapse-joshua">Joshua Summers</button>
-        <div class="collapse" id="collapse-joshua">
-          <div>
-            <div><a href="mailto:Joshua.Summers@cwu.edu">Mail</a> | <a href="https://github.com/josh-test-1120">GitHub</a></div>
-          </div>
-        </div>
-      </div>
-      <!-- Hieu Luong -->
-      <div class="col-md-4 d-flex flex-column align-items-center">
-        <img src="{% static 'main_app/img/Hieu.png' %}" alt="Hieu Luong" class="rounded-circle mb-2" width="100" height="100">
-        <button class="fw-semibold btn btn-link p-0" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-hieu" aria-expanded="false" aria-controls="collapse-hieu">Hieu Luong</button>
-        <div class="collapse" id="collapse-hieu">
-          <div>
-            <div><a href="mailto:LuongH@cwu.edu">Mail</a> | <a href="https://github.com/HoweyLuong">GitHub</a></div>
-          </div>
-        </div>
-      </div>
-      <!-- Shangyue Zhu -->
-      <div class="col-md-4 d-flex flex-column align-items-center">
-        <img src="{% static 'main_app/img/Zhu.jpg' %}" alt="Shangyue Zhu" class="rounded-circle mb-2" width="100" height="100">
-        <button class="fw-semibold btn btn-link p-0" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-shangyue" aria-expanded="false" aria-controls="collapse-shangyue">Shangyue Zhu</button>
-        <div class="collapse" id="collapse-shangyue">
-          <div>
-            <div><a href="mailto:Shangeyue.Zhu@cwu.edu">Mail</a> 
-          </div>
-        </div>
-      </div>
+  <!-- Front-End Team -->
+<section class="mb-5" data-aos="fade-up">
+  <h2 class="text-success text-center mb-4">Front-End Team</h2>
+  <div class="row justify-content-center text-center g-4">
+    <!--Jack-->
+    <div class="col-md-3">
+      <img src="{% static 'main_app/img/Jack.jpeg' %}" alt="Jack" class="rounded-circle mb-2" width="100" height="100">
+      <div class="fw-semibold">Jack Mcdonald</div>
+      <a href="mailto:Jack.Mcdonald@cwu.edu">Mail</a> | <a href="https://github.com/speedrun-program">GitHub</a>
     </div>
+    <!-- Phillip -->
+    <div class="col-md-3">
+      <img src="{% static 'main_app/img/Phillip.png' %}" alt="Phillip" class="rounded-circle mb-2" width="100" height="100">
+      <div class="fw-semibold">Phillip Ho</div>
+      <a href="mailto:phillip.ho@cwu.edu">Mail</a> | <a href="https://github.com/phillipho98">GitHub</a>
+    </div>
+     <!-- Hieu -->
+    <div class="col-md-3">
+      <img src="{% static 'main_app/img/Hieu.png' %}" alt="Hieu" class="rounded-circle mb-2" width="100" height="100">
+      <div class="fw-semibold">Hieu Luong</div>
+      <a href="mailto:LuongH@cwu.edu">Mail</a> | <a href="https://github.com/HoweyLuong">GitHub</a>
+    </div>
+    <!-- Add another front-end member if needed -->
+  </div>
+</section>
 
-    <!-- Second Row of Members -->
-    <div class="row justify-content-center align-items-center text-center" data-aos="fade-up">
-      <!-- Telmen Enkhtuvshin -->
-      <div class="col-md-4 d-flex flex-column align-items-center">
-        <img src="{% static 'main_app/img/Telmen.jpg' %}" alt="Telmen Enkhtuvshin" class="rounded-circle mb-2" width="100" height="100">
-        <button class="fw-semibold btn btn-link p-0" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-telmen" aria-expanded="false" aria-controls="collapse-telmen">Telmen Enkhtuvshin</button>
-        <div class="collapse" id="collapse-telmen">
-          <div>
-            <div><a href="mailto:telmen.enkhtuvshin@cwu.edu">Mail</a> | <a href="https://github.com/Telmen17">GitHub</a></div>
-          </div>
-        </div>
-      </div>
-      <!-- Phillip Ho -->
-      <div class="col-md-4 d-flex flex-column align-items-center">
-        <img src="{% static 'main_app/img/Phillip.png' %}" alt="Phillip Ho" class="rounded-circle mb-2" width="100" height="100">
-        <button class="fw-semibold btn btn-link p-0" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-phillip" aria-expanded="false" aria-controls="collapse-phillip">Phillip Ho</button>
-        <div class="collapse" id="collapse-phillip">
-          <div>
-            <div><a href="mailto:phillip.ho@cwu.edu">Mail</a> | <a href="https://github.com/phillipho98">GitHub</a></div>
-          </div>
-        </div>
-      </div>
-      <!-- Chunming Gao -->
-      <div class="col-md-4 d-flex flex-column align-items-center">
-        <img src="{% static 'main_app/img/Gao.jpg' %}" alt="Chunming Gao" class="rounded-circle mb-2" width="100" height="100">
-        <button class="fw-semibold btn btn-link p-0" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-chunming" aria-expanded="false" aria-controls="collapse-chunming">Chunming Gao</button>
-        <div class="collapse" id="collapse-chunming">
-          <div>
-            <div><a href="mailto:Chunming.Gao@cwu.edu">Mail</a>
-          </div>
-        </div>
-      </div>
-      
-    </div>
 
-    <!-- Third Row of Members -->
-    <div class="row justify-content-center align-items-center text-center mt-4" data-aos="fade-up">
-    <!-- Jack McDonald -->
-    <div class="col-md-4 d-flex flex-column align-items-center">
-      <img src="{% static 'main_app/img/Jack.jpeg' %}" alt="Jack McDonald" class="rounded-circle mb-2" width="100" height="100">
-      <button class="fw-semibold btn btn-link p-0" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-jack" aria-expanded="false" aria-controls="collapse-jack">Jack McDonald</button>
-      <div class="collapse" id="collapse-jack">
-        <div>
-          <div><a href="mailto:Jack.Mcdonald@cwu.edu">Mail</a> | <a href="https://github.com/speedrun-program">GitHub</a></div>
-        </div>
-      </div>
+<!-- Back-End Team -->
+<section class="mb-5" data-aos="fade-up">
+  <h2 class="text-primary text-center mb-4">Back-End Team</h2>
+  <div class="row justify-content-center text-center g-4">
+    <!-- Joshua -->
+    <div class="col-md-3">
+      <img src="{% static 'main_app/img/Joshua.jpeg' %}" alt="Joshua" class="rounded-circle mb-2" width="100" height="100">
+      <div class="fw-semibold">Joshua Summers</div>
+      <a href="mailto:Joshua.Summers@cwu.edu">Mail</a> | <a href="https://github.com/josh-test-1120">GitHub</a>
     </div>
+    <!-- Telmen -->
+    <div class="col-md-3">
+      <img src="{% static 'main_app/img/Telmen.jpg' %}" alt="Telmen" class="rounded-circle mb-2" width="100" height="100">
+      <div class="fw-semibold">Telmen Enkhtuvshin</div>
+      <a href="mailto:telmen.enkhtuvshin@cwu.edu">Mail</a> | <a href="https://github.com/Telmen17">GitHub</a>
     </div>
-    
+   
+  </div>
+</section>
+
+
+<!-- Client Team -->
+<section class="mb-5" data-aos="fade-up">
+  <h2 class="text-danger text-center mb-4">Client Team</h2>
+  <div class="row justify-content-center text-center g-4">
+    <!-- Shangyue -->
+    <div class="col-md-3">
+      <img src="{% static 'main_app/img/Zhu.jpg' %}" alt="Shangyue" class="rounded-circle mb-2" width="100" height="100">
+      <div class="fw-semibold">Shangyue Zhu</div>
+      <a href="mailto:Shangeyue.Zhu@cwu.edu">Mail</a>
+    </div>
+    <!-- Chunming -->
+    <div class="col-md-3">
+      <img src="{% static 'main_app/img/Gao.jpg' %}" alt="Chunming Gao" class="rounded-circle mb-2" width="100" height="100">
+      <div class="fw-semibold">Chunming Gao</div>
+      <a href="mailto:Chunming.Gao@cwu.edu">Mail</a>
+    </div>
+  </div>
+</section>
+
+
+
+
 
 
   </main>
 
+
   <!--Footer-->
   {% include 'main_app/footer.html' %}
+
 
 <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
 <script>
@@ -156,5 +141,9 @@
 </script>
 <script src="{% static 'main_app/js/darkmode.js' %}"></script>
 
+
 </body>
 </html>
+
+
+
