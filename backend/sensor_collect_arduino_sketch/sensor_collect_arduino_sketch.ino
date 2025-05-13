@@ -15,9 +15,7 @@
 #include <SD.h>
 #include <Adafruit_GFX.h>
 #include <Adafruit_SSD1306.h>
-//#include <avr/wdt.h>
 #include <Fonts/TomThumb.h>
-//#include "TomThumb.h"  // Include the custom font
 #include <NewPing.h>
 
 // Pins for board to sensor connection
@@ -41,15 +39,15 @@
 // Ultrasonics
 NewPing sonarLeft(TRIG_PIN_LEFT, ECHO_PIN_LEFT, MAX_DISTANCE);
 NewPing sonarRight(TRIG_PIN_RIGHT, ECHO_PIN_RIGHT, MAX_DISTANCE);
-unsigned int leftDist_cm;
-unsigned int rightDist_cm;
+// unsigned int leftDist_cm;
+// unsigned int rightDist_cm;
 
 // Initialize OLED (I2C address 0x3C for most displays)
 Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, -1);
 
 // Initialize objects
 MPU6050 mpu; // MPU object
-File dataFile; // File object
+// File dataFile; // File object
 
 // MPU-6050
 unsigned long lastMPUTime = 0;
@@ -122,7 +120,7 @@ bool verifySDHardware() {
           test = false;
         }
         testFile.close();
-        SD.end();
+        // SD.end();
       }
     }
     // Return the boolean test of the SD Hardware
@@ -153,12 +151,12 @@ void initDataFile() {
       }
       dataFile.close();
     }
-    SD.end();
+    // SD.end();
 }
 
 // This is the function that will write the sensor data to the SD card
-// void writeToSDCard(float leftDist, float rightDist, float ax, float ay, float az, float gx, float gy, float gz) {
-void writeToSDCard() {
+void writeToSDCard(float leftDist, float rightDist, float ax, float ay, float az, float gx, float gy, float gz) {
+// void writeToSDCard() {
   // Get the current timestamp
   unsigned long currentTS = millis();
   // Open the Data File
@@ -166,14 +164,14 @@ void writeToSDCard() {
   // Write a new row to the file
   if (dataFile && interval <= INTERVAL_MAX) { // temporarily capture only 500 rows
       dataFile.print(currentTS); dataFile.print(",");
-      dataFile.print(accelX, 3); dataFile.print(",");
-      dataFile.print(accelY, 3); dataFile.print(",");
-      dataFile.print(accelZ, 3); dataFile.print(",");
-      dataFile.print(gyroX, 3); dataFile.print(",");
-      dataFile.print(gyroY, 3); dataFile.print(",");
-      dataFile.print(gyroZ, 3); dataFile.print(",");
-      dataFile.print(leftDist_cm, 1); dataFile.print(",");
-      dataFile.print(rightDist_cm, 1); dataFile.println();
+      dataFile.print(ax, 3); dataFile.print(",");
+      dataFile.print(ay, 3); dataFile.print(",");
+      dataFile.print(az, 3); dataFile.print(",");
+      dataFile.print(gx, 3); dataFile.print(",");
+      dataFile.print(gy, 3); dataFile.print(",");
+      dataFile.print(gz, 3); dataFile.print(",");
+      dataFile.print(leftDist, 1); dataFile.print(",");
+      dataFile.print(rightDist, 1); dataFile.println();
       dataFile.close();
       if (LIVE_DEBUG && interval >= INTERVAL_MAX) Serial.println("Wrote 3000 rows into CSV: ");
       if (LIVE_DEBUG && (interval % 1000 == 0)) Serial.println("Wrote 1000 rows into CSV. Continuing... ");
@@ -182,7 +180,7 @@ void writeToSDCard() {
   if (interval == INTERVAL_MAX) finishOLED_SD();
   // Close file and end SD session
   dataFile.close();
-  SD.end();
+  // SD.end();
 }
 
 // Initialize the OLED screen for Data Collection
@@ -199,7 +197,7 @@ void initOLED_SD() {
 }
 
 // Initialize the OLED screen for MPU Real-time collection
-void updateOLED_MPU() {
+void updateOLED_MPU(unsigned int leftDist, unsigned int rightDist) {
   display.clearDisplay();
   display.setFont(&TomThumb);
   display.setTextColor(SSD1306_WHITE);
@@ -223,9 +221,9 @@ void updateOLED_MPU() {
 
   display.setCursor(0, 19);
   display.print("L:");
-  display.print(leftDist_cm, 1);  // 1 decimal
+  display.print(leftDist, 1);  // 1 decimal
   display.print(" R:");
-  display.println(rightDist_cm, 1);
+  display.println(rightDist, 1);
   display.display();
 }
 
@@ -297,11 +295,9 @@ void setup() {
       count = 5 + 7;
     }
     delay(5); // Small delay
-
     // Initalize MPU-6050 sensor
     initMPU6050();
     delay(5); // Small delay
-
     // Initlaize the SD-Card Hardware
     bool sdReady = verifySDHardware();
     if (sdReady) {
@@ -309,17 +305,13 @@ void setup() {
       printOLED(&count, "Initialization complete");
     }
     else exit(0);
-
     // Initialize interval
     interval = 1;
-
     // Finish initialization of hardware
     initDataFile();
-
     // System initialization complete
     printOLED(&count, "System Initialized!");
     delay(10000);
-
     // Update OLED for collection
     initOLED_SD();
     delay(5); // Small delay
@@ -332,21 +324,15 @@ void loop() {
     // Step 1: Read MPU sensor
     readMPU6050();  // Update accel/gyro variables
     // Step 2: Get distances (blocking mode)
-    leftDist_cm = sonarLeft.ping_cm();
-    rightDist_cm = sonarRight.ping_cm();
+    unsigned int leftDist_cm = sonarLeft.ping_cm();
+    unsigned int rightDist_cm = sonarRight.ping_cm();
     // Step 3: Write to SD-Card
-    // writeToSDCard(leftDist_cm, rightDist_cm, accelX, accelY, accelZ, gyroX, gyroY, gyroZ);
-    writeToSDCard();
+    writeToSDCard(leftDist_cm, rightDist_cm, accelX, accelY, accelZ, gyroX, gyroY, gyroZ);
+    // writeToSDCard();
     // Step 4: Update OLED screen with interval
     if (interval % 50 == 0) updateOLED_SD();
-    // Debug output of ultrasonics
-    if (LIVE_DEBUG && (interval % 50 == 0)) {
-      Serial.println("AccelX(g), AccelY(g), AccelZ(g), GyroX(deg/s), GyroY(deg/s), GyroZ(deg/s), DistanceLeft(cm), DistanceRight(cm)");
-      Serial.print(accelX, 3); Serial.print(", "); Serial.print(accelY, 3); Serial.print(", "); Serial.print(accelZ, 3); Serial.print(", ");
-      Serial.print(gyroX, 3); Serial.print(", "); Serial.print(gyroX, 3); Serial.print(", "); Serial.print(gyroZ, 3); Serial.print(", "); Serial.print(leftDist_cm, 3);
-      Serial.print(", "); Serial.println(rightDist_cm, 3);
-    }
   }
+  else SD.end();
   // Update counter
   interval++;
   // Delay of sensors
