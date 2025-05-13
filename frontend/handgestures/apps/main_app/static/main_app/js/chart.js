@@ -19,9 +19,11 @@ function parseCSV(text) {
     gz: header.indexOf('GyroZ(deg/s)'),
     dist: header.indexOf('Distance(cm)')
   };
+  const samplePredictions = [0.125, 0.2, 0.375, 0.3];
   let t0 = null;
   //initialize arrays for each column in CSV
   let timeArr = [], axArr = [], ayArr = [], azArr = [], gxArr = [], gyArr = [], gzArr = [], distArr = [];
+  let shakingPred = [], posturePred = [], fallPred = [], normalPred = [];
   for (let i = 1; i < lines.length; i++) {
     const row = lines[i].split(',');
     if (row.length < header.length) continue;
@@ -37,12 +39,33 @@ function parseCSV(text) {
     gzArr.push(parseFloat(row[idx.gz]));
     distArr.push(parseFloat(row[idx.dist]));
   }
+  for (let i = 1; i < lines.length; i++) {
+    
+    let predictionsIdx = 0;
+    let percentDone = i / lines.length;
+    
+    if (percentDone < 0.25) {
+      predictionsIdx = 0;
+    } else if (percentDone < 0.5) {
+      predictionsIdx = 1;
+    } else if (percentDone < 0.75) {
+      predictionsIdx = 2;
+    } else {
+      predictionsIdx = 3;
+    }
+    
+    shakingPred.push(samplePredictions[(predictionsIdx + 0) % samplePredictions.length]);
+    posturePred.push(samplePredictions[(predictionsIdx + 1) % samplePredictions.length]);
+    fallPred.push(samplePredictions[(predictionsIdx + 2) % samplePredictions.length]);
+    normalPred.push(samplePredictions[(predictionsIdx + 3) % samplePredictions.length]);
+  }
   //return parsed data as object
   return {
     time: timeArr,
     accel: { x: axArr, y: ayArr, z: azArr },
     gyro: { x: gxArr, y: gyArr, z: gzArr },
-    ultrasonic: distArr
+    ultrasonic: distArr,
+    prediction: { shaking: shakingPred, posture: posturePred, fall: fallPred, normal: normalPred }
   };
 }
 
@@ -112,6 +135,29 @@ function setupCharts(data) {
     }
   });
 
+  //Predictions
+  const PredictionCtx = document.getElementById('predictionChart').getContext('2d');
+  const predictionChart = new Chart(PredictionCtx, {
+    type: 'line',
+    data: {
+      labels: data.time,
+      datasets: [
+        { label: 'Shaking', data: data.prediction.shaking, borderColor: 'rgba(255, 255, 0, 1)', backgroundColor: 'rgba(255, 255, 0, 0.2)', borderWidth: 1, pointRadius: 2, tension: 0.4 },
+        { label: 'Posture Change', data: data.prediction.posture, borderColor: 'rgba(255, 127, 0, 1)', backgroundColor: 'rgba(255, 127, 0, 0.2)', borderWidth: 1, pointRadius: 2, tension: 0.4 },
+        { label: 'Fall', data: data.prediction.fall, borderColor: 'rgba(255, 0, 0, 1)', backgroundColor: 'rgba(255, 0, 0, 0.2)', borderWidth: 1, pointRadius: 2, tension: 0.4 },
+        { label: 'Normal', data: data.prediction.normal, borderColor: 'rgba(0, 255, 0, 1)', backgroundColor: 'rgba(0, 255, 0, 0.2)', borderWidth: 1, pointRadius: 2, tension: 0.4 },
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      scales: {
+        x: { type: 'linear', title: { display: true, text: 'Time (s)' }, ticks: { stepSize: 5, callback: v => v + 's' } },
+        y: { beginAtZero: true }
+      }
+    }
+  });
+
   //Helper functions to update value displays
   function updateAccValues(x, y, z) {
     document.getElementById('acc-x-value').textContent = x !== undefined ? x : '-';
@@ -125,6 +171,12 @@ function setupCharts(data) {
   }
   function updateUltrasonicValue(val) {
     document.getElementById('ultrasonic-value').textContent = val !== undefined ? val : '-';
+  }
+  function updatePredictionValues(shaking, posture, fall, normal) {
+    document.getElementById('shaking-percent').textContent = shaking !== undefined ? shaking : '-';
+    document.getElementById('posture-percent').textContent = posture !== undefined ? posture : '-';
+    document.getElementById('fall-percent').textContent = fall !== undefined ? fall : '-';
+    document.getElementById('normal-percent').textContent = normal !== undefined ? normal : '-';
   }
 
   //Chart.js hover events for Accelerometer/Gyroscope/Ultrasonic
@@ -160,6 +212,20 @@ function setupCharts(data) {
       updateUltrasonicValue(ultrasonicChart.data.datasets[0].data[idx]);
     } else {
       updateUltrasonicValue();
+    }
+  };
+
+  predictionChart.options.onHover = function(event, chartElement) {
+    if (chartElement.length > 0) {
+      const idx = chartElement[0].index;
+      updatePredictionValues(
+        predictionChart.data.datasets[0].data[idx],
+        predictionChart.data.datasets[1].data[idx],
+        predictionChart.data.datasets[2].data[idx],
+        predictionChart.data.datasets[3].data[idx]
+      );
+    } else {
+      updatePredictionValues();
     }
   };
 

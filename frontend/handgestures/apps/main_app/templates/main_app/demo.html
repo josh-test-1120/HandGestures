@@ -135,6 +135,27 @@
       </div>
     </section>
 
+    <!-- Predictions Section -->
+    <section class="mb-5">
+      <h3 class="text-center fw-bold mb-4" data-aos="fade-up">Prediction</h3>
+      <div class="row mb-4">
+        <div class="col-md-12">
+          <div class="card shadow-sm p-4 mb-5 rounded" data-aos="fade-up">
+            <h5 class="card-title mb-4">Prediction</h5>
+            <div class="d-flex justify-content-between mb-3">
+              <div>Shaking:<br><span class="fw-bold" id="shaking-percent">-</span>%</div>
+              <div>Posture Change:<br><span class="fw-bold" id="posture-percent">-</span>%</div>
+              <div>Fall:<br><span class="fw-bold" id="fall-percent">-</span>%</div>
+              <div>Normal:<br><span class="fw-bold" id="normal-percent">-</span>%</div>
+            </div>
+            <div class="chart-container">
+              <canvas id="predictionChart"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
   </main>
 
   {% include 'main_app/footer.html' %}
@@ -210,6 +231,7 @@
       .then(response => response.text())
       .then(csvText => {
         const data = parseCSV(csvText);
+        const prediction = 0;
         setupCharts(data);
       });
   });
@@ -218,7 +240,6 @@
 <script src="{% static 'main_app/js/darkmode.js' %}"></script>
 </body>
 </html>
-
 
 
 
