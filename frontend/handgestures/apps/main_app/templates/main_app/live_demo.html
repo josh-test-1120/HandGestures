@@ -44,6 +44,10 @@
         <div class="alert alert-info mt-2" role="alert" style="max-width: 500px;">
             <strong>Note:</strong> 1s of real time = 10s of demo time (i.e. 10 data points).
         </div>
+
+        <div id="alertBox" class="alert alert-danger d-none fw-bold text-center" role="alert" style="max-width: 500px; font-size: 1.1rem;">
+            ⚠️ Seizure-like activity detected!
+        </div>
         <!-- Accelerometer & Gyroscope -->
         <div class="row mb-4">
             <div class="col-md-6">
@@ -319,6 +323,7 @@
 
             demoInterval = setInterval(function() {
                 for (let i = 0; i < 10 && demoIndex < csvTime.length; i++, demoIndex++) {
+                    const time  = Number(csvTime[demoIndex]);
                     //Add next data point to each chart based on demoIndex (current data point to display)
                     accelerometerChart.data.labels.push(Number(csvTime[demoIndex]));
                     accelerometerChart.data.datasets[0].data.push(csvAccel.x[demoIndex]);
