@@ -110,7 +110,27 @@
                 </tbody>
             </table>
         </div>
-    </main>
+
+        <!-- Predictions Section -->
+        <section class="mb-5">
+            <h3 class="text-center fw-bold mb-4" data-aos="fade-up">Prediction</h3>
+            <div class="row mb-4">
+                <div class="col-md-12">
+                    <div class="card shadow-sm p-4 mb-5 rounded" data-aos="fade-up">
+                        <h5 class="card-title mb-4">Prediction</h5>
+                        <div class="d-flex justify-content-between mb-3">
+                            <div>Shaking:<br><span class="fw-bold" id="shaking-percent">-</span>%</div>
+                            <div>Posture Change:<br><span class="fw-bold" id="posture-percent">-</span>%</div>
+                            <div>Fall:<br><span class="fw-bold" id="fall-percent">-</span>%</div>
+                            <div>Normal:<br><span class="fw-bold" id="normal-percent">-</span>%</div>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="predictionChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
     {% include 'main_app/footer.html' %}
 
     <!-- JAVASCRIPT CODE -->
@@ -223,6 +243,39 @@
             }
         });
 
+        //Prediction Chart
+        const predictionCtx = document.getElementById('predictionChart').getContext('2d');
+        let predictionChart = new Chart(predictionCtx, {
+            type: 'line',
+            data: {
+                labels: [],
+                datasets: [
+                    { label: 'Shaking', data: [], borderColor: 'rgba(255, 255, 0, 1)', backgroundColor: 'rgba(255, 255, 0, 0.2)', borderWidth: 1, pointRadius: 2, tension: 0.4 },
+                    { label: 'Posture Change', data: [], borderColor: 'rgba(255, 127, 0, 1)', backgroundColor: 'rgba(255, 127, 0, 0.2)', borderWidth: 1, pointRadius: 2, tension: 0.4 },
+                    { label: 'Fall', data: [], borderColor: 'rgba(255, 0, 0, 1)', backgroundColor: 'rgba(255, 0, 0, 0.2)', borderWidth: 1, pointRadius: 2, tension: 0.4 },
+                    { label: 'Normal', data: [], borderColor: 'rgba(0, 255, 0, 1)', backgroundColor: 'rgba(0, 255, 0, 0.2)', borderWidth: 1, pointRadius: 2, tension: 0.4 },
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: {
+                        type: 'linear',
+                        title: {
+                            display: true,
+                            text: 'Time (s)'
+                        },
+                        ticks: {
+                            stepSize: 5,
+                            callback: function(value) { return value + 's'; }
+                        }
+                    },
+                    y: { beginAtZero: true }
+                }
+            }
+        });
+
         //basic variables for data handling
         let isConnected = false;
         let isMonitoring = false;
@@ -310,15 +363,26 @@
             ultrasonicChart.data.datasets = [
                 { label: 'Distance (cm)', data: [], borderColor: 'rgba(39, 174, 96, 1)', backgroundColor: 'rgba(39, 174, 96, 0.2)', borderWidth: 1, pointRadius: 2, tension: 0.4 }
             ];
+            predictionChart.data.labels = [];
+            predictionChart.data.datasets = [
+                { label: 'Shaking', data: [], borderColor: 'rgba(255, 255, 0, 1)', backgroundColor: 'rgba(255, 255, 0, 0.2)', borderWidth: 1, pointRadius: 2, tension: 0.4 },
+                { label: 'Posture Change', data: [], borderColor: 'rgba(255, 127, 0, 1)', backgroundColor: 'rgba(255, 127, 0, 0.2)', borderWidth: 1, pointRadius: 2, tension: 0.4 },
+                { label: 'Fall', data: [], borderColor: 'rgba(255, 0, 0, 1)', backgroundColor: 'rgba(255, 0, 0, 0.2)', borderWidth: 1, pointRadius: 2, tension: 0.4 },
+                { label: 'Normal', data: [], borderColor: 'rgba(0, 255, 0, 1)', backgroundColor: 'rgba(0, 255, 0, 0.2)', borderWidth: 1, pointRadius: 2, tension: 0.4 },
+            ];
             accelerometerChart.update();
             gyroscopeChart.update();
             ultrasonicChart.update();
+            predictionChart.update();
 
             demoIndex = 0;
             demoRunning = true;
 
             demoInterval = setInterval(function() {
-                for (let i = 0; i < 10 && demoIndex < csvTime.length; i++, demoIndex++) {
+                const dataPointsPerInterval = 10;
+                let arrayOfJson = Array(dataPointsPerInterval).fill(null);
+                let responseFromServer = null;
+                for (let i = 0; i < dataPointsPerInterval && demoIndex < csvTime.length; i++, demoIndex++) {
                     //Add next data point to each chart based on demoIndex (current data point to display)
                     accelerometerChart.data.labels.push(Number(csvTime[demoIndex]));
                     accelerometerChart.data.datasets[0].data.push(csvAccel.x[demoIndex]);
@@ -332,10 +396,47 @@
 
                     ultrasonicChart.data.labels.push(Number(csvTime[demoIndex]));
                     ultrasonicChart.data.datasets[0].data.push(csvUltrasonic[demoIndex]);
+
+                    predictionChart.data.labels.push(Number(csvTime[demoIndex]));
+
+                    arrayOfJson[i] = {
+                        time: Number(csvTime[demoIndex]),
+                        accelx: csvAccel.x[demoIndex],
+                        accely: csvAccel.y[demoIndex],
+                        accelz: csvAccel.z[demoIndex],
+                        gyrox: csvGyro.x[demoIndex],
+                        gyroy: csvGyro.y[demoIndex],
+                        gyroz: csvGyro.z[demoIndex],
+                        distance: csvUltrasonic[demoIndex],
+                    };
                 }
+                // TODO: consider if this needs to use CSRF tokens
+                fetch('/live_demo_prediction/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(arrayOfJson)
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error("response wasn't okay");
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    for (let i = 0; i < dataPointsPerInterval; i++) {
+                        predictionChart.data.datasets[0].data.push(data[i]["Shaking"]);
+                        predictionChart.data.datasets[1].data.push(data[i]["Posture"]);
+                        predictionChart.data.datasets[2].data.push(data[i]["Fall"]);
+                        predictionChart.data.datasets[3].data.push(data[i]["Normal"]);
+                    }
+                });
+                
                 accelerometerChart.update();
                 gyroscopeChart.update();
                 ultrasonicChart.update();
+                predictionChart.update();
                 if (demoIndex >= csvTime.length) {
                     clearInterval(demoInterval);
                     demoRunning = false;
@@ -370,6 +471,10 @@
             ultrasonicChart.data.labels = [];
             ultrasonicChart.data.datasets.forEach(ds => ds.data = []);
             ultrasonicChart.update();
+            
+            predictionChart.data.labels = [];
+            predictionChart.data.datasets.forEach(ds => ds.data = []);
+            predictionChart.update();
         });
     </script>
     <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
