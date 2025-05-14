@@ -332,7 +332,10 @@ void loop() {
     // Step 4: Update OLED screen with interval
     if (interval % 50 == 0) updateOLED_SD();
   }
-  else SD.end();
+  else {
+    SD.end();
+    //exit(0);
+  }
   // Update counter
   interval++;
   // Delay of sensors
