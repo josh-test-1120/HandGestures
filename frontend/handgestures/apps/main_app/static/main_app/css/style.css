@@ -84,6 +84,7 @@ h1, h3, h4, h5 {
 }
 .card:hover {
     transform: translateY(-5px);
+    transition: transform 0.3s ease;
 }
 /* General dark mode overrides */
 .bg-dark .text-muted,
