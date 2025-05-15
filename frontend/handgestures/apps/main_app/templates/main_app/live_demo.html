@@ -119,10 +119,10 @@
                     <div class="card shadow-sm p-4 mb-5 rounded" data-aos="fade-up">
                         <h5 class="card-title mb-4">Prediction</h5>
                         <div class="d-flex justify-content-between mb-3">
-                            <div>Shaking:<br><span class="fw-bold" id="shaking-percent">-</span>%</div>
-                            <div>Posture Change:<br><span class="fw-bold" id="posture-percent">-</span>%</div>
-                            <div>Fall:<br><span class="fw-bold" id="fall-percent">-</span>%</div>
-                            <div>Normal:<br><span class="fw-bold" id="normal-percent">-</span>%</div>
+                            <div>Shaking<br>Probability:<br><span class="fw-bold" id="shaking-percent">-</span></div>
+                            <div>Posture Change<br>Probability:<br><span class="fw-bold" id="posture-percent">-</span></div>
+                            <div>Fall<br>Probability:<br><span class="fw-bold" id="fall-percent">-</span></div>
+                            <div>Normal<br>Probability:<br><span class="fw-bold" id="normal-percent">-</span></div>
                         </div>
                         <div class="chart-container">
                             <canvas id="predictionChart"></canvas>
@@ -276,6 +276,76 @@
             }
         });
 
+        // functions ran by graphs when the mouse it over a graph point.
+        function updateAccValues(x, y, z) {
+          document.getElementById('acc-x-value').textContent = x !== undefined ? x : '-';
+          document.getElementById('acc-y-value').textContent = y !== undefined ? y : '-';
+          document.getElementById('acc-z-value').textContent = z !== undefined ? z : '-';
+        }
+        function updateGyroValues(x, y, z) {
+          document.getElementById('gyro-x-value').textContent = x !== undefined ? x : '-';
+          document.getElementById('gyro-y-value').textContent = y !== undefined ? y : '-';
+          document.getElementById('gyro-z-value').textContent = z !== undefined ? z : '-';
+        }
+        function updateUltrasonicValue(val) {
+          document.getElementById('ultrasonic-value').textContent = val !== undefined ? val : '-';
+        }
+        function updatePredictionValues(shaking, posture, fall, normal) {
+          document.getElementById('shaking-percent').textContent = shaking !== undefined ? shaking.toFixed(3) : '-';
+          document.getElementById('posture-percent').textContent = posture !== undefined ? posture.toFixed(3) : '-';
+          document.getElementById('fall-percent').textContent = fall !== undefined ? fall.toFixed(3) : '-';
+          document.getElementById('normal-percent').textContent = normal !== undefined ? normal.toFixed(3) : '-';
+        }
+
+        accelerometerChart.options.onHover = function(event, chartElement) {
+          if (chartElement.length > 0) {
+            const idx = chartElement[0].index;
+            updateAccValues(
+              accelerometerChart.data.datasets[0].data[idx],
+              accelerometerChart.data.datasets[1].data[idx],
+              accelerometerChart.data.datasets[2].data[idx]
+            );
+          } else {
+            updateAccValues();
+          }
+        };
+
+        gyroscopeChart.options.onHover = function(event, chartElement) {
+          if (chartElement.length > 0) {
+            const idx = chartElement[0].index;
+            updateGyroValues(
+              gyroscopeChart.data.datasets[0].data[idx],
+              gyroscopeChart.data.datasets[1].data[idx],
+              gyroscopeChart.data.datasets[2].data[idx]
+            );
+          } else {
+            updateGyroValues();
+          }
+        };
+
+        ultrasonicChart.options.onHover = function(event, chartElement) {
+          if (chartElement.length > 0) {
+            const idx = chartElement[0].index;
+            updateUltrasonicValue(ultrasonicChart.data.datasets[0].data[idx]);
+          } else {
+            updateUltrasonicValue();
+          }
+        };
+
+        predictionChart.options.onHover = function(event, chartElement) {
+          if (chartElement.length > 0) {
+            const idx = chartElement[0].index;
+            updatePredictionValues(
+              predictionChart.data.datasets[0].data[idx],
+              predictionChart.data.datasets[1].data[idx],
+              predictionChart.data.datasets[2].data[idx],
+              predictionChart.data.datasets[3].data[idx]
+            );
+          } else {
+            updatePredictionValues();
+          }
+        };
+
         //basic variables for data handling
         let isConnected = false;
         let isMonitoring = false;
@@ -320,7 +390,13 @@
             const reader = new FileReader(); //FileReader API is used to read the contents of a file
             reader.onload = function(evt) {
                 try {
-                    const parsed = parseCSV(evt.target.result);
+                    let parsed = {
+                        time: [],
+                        accel: { x: [], y: [], z: [] },
+                        gyro: { x: [], y: [], z: [] },
+                        ultrasonic: []
+                    };
+                    parseCSV(evt.target.result, parsed);
                     csvTime = parsed.time;
                     csvAccel = parsed.accel;
                     csvGyro = parsed.gyro;

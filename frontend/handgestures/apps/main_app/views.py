@@ -62,12 +62,12 @@ def summary_page_update(request):
 
 def demo_page_update(request):
     demo_data = {
-        "avg_resting_accel": "average resting acceleration: {:,}".format(0.00),
-        "avg_walking_accel": "average walking acceleration: {:,}".format(3.12),
-        "avg_running_accel": "average running acceleration: {:,}".format(7.54),
-        "avg_resting_rot": "average resting rotation: {:,}".format(0.00),
-        "avg_walking_rot": "average walking rotation: {:,}".format(1.23),
-        "avg_running_rot": "average running rotation: {:,}".format(2.34),
+        "avg_resting_accel": "average x acceleration: {:,}".format(0.00),
+        "avg_walking_accel": "average y acceleration: {:,}".format(3.12),
+        "avg_running_accel": "average z acceleration: {:,}".format(7.54),
+        "avg_resting_rot": "average x rotation: {:,}".format(0.00),
+        "avg_walking_rot": "average y rotation: {:,}".format(1.23),
+        "avg_running_rot": "average z rotation: {:,}".format(2.34),
         "first_fastest_accel": "1st fastest acceleration outlier: {:,}".format(12.12),
         "first_fastest_accel_explanation": "Explanation: A bug flew in the user's face.",
         "second_fastest_accel": "2nd fastest acceleration outlier: {:,}".format(11.12),

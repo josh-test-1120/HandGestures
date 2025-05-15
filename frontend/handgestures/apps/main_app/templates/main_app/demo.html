@@ -143,10 +143,10 @@
           <div class="card shadow-sm p-4 mb-5 rounded" data-aos="fade-up">
             <h5 class="card-title mb-4">Prediction</h5>
             <div class="d-flex justify-content-between mb-3">
-              <div>Shaking:<br><span class="fw-bold" id="shaking-percent">-</span>%</div>
-              <div>Posture Change:<br><span class="fw-bold" id="posture-percent">-</span>%</div>
-              <div>Fall:<br><span class="fw-bold" id="fall-percent">-</span>%</div>
-              <div>Normal:<br><span class="fw-bold" id="normal-percent">-</span>%</div>
+              <div>Shaking<br>Probability:<br><span class="fw-bold" id="shaking-percent">-</span></div>
+              <div>Posture Change<br>Probability:<br><span class="fw-bold" id="posture-percent">-</span></div>
+              <div>Fall<br>Probability:<br><span class="fw-bold" id="fall-percent">-</span></div>
+              <div>Normal<br>Probability:<br><span class="fw-bold" id="normal-percent">-</span></div>
             </div>
             <div class="chart-container">
               <canvas id="predictionChart"></canvas>
@@ -227,11 +227,25 @@
   AOS.init({ duration: 1000, once: true });
   //Page-specific JavaScript for demo.html
   document.addEventListener('DOMContentLoaded', function () {
+
+    let data = {
+      time: [],
+      accel: { x: [], y: [], z: [] },
+      gyro: { x: [], y: [], z: [] },
+      ultrasonic: [],
+      prediction: { shaking: [], posture: [], fall: [], normal: [] }
+    };
+
     fetch("{% static 'main_app/data/data-sample.csv' %}")
       .then(response => response.text())
       .then(csvText => {
-        const data = parseCSV(csvText);
-        const prediction = 0;
+        parseCSV(csvText, data);
+      });
+
+    fetch("{% static 'main_app/data/data-predictions.csv' %}")
+      .then(response => response.text())
+      .then(predictionsText => {
+        parsePredictions(predictionsText, data);
         setupCharts(data);
       });
   });
