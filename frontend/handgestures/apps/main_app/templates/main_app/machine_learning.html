@@ -28,8 +28,19 @@
     <!-- ML Flow Prototype Section -->
     <section class="card shadow-lg p-4 mb-5 rounded" data-aos="fade-up">
       <h2 class="fw-bold text-primary mb-4">ML Flow Prototype</h2>
-      <img src="{% static 'main_app/img/ml-prototype.png' %}" alt="Machine Learning Prototype" class="img-fluid mx-auto d-block mb-3" style="max-width: 900px;">
-    </section>
+      <img src="{% static 'main_app/img/ml-prototype.png' %}" alt="ML Flow Prototype Diagram" class="img-fluid shadow rounded mx-auto d-block mb-3" style="max-width: 1000px;">
+      <p class="text-muted fs-5" style="text-align: justify;">
+         This flow diagram illustrates the complete machine learning pipeline used in our seizure detection system. From raw data acquisition to classification, each stage is designed to ensure reliable real-time performance in distinguishing between seizure and non-seizure motion patterns.
+      </p>
+      <ul class="text-muted">
+       <li><strong>Data Collection:</strong> IMU sensors capture real-time acceleration and rotation data from the user.</li>
+      <li><strong>Preprocessing:</strong> Raw data is cleaned, normalized, and segmented into time windows for analysis.</li>
+    <li><strong>Feature Extraction:</strong> Statistical and frequency-based features are extracted to represent motion patterns.</li>
+    <li><strong>ML Methods:</strong> Machine learning models (e.g., Random Forest, SVM) are trained on labeled datasets.</li>
+    <li><strong>Classification:</strong> The system classifies each time window as either “Seizure” or “Non-Seizure.”</li>
+    <li><strong>Performance Evaluation:</strong> Accuracy, precision, recall, and confusion matrix are used to assess system effectiveness.</li>
+  </ul>
+</section>
 
     <!-- Data Collection Section -->
     <section class="card shadow-lg p-4 mb-5 rounded" data-aos="fade-up">
