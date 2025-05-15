@@ -24,55 +24,56 @@
       </div>
     </section>
 
-   <!-- System Pipeline Section -->
+  <!-- System Pipeline Section -->
 <section class="card shadow-lg p-4 mb-5 rounded" data-aos="fade-up">
   <h2 class="fw-bold text-primary mb-4 text-center">System Pipeline</h2>
 
   <!-- Image Pipeline Row -->
-  <div class="row justify-content-center align-items-center text-center g-4 mb-4 flex-wrap">
+  <div class="d-flex flex-wrap justify-content-center align-items-end text-center gap-4 mb-4">
+
     <!-- Step 1: Wearable IMU -->
-    <div class="col-lg-2 col-md-3 col-sm-4">
+    <div style="width: 120px;">
       <figure>
-        <img src="{% static 'main_app/img/wearable.jpeg' %}" alt="Wearable IMU" class="img-fluid shadow rounded mb-2">
+        <img src="{% static 'main_app/img/wearable.jpeg' %}" alt="Wearable IMU" class="img-fluid shadow rounded mb-2" style="max-height: 120px;">
         <figcaption class="text-muted fw-semibold">Wearable IMU + sensor</figcaption>
       </figure>
     </div>
 
     <!-- Arrow -->
-    <div class="col-auto">
+    <div class="align-self-center">
       <i class="bi bi-arrow-right-circle-fill fs-2 text-primary"></i>
     </div>
 
     <!-- Step 2: Motion Detection -->
-    <div class="col-lg-2 col-md-3 col-sm-4">
+    <div style="width: 120px;">
       <figure>
-        <img src="{% static 'main_app/img/motion.jpeg' %}" alt="Motion" class="img-fluid shadow rounded mb-2">
+        <img src="{% static 'main_app/img/motion.jpeg' %}" alt="Motion" class="img-fluid shadow rounded mb-2" style="max-height: 120px;">
         <figcaption class="text-muted fw-semibold">Motion Detection</figcaption>
       </figure>
     </div>
 
     <!-- Arrow -->
-    <div class="col-auto">
+    <div class="align-self-center">
       <i class="bi bi-arrow-right-circle-fill fs-2 text-primary"></i>
     </div>
 
     <!-- Step 3: Machine Learning -->
-    <div class="col-lg-2 col-md-3 col-sm-4">
+    <div style="width: 120px;">
       <figure>
-        <img src="{% static 'main_app/img/pythonandc.jpeg' %}" alt="Machine Learning" class="img-fluid shadow rounded mb-2">
+        <img src="{% static 'main_app/img/pythonandc.jpeg' %}" alt="Machine Learning" class="img-fluid shadow rounded mb-2" style="max-height: 120px;">
         <figcaption class="text-muted fw-semibold">Machine Learning</figcaption>
       </figure>
     </div>
 
     <!-- Arrow -->
-    <div class="col-auto">
+    <div class="align-self-center">
       <i class="bi bi-arrow-right-circle-fill fs-2 text-primary"></i>
     </div>
 
     <!-- Step 4: Output -->
-    <div class="col-lg-2 col-md-3 col-sm-4">
+    <div style="width: 750px;">
       <figure>
-        <img src="{% static 'main_app/img/output.jpeg' %}" alt="Output" class="img-fluid shadow rounded mb-2" style="max-width: 200%;">
+        <img src="{% static 'main_app/img/output.jpeg' %}" alt="Output" class="img-fluid shadow rounded mb-2" style="max-height: 120px; object-fit: contain;">
         <figcaption class="text-muted fw-semibold">Output Visualization</figcaption>
       </figure>
     </div>
@@ -91,6 +92,7 @@
     <li>Web server for visualization and control</li>
   </ul>
 </section>
+
 
 
     <!-- Data Flow Section -->
