@@ -5,7 +5,7 @@
 
 
 //parse CSV text to arrays
-function parseCSV(text) {
+function parseCSV(text, data) {
   //split lines and extract header indices
   const lines = text.trim().split(/\r?\n/);
   const header = lines[0].split(',');
@@ -19,57 +19,48 @@ function parseCSV(text) {
     gz: header.indexOf('GyroZ(deg/s)'),
     dist: header.indexOf('Distance(cm)')
   };
-  const samplePredictions = [0.125, 0.2, 0.375, 0.3];
   let t0 = null;
   //initialize arrays for each column in CSV
-  let timeArr = [], axArr = [], ayArr = [], azArr = [], gxArr = [], gyArr = [], gzArr = [], distArr = [];
-  let shakingPred = [], posturePred = [], fallPred = [], normalPred = [];
   for (let i = 1; i < lines.length; i++) {
     const row = lines[i].split(',');
     if (row.length < header.length) continue;
     const t = parseInt(row[idx.time]);
     if (t0 === null) t0 = t;
     //convert timestamp to seconds and fill arrays
-    timeArr.push(((t - t0) / 1000).toFixed(2));
-    axArr.push(parseFloat(row[idx.ax]));
-    ayArr.push(parseFloat(row[idx.ay]));
-    azArr.push(parseFloat(row[idx.az]));
-    gxArr.push(parseFloat(row[idx.gx]));
-    gyArr.push(parseFloat(row[idx.gy]));
-    gzArr.push(parseFloat(row[idx.gz]));
-    distArr.push(parseFloat(row[idx.dist]));
+    data.time.push(((t - t0) / 1000).toFixed(2));
+    data.accel.x.push(parseFloat(row[idx.ax]));
+    data.accel.y.push(parseFloat(row[idx.ay]));
+    data.accel.z.push(parseFloat(row[idx.az]));
+    data.gyro.x.push(parseFloat(row[idx.gx]));
+    data.gyro.y.push(parseFloat(row[idx.gy]));
+    data.gyro.z.push(parseFloat(row[idx.gz]));
+    data.ultrasonic.push(parseFloat(row[idx.dist]));
   }
-  for (let i = 1; i < lines.length; i++) {
-    
-    let predictionsIdx = 0;
-    let percentDone = i / lines.length;
-    
-    if (percentDone < 0.25) {
-      predictionsIdx = 0;
-    } else if (percentDone < 0.5) {
-      predictionsIdx = 1;
-    } else if (percentDone < 0.75) {
-      predictionsIdx = 2;
-    } else {
-      predictionsIdx = 3;
-    }
-    
-    shakingPred.push(samplePredictions[(predictionsIdx + 0) % samplePredictions.length]);
-    posturePred.push(samplePredictions[(predictionsIdx + 1) % samplePredictions.length]);
-    fallPred.push(samplePredictions[(predictionsIdx + 2) % samplePredictions.length]);
-    normalPred.push(samplePredictions[(predictionsIdx + 3) % samplePredictions.length]);
-  }
-  //return parsed data as object
-  return {
-    time: timeArr,
-    accel: { x: axArr, y: ayArr, z: azArr },
-    gyro: { x: gxArr, y: gyArr, z: gzArr },
-    ultrasonic: distArr,
-    prediction: { shaking: shakingPred, posture: posturePred, fall: fallPred, normal: normalPred }
-  };
 }
 
-//Chart.js setup 
+function parsePredictions(text, data) {
+  //add predictions to data
+  const lines = text.trim().split(/\r?\n/);
+  const header = lines[0].split(',');
+  const idx = {
+    time: header.indexOf('Timestamp(ms)'),
+    shaking: header.indexOf('Shaking'),
+    posture: header.indexOf('Posture'),
+    fall: header.indexOf('Fall'),
+    normal: header.indexOf('Normal'),
+  };
+  //add predictions to data
+  for (let i = 1; i < lines.length; i++) {
+    const row = lines[i].split(',');
+    if (row.length < header.length) continue;
+    data.prediction.shaking.push(parseFloat(row[idx.shaking]));
+    data.prediction.posture.push(parseFloat(row[idx.posture]));
+    data.prediction.fall.push(parseFloat(row[idx.fall]));
+    data.prediction.normal.push(parseFloat(row[idx.normal]));
+  }
+}
+
+//Chart.js setup
 function setupCharts(data) {
   //Accelerometer
   const accCtx = document.getElementById('accelerometerChart').getContext('2d');
@@ -173,10 +164,10 @@ function setupCharts(data) {
     document.getElementById('ultrasonic-value').textContent = val !== undefined ? val : '-';
   }
   function updatePredictionValues(shaking, posture, fall, normal) {
-    document.getElementById('shaking-percent').textContent = shaking !== undefined ? shaking : '-';
-    document.getElementById('posture-percent').textContent = posture !== undefined ? posture : '-';
-    document.getElementById('fall-percent').textContent = fall !== undefined ? fall : '-';
-    document.getElementById('normal-percent').textContent = normal !== undefined ? normal : '-';
+    document.getElementById('shaking-percent').textContent = shaking !== undefined ? shaking.toFixed(3) : '-';
+    document.getElementById('posture-percent').textContent = posture !== undefined ? posture.toFixed(3) : '-';
+    document.getElementById('fall-percent').textContent = fall !== undefined ? fall.toFixed(3) : '-';
+    document.getElementById('normal-percent').textContent = normal !== undefined ? normal.toFixed(3) : '-';
   }
 
   //Chart.js hover events for Accelerometer/Gyroscope/Ultrasonic
