@@ -24,7 +24,8 @@ function getLatestDataAllCharts() {
         gyroX: null,
         gyroY: null,
         gyroZ: null,
-        distance: null
+        distanceLeft: null,
+        distanceRight: null
     };
     
     //Accelerometer
@@ -47,7 +48,8 @@ function getLatestDataAllCharts() {
     const ultraLen = ultrasonicChart.data.labels.length;
     if (ultraLen > 0) {
         row.timestamp = ultrasonicChart.data.labels[ultraLen - 1];
-        row.distance = ultrasonicChart.data.datasets[0].data[ultraLen - 1];
+        row.distanceLeft = ultrasonicChart.data.datasets[0].data[ultraLen - 1];
+        row.distanceRight = ultrasonicChart.data.datasets[1].data[ultraLen - 1];
     }
     return row;
 }
@@ -67,7 +69,8 @@ function addRowsToTable(row) {
         <td>${row.gyroX}</td>
         <td>${row.gyroY}</td>
         <td>${row.gyroZ}</td>
-        <td>${row.distance}</td>
+        <td>${row.distanceLeft}</td>
+        <td>${row.distanceRight}</td>
     `;
     exportTableBody.appendChild(tr);
 }
@@ -89,9 +92,9 @@ exportCSVBtn.addEventListener('click', function() {
         return;
     }
     //CSV header
-    let csvContent = 'Timestamp,AccelX,AccelY,AccelZ,GyroX,GyroY,GyroZ,Distance\n';
+    let csvContent = 'Timestamp,AccelX,AccelY,AccelZ,GyroX,GyroY,GyroZ,DistanceLeft,DistanceRight\n';
     exportTableRows.forEach(row => {
-        csvContent += `${row.timestamp},${row.accelX},${row.accelY},${row.accelZ},${row.gyroX},${row.gyroY},${row.gyroZ},${row.distance}\n`;
+        csvContent += `${row.timestamp},${row.accelX},${row.accelY},${row.accelZ},${row.gyroX},${row.gyroY},${row.gyroZ},${row.distanceLeft},${row.distanceRight}\n`;
     });
 
 

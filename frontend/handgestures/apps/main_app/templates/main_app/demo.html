@@ -119,13 +119,20 @@
 
     <!-- Ultrasonic Section -->
     <section class="mb-5">
-      <h3 class="text-center fw-bold mb-4" data-aos="fade-up">Ultrasonic Sensor</h3>
+      <h3 class="text-center fw-bold mb-4" data-aos="fade-up">Ultrasonic Sensors</h3>
       <div class="row mb-4">
         <div class="col-md-12">
           <div class="card shadow-sm p-4 mb-5 rounded" data-aos="fade-up">
-            <h5 class="card-title mb-0">Ultrasonic Sensor</h5>
-            <div class="d-flex justify-content-between mb-3">
-              <div><span class="fw-bold" id="ultrasonic-value">-</span><br>Distance (cm)</div>
+            <h5 class="card-title mb-0">Ultrasonic Sensors</h5>
+            <div class="d-flex justify-content-center align-items-center gap-5 mb-3">
+              <div class="text-center">
+                <span class="fw-bold fs-5" id="ultrasonic-left-value">-</span>
+                <br>Left Distance (cm)
+              </div>
+              <div class="text-center">
+                <span class="fw-bold fs-5" id="ultrasonic-right-value">-</span>
+                <br>Right Distance (cm)
+              </div>
             </div>
             <div class="chart-container">
               <canvas id="ultrasonicChart"></canvas>
@@ -216,41 +223,40 @@
           waitingForRequest = false;
         });
     }
- 
+  </script>
 
-</script>
+  <!-- Chart.js and AOS -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="{% static 'main_app/js/chart.js' %}"></script>
+  <script>
+    AOS.init({ duration: 1000, once: true });
+    //Page-specific JavaScript for demo.html
+    document.addEventListener('DOMContentLoaded', function () {
 
-<!-- Chart.js and AOS -->
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script src="{% static 'main_app/js/chart.js' %}"></script>
-<script>
-  AOS.init({ duration: 1000, once: true });
-  //Page-specific JavaScript for demo.html
-  document.addEventListener('DOMContentLoaded', function () {
+      let data = {
+        time: [],
+        accel: { x: [], y: [], z: [] },
+        gyro: { x: [], y: [], z: [] },
+        ultrasonicLeft: [],
+        ultrasonicRight: [],
+        prediction: { shaking: [], posture: [], fall: [], normal: [] }
+      };
 
-    let data = {
-      time: [],
-      accel: { x: [], y: [], z: [] },
-      gyro: { x: [], y: [], z: [] },
-      ultrasonic: [],
-      prediction: { shaking: [], posture: [], fall: [], normal: [] }
-    };
+      fetch("{% static 'main_app/data/data-behavior-initial.csv' %}")
+        .then(response => response.text())
+        .then(csvText => {
+          parseCSV(csvText, data);
+          setupCharts(data);  //moved setupCharts here since we don't need to wait for predictions
+        });
 
-    fetch("{% static 'main_app/data/data-sample.csv' %}")
-      .then(response => response.text())
-      .then(csvText => {
-        parseCSV(csvText, data);
-      });
+      fetch("{% static 'main_app/data/data-predictions.csv' %}")
+        .then(response => response.text())
+        .then(predictionsText => {
+          parsePredictions(predictionsText, data);
+        });
+    });
+  </script>
 
-    fetch("{% static 'main_app/data/data-predictions.csv' %}")
-      .then(response => response.text())
-      .then(predictionsText => {
-        parsePredictions(predictionsText, data);
-        setupCharts(data);
-      });
-  });
-</script>
-
-<script src="{% static 'main_app/js/darkmode.js' %}"></script>
+  <script src="{% static 'main_app/js/darkmode.js' %}"></script>
 </body>
 </html>
