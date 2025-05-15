@@ -75,9 +75,16 @@
         </div>
         <!-- Ultrasonic Sensor -->
         <div class="card shadow-sm p-4 mb-5 rounded" data-aos="fade-up">
-            <h5 class="card-title mb-0">Ultrasonic Sensor</h5>
-            <div class="d-flex justify-content-between mb-3">
-                <div><span class="fw-bold" id="ultrasonic-value">-</span><br>Distance (cm)</div>
+            <h5 class="card-title mb-0">Ultrasonic Sensors</h5>
+            <div class="d-flex justify-content-center align-items-center gap-5 mb-3">
+                <div class="text-center">
+                    <span class="fw-bold fs-5" id="ultrasonic-left-value">-</span>
+                    <br>Left Distance (cm)
+                </div>
+                <div class="text-center">
+                    <span class="fw-bold fs-5" id="ultrasonic-right-value">-</span>
+                    <br>Right Distance (cm)
+                </div>
             </div>
             <div class="chart-container" style="height: 300px;">
                 <canvas id="ultrasonicChart"></canvas>
@@ -102,7 +109,8 @@
                         <th>GyroX (deg/s)</th>
                         <th>GyroY (deg/s)</th>
                         <th>GyroZ (deg/s)</th>
-                        <th>Distance (cm)</th>
+                        <th>DistanceLeft (cm)</th>
+                        <th>DistanceRight (cm)</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -213,15 +221,26 @@
             type: 'line',
             data: {
                 labels: [],
-                datasets: [{
-                    label: 'Ultrasonic',
-                    data: [],
-                    backgroundColor: 'rgba(39, 174, 96, 0.2)',
-                    borderColor: 'rgba(39, 174, 96, 1)',
-                    borderWidth: 1,
-                    pointRadius: 2,
-                    tension: 0.4
-                }]
+                datasets: [
+                    {
+                        label: 'Left Distance (cm)',
+                        data: [],
+                        backgroundColor: 'rgba(39, 174, 96, 0.2)',
+                        borderColor: 'rgba(39, 174, 96, 1)',
+                        borderWidth: 1,
+                        pointRadius: 2,
+                        tension: 0.4
+                    },
+                    {
+                        label: 'Right Distance (cm)',
+                        data: [],
+                        backgroundColor: 'rgba(231, 76, 60, 0.2)',
+                        borderColor: 'rgba(231, 76, 60, 1)',
+                        borderWidth: 1,
+                        pointRadius: 2,
+                        tension: 0.4
+                    }
+                ]
             },
             options: {
                 responsive: true,
@@ -287,8 +306,9 @@
           document.getElementById('gyro-y-value').textContent = y !== undefined ? y : '-';
           document.getElementById('gyro-z-value').textContent = z !== undefined ? z : '-';
         }
-        function updateUltrasonicValue(val) {
-          document.getElementById('ultrasonic-value').textContent = val !== undefined ? val : '-';
+        function updateUltrasonicValues(left, right) {
+          document.getElementById('ultrasonic-left-value').textContent = left !== undefined ? left.toFixed(2) : '-';
+          document.getElementById('ultrasonic-right-value').textContent = right !== undefined ? right.toFixed(2) : '-';
         }
         function updatePredictionValues(shaking, posture, fall, normal) {
           document.getElementById('shaking-percent').textContent = shaking !== undefined ? shaking.toFixed(3) : '-';
@@ -326,9 +346,12 @@
         ultrasonicChart.options.onHover = function(event, chartElement) {
           if (chartElement.length > 0) {
             const idx = chartElement[0].index;
-            updateUltrasonicValue(ultrasonicChart.data.datasets[0].data[idx]);
+            updateUltrasonicValues(
+              ultrasonicChart.data.datasets[0].data[idx],
+              ultrasonicChart.data.datasets[1].data[idx]
+            );
           } else {
-            updateUltrasonicValue();
+            updateUltrasonicValues();
           }
         };
 
@@ -361,7 +384,8 @@
         let csvTime = [];
         let csvAccel = { x: [], y: [], z: [] };
         let csvGyro = { x: [], y: [], z: [] };
-        let csvUltrasonic = [];
+        let csvUltrasonicLeft = [];
+        let csvUltrasonicRight = [];
 
         //Slowdown demo variables; added 4-30-2025 (SCRUM Sprint 4)
         let demoInterval = null; //interval for updating the demo
@@ -394,13 +418,15 @@
                         time: [],
                         accel: { x: [], y: [], z: [] },
                         gyro: { x: [], y: [], z: [] },
-                        ultrasonic: []
+                        ultrasonicLeft: [],
+                        ultrasonicRight: []
                     };
                     parseCSV(evt.target.result, parsed);
                     csvTime = parsed.time;
                     csvAccel = parsed.accel;
                     csvGyro = parsed.gyro;
-                    csvUltrasonic = parsed.ultrasonic;
+                    csvUltrasonicLeft = parsed.ultrasonicLeft;
+                    csvUltrasonicRight = parsed.ultrasonicRight;
                     csvParsed = true;
                     loadingSpinner.style.display = 'none';
                     alert('CSV loaded! Press Start Demo to visualize.');
@@ -437,7 +463,24 @@
             ];
             ultrasonicChart.data.labels = [];
             ultrasonicChart.data.datasets = [
-                { label: 'Distance (cm)', data: [], borderColor: 'rgba(39, 174, 96, 1)', backgroundColor: 'rgba(39, 174, 96, 0.2)', borderWidth: 1, pointRadius: 2, tension: 0.4 }
+                {
+                    label: 'Left Distance (cm)',
+                    data: [],
+                    backgroundColor: 'rgba(39, 174, 96, 0.2)',
+                    borderColor: 'rgba(39, 174, 96, 1)',
+                    borderWidth: 1,
+                    pointRadius: 2,
+                    tension: 0.4
+                },
+                {
+                    label: 'Right Distance (cm)',
+                    data: [],
+                    backgroundColor: 'rgba(231, 76, 60, 0.2)',
+                    borderColor: 'rgba(231, 76, 60, 1)',
+                    borderWidth: 1,
+                    pointRadius: 2,
+                    tension: 0.4
+                }
             ];
             predictionChart.data.labels = [];
             predictionChart.data.datasets = [
@@ -471,7 +514,8 @@
                     gyroscopeChart.data.datasets[2].data.push(csvGyro.z[demoIndex]);
 
                     ultrasonicChart.data.labels.push(Number(csvTime[demoIndex]));
-                    ultrasonicChart.data.datasets[0].data.push(csvUltrasonic[demoIndex]);
+                    ultrasonicChart.data.datasets[0].data.push(csvUltrasonicLeft[demoIndex]);
+                    ultrasonicChart.data.datasets[1].data.push(csvUltrasonicRight[demoIndex]);
 
                     predictionChart.data.labels.push(Number(csvTime[demoIndex]));
 
@@ -483,7 +527,8 @@
                         gyrox: csvGyro.x[demoIndex],
                         gyroy: csvGyro.y[demoIndex],
                         gyroz: csvGyro.z[demoIndex],
-                        distance: csvUltrasonic[demoIndex],
+                        distanceLeft: csvUltrasonicLeft[demoIndex],
+                        distanceRight: csvUltrasonicRight[demoIndex],
                     };
                 }
                 // TODO: consider if this needs to use CSRF tokens

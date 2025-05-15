@@ -17,7 +17,8 @@ function parseCSV(text, data) {
     gx: header.indexOf('GyroX(deg/s)'),
     gy: header.indexOf('GyroY(deg/s)'),
     gz: header.indexOf('GyroZ(deg/s)'),
-    dist: header.indexOf('Distance(cm)')
+    distLeft: header.indexOf('DistanceLeft(cm)'),
+    distRight: header.indexOf('DistanceRight(cm)')
   };
   let t0 = null;
   //initialize arrays for each column in CSV
@@ -34,7 +35,12 @@ function parseCSV(text, data) {
     data.gyro.x.push(parseFloat(row[idx.gx]));
     data.gyro.y.push(parseFloat(row[idx.gy]));
     data.gyro.z.push(parseFloat(row[idx.gz]));
-    data.ultrasonic.push(parseFloat(row[idx.dist]));
+    
+    //handles zero values for ultrasonic sensors
+    const leftDist = parseFloat(row[idx.distLeft]);
+    const rightDist = parseFloat(row[idx.distRight]);
+    data.ultrasonicLeft.push(leftDist === 0 ? null : leftDist);
+    data.ultrasonicRight.push(rightDist === 0 ? null : rightDist);
   }
 }
 
@@ -113,15 +119,55 @@ function setupCharts(data) {
     data: {
       labels: data.time,
       datasets: [
-        { label: 'Distance (cm)', data: data.ultrasonic, borderColor: 'rgba(39, 174, 96, 1)', backgroundColor: 'rgba(39, 174, 96, 0.2)', borderWidth: 1, pointRadius: 2, tension: 0.4 }
+        { 
+          label: 'Left Distance (cm)', 
+          data: data.ultrasonicLeft, 
+          borderColor: 'rgba(39, 174, 96, 1)', 
+          backgroundColor: 'rgba(39, 174, 96, 0.2)', 
+          borderWidth: 1, 
+          pointRadius: 2, 
+          tension: 0.4 
+        },
+        { 
+          label: 'Right Distance (cm)', 
+          data: data.ultrasonicRight, 
+          borderColor: 'rgba(231, 76, 60, 1)', 
+          backgroundColor: 'rgba(231, 76, 60, 0.2)', 
+          borderWidth: 1, 
+          pointRadius: 2, 
+          tension: 0.4 
+        }
       ]
     },
     options: {
       responsive: true,
       maintainAspectRatio: false,
       scales: {
-        x: { type: 'linear', title: { display: true, text: 'Time (s)' }, ticks: { stepSize: 5, callback: v => v + 's' } },
-        y: { beginAtZero: true }
+        x: { 
+          type: 'linear', 
+          title: { 
+            display: true, 
+            text: 'Time (s)' 
+          }, 
+          ticks: { 
+            stepSize: 5, 
+            callback: v => v + 's' 
+          }
+        },
+        y: { 
+          beginAtZero: true,
+          suggestedMax: 200,
+          title: {
+            display: true,
+            text: 'Distance (cm)'
+          }
+        }
+      },
+      plugins: {
+        legend: {
+          position: 'top',
+          align: 'center'
+        }
       }
     }
   });
@@ -151,18 +197,22 @@ function setupCharts(data) {
 
   //Helper functions to update value displays
   function updateAccValues(x, y, z) {
-    document.getElementById('acc-x-value').textContent = x !== undefined ? x : '-';
-    document.getElementById('acc-y-value').textContent = y !== undefined ? y : '-';
-    document.getElementById('acc-z-value').textContent = z !== undefined ? z : '-';
+    document.getElementById('acc-x-value').textContent = x !== undefined ? x.toFixed(3) : '-';
+    document.getElementById('acc-y-value').textContent = y !== undefined ? y.toFixed(3) : '-';
+    document.getElementById('acc-z-value').textContent = z !== undefined ? z.toFixed(3) : '-';
   }
+
   function updateGyroValues(x, y, z) {
-    document.getElementById('gyro-x-value').textContent = x !== undefined ? x : '-';
-    document.getElementById('gyro-y-value').textContent = y !== undefined ? y : '-';
-    document.getElementById('gyro-z-value').textContent = z !== undefined ? z : '-';
+    document.getElementById('gyro-x-value').textContent = x !== undefined ? x.toFixed(3) : '-';
+    document.getElementById('gyro-y-value').textContent = y !== undefined ? y.toFixed(3) : '-';
+    document.getElementById('gyro-z-value').textContent = z !== undefined ? z.toFixed(3) : '-';
   }
-  function updateUltrasonicValue(val) {
-    document.getElementById('ultrasonic-value').textContent = val !== undefined ? val : '-';
+
+  function updateUltrasonicValues(left, right) {
+    document.getElementById('ultrasonic-left-value').textContent = left !== undefined ? left.toFixed(1) : '-';
+    document.getElementById('ultrasonic-right-value').textContent = right !== undefined ? right.toFixed(1) : '-';
   }
+
   function updatePredictionValues(shaking, posture, fall, normal) {
     document.getElementById('shaking-percent').textContent = shaking !== undefined ? shaking.toFixed(3) : '-';
     document.getElementById('posture-percent').textContent = posture !== undefined ? posture.toFixed(3) : '-';
@@ -200,9 +250,12 @@ function setupCharts(data) {
   ultrasonicChart.options.onHover = function(event, chartElement) {
     if (chartElement.length > 0) {
       const idx = chartElement[0].index;
-      updateUltrasonicValue(ultrasonicChart.data.datasets[0].data[idx]);
+      updateUltrasonicValues(
+        ultrasonicChart.data.datasets[0].data[idx],
+        ultrasonicChart.data.datasets[1].data[idx]
+      );
     } else {
-      updateUltrasonicValue();
+      updateUltrasonicValues();
     }
   };
 
@@ -220,5 +273,5 @@ function setupCharts(data) {
     }
   };
 
-  return { accelerometerChart, gyroscopeChart, ultrasonicChart };
+  return { accelerometerChart, gyroscopeChart, ultrasonicChart, predictionChart };
 } 
