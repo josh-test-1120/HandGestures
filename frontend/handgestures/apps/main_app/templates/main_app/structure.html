@@ -24,20 +24,76 @@
       </div>
     </section>
 
-    <!-- System Pipeline Section -->
-    <section class="card shadow-lg p-4 mb-5 rounded" data-aos="fade-up">
-      <h2 class="fw-bold text-primary mb-4">System Pipeline</h2>
-      <img src="{% static 'main_app/img/system_pipeline.png' %}" alt="System Pipeline Diagram" class="img-fluid shadow rounded mx-auto d-block mb-3" style="max-width: 1000px;">
-      <p class="text-muted" style="text-align: justify;">
-        The user wears a sensor-equipped device that captures real-time motion data. The data is transmitted to a processing unit and eventually visualized on the front-end.
-      </p>
-      <ul class="text-muted">
-        <li>Wearable IMU sensors (MPU6050)</li>
-        <li>Arduino Nano or Uno for local processing</li>
-        <li>Bluetooth module for wireless data transfer</li>
-        <li>Web server for visualization and control</li>
-      </ul>
-    </section>
+  <!-- System Pipeline Section -->
+<section class="card shadow-lg p-4 mb-5 rounded" data-aos="fade-up">
+  <h2 class="fw-bold text-primary mb-4 text-center">System Pipeline</h2>
+
+  <!-- Image Pipeline Row -->
+  <div class="d-flex flex-wrap justify-content-center align-items-end text-center gap-4 mb-4">
+
+    <!-- Step 1: Wearable IMU -->
+    <div style="width: 120px;">
+      <figure>
+        <img src="{% static 'main_app/img/wearable.jpeg' %}" alt="Wearable IMU" class="img-fluid shadow rounded mb-2" style="max-height: 120px;">
+        <figcaption class="text-muted fw-semibold">Wearable IMU + sensor</figcaption>
+      </figure>
+    </div>
+
+    <!-- Arrow -->
+    <div class="align-self-center">
+      <i class="bi bi-arrow-right-circle-fill fs-2 text-primary"></i>
+    </div>
+
+    <!-- Step 2: Motion Detection -->
+    <div style="width: 120px;">
+      <figure>
+        <img src="{% static 'main_app/img/motion.jpeg' %}" alt="Motion" class="img-fluid shadow rounded mb-2" style="max-height: 120px;">
+        <figcaption class="text-muted fw-semibold">Motion Detection</figcaption>
+      </figure>
+    </div>
+
+    <!-- Arrow -->
+    <div class="align-self-center">
+      <i class="bi bi-arrow-right-circle-fill fs-2 text-primary"></i>
+    </div>
+
+    <!-- Step 3: Machine Learning -->
+    <div style="width: 120px;">
+      <figure>
+        <img src="{% static 'main_app/img/pythonandc.jpeg' %}" alt="Machine Learning" class="img-fluid shadow rounded mb-2" style="max-height: 120px;">
+        <figcaption class="text-muted fw-semibold">Machine Learning</figcaption>
+      </figure>
+    </div>
+
+    <!-- Arrow -->
+    <div class="align-self-center">
+      <i class="bi bi-arrow-right-circle-fill fs-2 text-primary"></i>
+    </div>
+
+    <!-- Step 4: Output -->
+    <div style="width: 750px;">
+      <figure>
+        <img src="{% static 'main_app/img/output.jpeg' %}" alt="Output" class="img-fluid shadow rounded mb-2" style="max-height: 120px; object-fit: contain;">
+        <figcaption class="text-muted fw-semibold">Output Visualization</figcaption>
+      </figure>
+    </div>
+  </div>
+
+  <!-- Description -->
+  <p class="text-muted" style="text-align: justify;">
+    The user wears a sensor-equipped device that captures real-time motion data. The data is transmitted to a processing unit and eventually visualized on the front-end.
+  </p>
+
+  <!-- Components List -->
+  <ul class="text-muted">
+    <li>Wearable IMU sensors (MPU6050)</li>
+    <li>Arduino Nano or Uno for local processing</li>
+    <li>Bluetooth module for wireless data transfer</li>
+    <li>Web server for visualization and control</li>
+  </ul>
+</section>
+
+
 
     <!-- Data Flow Section -->
     <section class="card shadow-lg p-4 mb-5 rounded" data-aos="fade-up">
