@@ -14,6 +14,11 @@
 </head>
 <body class="bg-light text-dark">
     {% include 'main_app/navbar.html' %}
+
+    <!-- Container for toast alerts; implemented 5-17-2025 (SCRUM Sprint 6) -->
+    <div id="toastContainer"
+         class="toast-container position-fixed bottom-0 end-0 p-3"></div>
+
     <main class="container wide-container py-5 mb-5">
         <div style="margin-top:20px;"></div>
         <!-- Hero Section -->
@@ -531,6 +536,21 @@
                         distanceLeft: csvUltrasonicLeft[demoIndex],
                         distanceRight: csvUltrasonicRight[demoIndex],
                     };
+
+                    // After pushing the new values for this sample …
+                    const ts = Number(csvTime[demoIndex]);  // seconds
+
+                    // Spike detection for **this** new point
+                    checkSpike(accelerometerChart.data.datasets[0], ts); // Accel X
+                    checkSpike(accelerometerChart.data.datasets[1], ts); // Accel Y
+                    checkSpike(accelerometerChart.data.datasets[2], ts); // Accel Z
+
+                    checkSpike(gyroscopeChart.data.datasets[0], ts);     // Gyro X
+                    checkSpike(gyroscopeChart.data.datasets[1], ts);     // Gyro Y
+                    checkSpike(gyroscopeChart.data.datasets[2], ts);     // Gyro Z
+
+                    checkSpike(ultrasonicChart.data.datasets[0], ts);    // Left dist
+                    checkSpike(ultrasonicChart.data.datasets[1], ts);    // Right dist
                 }
                 // TODO: consider if this needs to use CSRF tokens
                 fetch('/live_demo_prediction/', {
@@ -598,6 +618,67 @@
             predictionChart.data.datasets.forEach(ds => ds.data = []);
             predictionChart.update();
         });
+
+        /*
+         Toast alert functions & spike/abnormal activity detection 
+         (added 5-17-2025 SCRUM Sprint 6)
+        */
+
+        //toast alert for 4s
+        function showToast(message) {
+            const container = document.getElementById('toastContainer');
+
+            const toastEl = document.createElement('div');
+            toastEl.className = 'toast align-items-center text-bg-danger border-0';
+            toastEl.role = 'alert';
+            toastEl.setAttribute('aria-live', 'assertive');
+            toastEl.setAttribute('aria-atomic', 'true');
+            toastEl.innerHTML = `
+                <div class="d-flex">
+                    <div class="toast-body">${message}</div>
+                    <button type="button"
+                            class="btn-close btn-close-white me-2 m-auto"
+                            data-bs-dismiss="toast"
+                            aria-label="Close"></button>
+                </div>`;
+
+            container.appendChild(toastEl);
+            const bsToast = new bootstrap.Toast(toastEl, { delay: 4000 });
+            bsToast.show();
+
+            //removes the toast 
+            toastEl.addEventListener('hidden.bs.toast', () => toastEl.remove());
+        }
+
+        //threshold values for each dataset (TODO: change after data collection phase is complete)
+        const datasetThresholds = {
+            'Accel X':   { min: -0.9, max: 0.9 },
+            'Accel Y':   { min: -0.9, max: 1.2 },
+            'Accel Z':   { min: 0,    max: 1.4 },
+            'Gyro X':    { min: -200, max: 200 },
+            'Gyro Y':    { min: -125, max: 150 },
+            'Gyro Z':    { min: -175, max: 140 },
+            'Left Distance (cm)':  { min: -10, max: 180 },
+            'Right Distance (cm)': { min: -10, max: 180 }
+        };
+
+        //checks if the value is outside the min/max threshold defined in datasetThresholds
+        function checkSpike(ds, timestamp) {
+            const n = ds.data.length;
+            if (n < 1) return;
+            const val = ds.data[n - 1];
+            const thresh = datasetThresholds[ds.label];
+            if (!thresh) return;
+            let outOfRange = false;
+            if (thresh.min !== null && val < thresh.min) outOfRange = true;
+            if (thresh.max !== null && val > thresh.max) outOfRange = true;
+            if (outOfRange) {
+                showToast(
+                    `Spike detected on ${ds.label}: `
+                    + `${val.toFixed(2)} @ ${timestamp}s`
+                );
+            }
+        }
     </script>
     <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
     <script>
