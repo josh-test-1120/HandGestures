@@ -1,7 +1,7 @@
 /*
 Logic for exporting 'data export' table data to CSV file on live demo page.
 Also contains logic for logging data to the table from the live demo page.
-Implemented 5-12-2025 (SCRUM Sprint 6)
+Implemented 5-12-2025 (SCRUM Sprint 5)
 */
 
 //variables stored as references to DOM elements
@@ -56,6 +56,10 @@ function getLatestDataAllCharts() {
 
 //add row(s) to export table
 function addRowsToTable(row) {
+    //replace null ultrasonic readings with 0 so data table shows 0 instead of 'null'
+    row.distanceLeft  = (row.distanceLeft  === null) ? 0 : row.distanceLeft;
+    row.distanceRight = (row.distanceRight === null) ? 0 : row.distanceRight;
+
     //save to memory for CSV export
     exportTableRows.push(row);
 
