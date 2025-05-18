@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Structure | Hand Gesture Project</title>
+  <title>Structure | Hand Motion Recognition Project</title>
   <link rel="stylesheet" href="{% static 'main_app/css/style.css' %}">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
@@ -20,7 +20,7 @@
     <section class="mb-5">
       <div class="text-center text-white p-5 rounded-4 mx-3" style="background: linear-gradient(to right, #31b3fe, #7d7676);" data-aos="fade-down">
         <h1 class="display-5 fw-bold mb-3">Hand Motion Recognition <br> System Structure</h1>
-        <p class="lead text-light mb-0">How the Hand Gesture Project Works</p>
+        <p class="lead text-light mb-0">How the Hand Motion Recognition Project Works</p>
       </div>
     </section>
 
@@ -100,7 +100,7 @@
       <h2 class="fw-bold text-primary mb-4">Data Flow</h2>
       <img src="{% static 'main_app/img/data_flow_diagram.png' %}" alt="Data Flow Diagram" class="img-fluid shadow rounded mx-auto d-block mb-3" style="max-width: 1000px;">
       <p class="text-muted" style="text-align: justify;">
-        This diagram illustrates the complete data flow of the Hand Gesture system. Motion data is collected from an Arduino Nano or Uno and stored on an SD card. This data is used both for frontend data visualization and backend machine learning model training. Once the model is trained, it is deployed to make real-time gesture predictions displayed on the demo pages.
+        This diagram illustrates the complete data flow of the Hand Motion Recognition system. Motion data is collected from an Arduino Nano or Uno and stored on an SD card. This data is used both for frontend data visualization and backend machine learning model training. Once the model is trained, it is deployed to make real-time motion predictions displayed on the demo pages.
       </p>
       <ul class="text-muted">
         <li>Sensor data collected and optionally saved to SD card</li>
@@ -115,7 +115,7 @@
       <h2 class="fw-bold text-primary mb-4">Hardware Architecture</h2>
       <img src="{% static 'main_app/img/hardware_diagram.png' %}" alt="Hardware Diagram" class="img-fluid shadow rounded mx-auto d-block mb-3" style="max-width: 1000px;">
       <p class ="text-muted" style="text-align: justify;">
-          The hardware architecture diagram outlines the key components and interconnections in our Arduino-based Hand Motion system. The system integrates multiple sensors and interfaces to capture, process, and store motion data efficiently for real-time and offline analysis.
+          The hardware architecture diagram outlines the key components and interconnections in our Arduino-based Hand Motion Recognition system. The system integrates multiple sensors and interfaces to capture, process, and store motion data efficiently for real-time and offline analysis.
       </p>
       <ul class="text-muted">
         <li>9V battery supplies power and is regulated to 5V for system stability</li>
