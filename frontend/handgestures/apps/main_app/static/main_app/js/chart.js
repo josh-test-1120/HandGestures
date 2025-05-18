@@ -36,11 +36,11 @@ function parseCSV(text, data) {
     data.gyro.y.push(parseFloat(row[idx.gy]));
     data.gyro.z.push(parseFloat(row[idx.gz]));
     
-    //handles zero values for ultrasonic sensors
+    //store ultrasonic sensor values directly (keeps zero values)
     const leftDist = parseFloat(row[idx.distLeft]);
     const rightDist = parseFloat(row[idx.distRight]);
-    data.ultrasonicLeft.push(leftDist === 0 ? null : leftDist);
-    data.ultrasonicRight.push(rightDist === 0 ? null : rightDist);
+    data.ultrasonicLeft.push(leftDist);
+    data.ultrasonicRight.push(rightDist);
   }
 }
 

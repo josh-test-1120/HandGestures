@@ -56,6 +56,10 @@ function getLatestDataAllCharts() {
 
 //add row(s) to export table
 function addRowsToTable(row) {
+    //replace null ultrasonic readings with 0 so data table shows 0 instead of 'null'
+    row.distanceLeft  = (row.distanceLeft  === null) ? 0 : row.distanceLeft;
+    row.distanceRight = (row.distanceRight === null) ? 0 : row.distanceRight;
+
     //save to memory for CSV export
     exportTableRows.push(row);
 
