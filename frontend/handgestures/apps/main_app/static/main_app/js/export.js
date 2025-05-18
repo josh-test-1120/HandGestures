@@ -1,7 +1,7 @@
 /*
 Logic for exporting 'data export' table data to CSV file on live demo page.
 Also contains logic for logging data to the table from the live demo page.
-Implemented 5-12-2025 (SCRUM Sprint 6)
+Implemented 5-12-2025 (SCRUM Sprint 5)
 */
 
 //variables stored as references to DOM elements
