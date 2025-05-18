@@ -34,7 +34,7 @@
 #define SCREEN_ADDRESS 0x3C // OLED I2C Address (Hex)
 // Constants for the loop logic
 #define LIVE_DEBUG 0
-#define INTERVAL_MAX 10000 // span for collection
+#define INTERVAL_MAX 5000 // span for collection
 
 // Ultrasonics
 NewPing sonarLeft(TRIG_PIN_LEFT, ECHO_PIN_LEFT, MAX_DISTANCE);
@@ -176,8 +176,6 @@ void writeToSDCard(float leftDist, float rightDist, float ax, float ay, float az
       if (LIVE_DEBUG && interval >= INTERVAL_MAX) Serial.println("Wrote 3000 rows into CSV: ");
       if (LIVE_DEBUG && (interval % 1000 == 0)) Serial.println("Wrote 1000 rows into CSV. Continuing... ");
   }
-  // Update OLED that collection is finished
-  if (interval == INTERVAL_MAX) finishOLED_SD();
   // Close file and end SD session
   dataFile.close();
   // SD.end();
@@ -331,10 +329,12 @@ void loop() {
     // writeToSDCard();
     // Step 4: Update OLED screen with interval
     if (interval % 50 == 0) updateOLED_SD();
+    // Update OLED that collection is finished
+    if (interval == INTERVAL_MAX) finishOLED_SD();
   }
   else {
     SD.end();
-    //exit(0);
+    exit(0);
   }
   // Update counter
   interval++;
