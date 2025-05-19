@@ -35,21 +35,21 @@
       <h3 class="section-title mb-4">Summary Statistics</h3>
       <div class="row text-center g-4">
         <div class="col-md-4">
-          <div class="stat-box bg-white shadow-sm h-100">
+          <div class="stat-box card shadow-sm h-100">
             <h6 class="text-muted">Participants</h6>
             <div id="participants-text" class="display-5 text-primary fw-bold">0</div>
             <p class="mb-0 small">Total study participants</p>
           </div>
         </div>
         <div class="col-md-4">
-          <div class="stat-box bg-white shadow-sm h-100">
+          <div class="stat-box card shadow-sm h-100">
             <h6 class="text-muted">Data Points</h6>
             <div id="data-points-text" class="display-5 text-success fw-bold">0</div>
             <p class="mb-0 small">Collected motion measurements</p>
           </div>
         </div>
         <div class="col-md-4">
-          <div class="stat-box bg-white shadow-sm h-100">
+          <div class="stat-box card shadow-sm h-100">
             <h6 class="text-muted">Prediction Accuracy</h6>
             <div id="prediction-accuracy-text" class="display-5 text-purple fw-bold">0%</div>
             <p class="mb-0 small">Accuracy of trained model</p>
@@ -162,7 +162,6 @@
 
     document.addEventListener('DOMContentLoaded', function () {
       updateSummaryInfo();
-      summaryUpdateIntervalId = setInterval(updateSummaryInfo, 1000);
     });
 
     document.addEventListener('beforeunload', function () {

@@ -45,7 +45,7 @@
 
     <!-- Accelerometer Section -->
     <section class="mb-5">
-      <h3 class="text-center fw-bold mb-4" data-aos="fade-up">Accelerometer Readings</h3>
+      <h3 id="loading-message-element" class="text-center fw-bold mb-4" data-aos="fade-up">loading data from MySQL</h3>
       <div class="row mb-4 align-items-stretch">
         <div class="col-md-6 d-flex">
           <div class="card shadow-sm p-4 rounded h-100 w-100" data-aos="fade-up">
@@ -63,9 +63,9 @@
         <div class="col-md-6 d-flex flex-column h-100">
           <div class="card shadow-sm p-4 rounded flex-grow-1 mb-3" data-aos="fade-up" data-aos-delay="100">
             <h5 class="card-title">Acceleration Data Averages</h5>
-            <div id="avg-resting-accel-text">0</div>
-            <div id="avg-walking-accel-text">0</div>
-            <div id="avg-running-accel-text">0</div>
+            <div id="avg-x-accel-text">0</div>
+            <div id="avg-y-accel-text">0</div>
+            <div id="avg-z-accel-text">0</div>
           </div>
           <div class="card shadow-sm p-4 rounded flex-grow-1" data-aos="fade-up" data-aos-delay="200">
             <h5 class="card-title">Acceleration Data Outliers</h5>
@@ -100,9 +100,9 @@
         <div class="col-md-6 d-flex flex-column h-100">
           <div class="card shadow-sm p-4 rounded flex-grow-1 mb-3" data-aos="fade-up" data-aos-delay="100">
             <h5 class="card-title">Rotation Data Averages</h5>
-            <div id="avg-resting-rot-text">0</div>
-            <div id="avg-walking-rot-text">0</div>
-            <div id="avg-running-rot-text">0</div>
+            <div id="avg-x-rot-text">0</div>
+            <div id="avg-y-rot-text">0</div>
+            <div id="avg-z-rot-text">0</div>
           </div>
           <div class="card shadow-sm p-4 rounded flex-grow-1" data-aos="fade-up" data-aos-delay="200">
             <h5 class="card-title">Rotation Data Outliers</h5>
@@ -177,8 +177,8 @@
     let demoUpdateIntervalId = 0;
 
     document.addEventListener('DOMContentLoaded', function () {
+      console.log("LOOKING AT MYSQL");
       updateDemoInfo();
-      demoUpdateIntervalId = setInterval(updateDemoInfo, 1000);
     });
 
     document.addEventListener('beforeunload', function () {
@@ -195,12 +195,12 @@
       fetch('/demo_page_update/')
         .then(response => response.json())
         .then(data => {
-          document.getElementById('avg-resting-accel-text').textContent = data.avg_resting_accel;
-          document.getElementById('avg-walking-accel-text').textContent = data.avg_walking_accel;
-          document.getElementById('avg-running-accel-text').textContent = data.avg_running_accel;
-          document.getElementById('avg-resting-rot-text').textContent = data.avg_resting_rot;
-          document.getElementById('avg-walking-rot-text').textContent = data.avg_walking_rot;
-          document.getElementById('avg-running-rot-text').textContent = data.avg_running_rot;
+          document.getElementById('avg-x-accel-text').textContent = data.avg_x_accel;
+          document.getElementById('avg-y-accel-text').textContent = data.avg_y_accel;
+          document.getElementById('avg-z-accel-text').textContent = data.avg_z_accel;
+          document.getElementById('avg-x-rot-text').textContent = data.avg_x_rot;
+          document.getElementById('avg-y-rot-text').textContent = data.avg_y_rot;
+          document.getElementById('avg-z-rot-text').textContent = data.avg_z_rot;
 
           document.getElementById('first-max-accel-text').textContent = data.first_fastest_accel;
           document.getElementById('first-max-accel-explanation-text').textContent = data.first_fastest_accel_explanation;
@@ -221,6 +221,7 @@
         })
         .finally(() => {
           waitingForRequest = false;
+          document.getElementById('loading-message-element').textContent = 'Accelerometer Readings';
         });
     }
   </script>
