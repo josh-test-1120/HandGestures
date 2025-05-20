@@ -112,15 +112,15 @@ def summary_page_update(request):
 
 def demo_page_update(request):
     query_string_top_accel = """
-        SELECT TotalAccel
-        FROM TotalSpeeds
-        ORDER BY TotalAccel DESC LIMIT 3
+        SELECT AccelTotal
+        FROM HandData
+        ORDER BY AccelTotal DESC LIMIT 3
     """
     
     query_string_top_rotation = """
-        SELECT TotalRotation
-        FROM TotalSpeeds
-        ORDER BY TotalRotation DESC LIMIT 3
+        SELECT GyroTotal
+        FROM HandData
+        ORDER BY GyroTotal DESC LIMIT 3
     """
     
     query_string_averages = """
