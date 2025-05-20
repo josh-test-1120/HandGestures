@@ -45,7 +45,7 @@
 
     <!-- Accelerometer Section -->
     <section class="mb-5">
-      <h3 id="loading-message-element" class="text-center fw-bold mb-4" data-aos="fade-up">loading data from MySQL</h3>
+      <h3 id="test-id" class="text-center fw-bold mb-4" data-aos="fade-up">LOADING</h3>
       <div class="row mb-4 align-items-stretch">
         <div class="col-md-6 d-flex">
           <div class="card shadow-sm p-4 rounded h-100 w-100" data-aos="fade-up">
@@ -221,7 +221,7 @@
         })
         .finally(() => {
           waitingForRequest = false;
-          document.getElementById('loading-message-element').textContent = 'Accelerometer Readings';
+          document.getElementById('test-id').textContent = 'Accelerometer Readings';
         });
     }
   </script>
