@@ -114,13 +114,13 @@ def demo_page_update(request):
     query_string_top_accel = """
         SELECT AccelTotal
         FROM HandData
-        ORDER BY AccelTotal DESC LIMIT 3
+        ORDER BY AccelTotal DESC LIMIT 3;
     """
     
     query_string_top_rotation = """
         SELECT GyroTotal
         FROM HandData
-        ORDER BY GyroTotal DESC LIMIT 3
+        ORDER BY GyroTotal DESC LIMIT 3;
     """
     
     query_string_averages = """
@@ -130,7 +130,7 @@ def demo_page_update(request):
             AverageXRotation,
             AverageYRotation,
             AverageZRotation
-        FROM RunningData
+        FROM RunningData;
     """
     
     avg_accel_x = 0.0
