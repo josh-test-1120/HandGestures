@@ -13,13 +13,15 @@ from django.views.decorators.csrf import csrf_exempt
 import json
 
 import random
+# This is to load from the .env file
+from decouple import config
 
 
 CONFIG = {
-    "host": "handsgestures-mysql-managed.mysql.database.azure.com",
-    "user": "hgadmin",
-    "password": "hand$g3$tur3$",
-    "database": "handgestures"
+    "host": config('DB_HOST'),
+    "user": config('DB_USER'),
+    "password": config('DB_PASSWORD'),
+    "database": config('DB_NAME')
 }
 
 connection = None
