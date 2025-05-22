@@ -44,78 +44,113 @@
     </div>
 
     <!-- Accelerometer Section -->
-    <section class="mb-5">
-      <h3 id="loading-text-id" class="text-center fw-bold mb-4" data-aos="fade-up">LOADING</h3>
-      <div class="row mb-4 align-items-stretch">
-        <div class="col-md-6 d-flex">
-          <div class="card shadow-sm p-4 rounded h-100 w-100" data-aos="fade-up">
-            <h5 class="card-title">Accelerometer</h5>
-            <div class="d-flex justify-content-between mb-3">
-              <div><span class="fw-bold" id="acc-x-value">-</span><br>X-Axis (g)</div>
-              <div><span class="fw-bold" id="acc-y-value">-</span><br>Y-Axis (g)</div>
-              <div><span class="fw-bold" id="acc-z-value">-</span><br>Z-Axis (g)</div>
-            </div>
-            <div class="chart-container">
-              <canvas id="accelerometerChart"></canvas>
-            </div>
+<section class="mb-5">
+  <h3 class="text-center fw-bold mb-4" data-aos="fade-up">Accelerometer</h3>
+  <div class="row mb-4">
+    <div class="col-md-12">
+      <div class="card shadow-sm p-4 mb-5 rounded" data-aos="fade-up">
+        <h5 class="card-title mb-0">Accelerometer Readings</h5>
+        <div class="d-flex justify-content-center align-items-center gap-5 mb-3">
+          <div class="text-center">
+            <span class="fw-bold fs-5" id="acc-x-value">-</span><br>X-Axis (g)
+          </div>
+          <div class="text-center">
+            <span class="fw-bold fs-5" id="acc-y-value">-</span><br>Y-Axis (g)
+          </div>
+          <div class="text-center">
+            <span class="fw-bold fs-5" id="acc-z-value">-</span><br>Z-Axis (g)
           </div>
         </div>
-        <div class="col-md-6 d-flex flex-column h-100">
-          <div class="card shadow-sm p-4 rounded flex-grow-1 mb-3" data-aos="fade-up" data-aos-delay="100">
-            <h5 class="card-title">Acceleration Data Averages</h5>
-            <div id="avg-x-accel-text">0</div>
-            <div id="avg-y-accel-text">0</div>
-            <div id="avg-z-accel-text">0</div>
-          </div>
-          <div class="card shadow-sm p-4 rounded flex-grow-1" data-aos="fade-up" data-aos-delay="200">
-            <h5 class="card-title">Acceleration Data Outliers</h5>
-            <div id="first-max-accel-text">0</div>
-            <div id="first-max-accel-explanation-text">0</div><br>
-            <div id="second-max-accel-text">0</div>
-            <div id="second-max-accel-explanation-text">0</div><br>
-            <div id="third-max-accel-text">0</div>
-            <div id="third-max-accel-explanation-text">0</div><br>
-          </div>
+        <div class="chart-container">
+          <canvas id="accelerometerChart"></canvas>
         </div>
       </div>
-    </section>
+    </div>
+  </div>
+</section>
+
+<div class="row mb-4 align-items-stretch">
+  <!-- Acceleration Data Averages -->
+  <div class="col-md-6 d-flex">
+    <div class="card shadow-sm p-4 rounded h-100 w-100" data-aos="fade-up" data-aos-delay="100">
+      <h5 class="card-title">Acceleration Data Averages</h5>
+      <div id="avg-x-accel-text">0</div>
+      <div id="avg-y-accel-text">0</div>
+      <div id="avg-z-accel-text">0</div>
+    </div>
+  </div>
+
+  <!-- Acceleration Data Outliers -->
+  <div class="col-md-6 d-flex">
+    <div class="card shadow-sm p-4 rounded h-100 w-100" data-aos="fade-up" data-aos-delay="200">
+      <h5 class="card-title">Acceleration Data Outliers</h5>
+      <div id="first-max-accel-text">0</div>
+      <div id="first-max-accel-explanation-text">0</div><br>
+      <div id="second-max-accel-text">0</div>
+      <div id="second-max-accel-explanation-text">0</div><br>
+      <div id="third-max-accel-text">0</div>
+      <div id="third-max-accel-explanation-text">0</div><br>
+    </div>
+  </div>
+</div>
+    
 
     <!-- Gyroscope Section -->
-    <section class="mb-5">
-      <h3 class="text-center fw-bold mb-4" data-aos="fade-up">Gyroscope Readings</h3>
-      <div class="row mb-4 align-items-stretch">
-        <div class="col-md-6 d-flex">
-          <div class="card shadow-sm p-4 rounded h-100 w-100" data-aos="fade-up">
-            <h5 class="card-title">Gyroscope</h5>
-            <div class="d-flex justify-content-between mb-3">
-              <div><span class="fw-bold" id="gyro-x-value">-</span><br>X-Axis (°/s)</div>
-              <div><span class="fw-bold" id="gyro-y-value">-</span><br>Y-Axis (°/s)</div>
-              <div><span class="fw-bold" id="gyro-z-value">-</span><br>Z-Axis (°/s)</div>
-            </div>
-            <div class="chart-container">
-              <canvas id="gyroscopeChart"></canvas>
-            </div>
+    
+<section class="mb-5">
+  <h3 class="text-center fw-bold mb-4" data-aos="fade-up">Gyroscope</h3>
+  <div class="row mb-4">
+    <div class="col-md-12">
+      <div class="card shadow-sm p-4 mb-5 rounded" data-aos="fade-up">
+        <h5 class="card-title mb-0">Gyroscope Readings</h5>
+        <div class="d-flex justify-content-center align-items-center gap-5 mb-3">
+          <div class="text-center">
+            <span class="fw-bold fs-5" id="gyro-x-value">-</span><br>X-Axis (°/s)
+          </div>
+          <div class="text-center">
+            <span class="fw-bold fs-5" id="gyro-y-value">-</span><br>Y-Axis (°/s)
+          </div>
+          <div class="text-center">
+            <span class="fw-bold fs-5" id="gyro-z-value">-</span><br>Z-Axis (°/s)
           </div>
         </div>
-        <div class="col-md-6 d-flex flex-column h-100">
-          <div class="card shadow-sm p-4 rounded flex-grow-1 mb-3" data-aos="fade-up" data-aos-delay="100">
-            <h5 class="card-title">Rotation Data Averages</h5>
-            <div id="avg-x-rot-text">0</div>
-            <div id="avg-y-rot-text">0</div>
-            <div id="avg-z-rot-text">0</div>
-          </div>
-          <div class="card shadow-sm p-4 rounded flex-grow-1" data-aos="fade-up" data-aos-delay="200">
-            <h5 class="card-title">Rotation Data Outliers</h5>
-            <div id="first-max-rot-text">0</div>
-            <div id="first-max-rot-explanation-text">0</div><br>
-            <div id="second-max-rot-text">0</div>
-            <div id="second-max-rot-explanation-text">0</div><br>
-            <div id="third-max-rot-text">0</div>
-            <div id="third-max-rot-explanation-text">0</div><br>
-          </div>
+        <div class="chart-container">
+          <canvas id="gyroscopeChart"></canvas>
         </div>
       </div>
-    </section>
+    </div>
+  </div>
+</section>
+
+  <div class="row mb-4 align-items-stretch">
+  <!-- Rotation Data Averages -->
+  <div class="col-md-6 d-flex">
+    <div class="card shadow-sm p-4 rounded h-100 w-100" data-aos="fade-up" data-aos-delay="100">
+      <h5 class="card-title">Rotation Data Averages</h5>
+      <div id="avg-x-rot-text">0</div>
+      <div id="avg-y-rot-text">0</div>
+      <div id="avg-z-rot-text">0</div>
+    </div>
+  </div>
+
+  <!-- Rotation Data Outliers -->
+  <div class="col-md-6 d-flex">
+    <div class="card shadow-sm p-4 rounded h-100 w-100" data-aos="fade-up" data-aos-delay="200">
+      <h5 class="card-title">Rotation Data Outliers</h5>
+      <div id="first-max-rot-text">0</div>
+      <div id="first-max-rot-explanation-text">0</div><br>
+      <div id="second-max-rot-text">0</div>
+      <div id="second-max-rot-explanation-text">0</div><br>
+      <div id="third-max-rot-text">0</div>
+      <div id="third-max-rot-explanation-text">0</div><br>
+    </div>
+  </div>
+</div>
+
+
+   
+        
+    
 
     <!-- Ultrasonic Section -->
     <section class="mb-5">
