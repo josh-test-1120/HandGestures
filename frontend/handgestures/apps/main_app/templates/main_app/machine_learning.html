@@ -102,11 +102,34 @@
   </div>
 </section>
 
+<!--Machine Learning Methods-->
+<section class="card shadow-lg p-4 mb-5 rounded" data-aos="fade-up">
+  <h2 class="fw-bold text-primary mb-4">Methods</h2>
 
-    <!-- ML Methods Section -->
-    <section class="card shadow-lg p-4 mb-5 rounded" data-aos="fade-up">
-      <h2 class="fw-bold text-primary mb-4">Methods</h2>
-    </section>
+  <p class="text-muted fs-5" style="text-align: justify;">
+    Our system leverages a <strong>Semi-Supervised Learning</strong> approach to overcome the challenge of limited labeled sensor data. Initially, a small set of motion samples (such as Normal, Tonic-Clonic, Myoclonic, and Fall) were manually annotated. These samples were used to train a baseline model.
+  </p>
+
+  <p class="text-muted fs-5" style="text-align: justify;">
+    This model was then used to assign <strong>pseudo-labels</strong> to a larger pool of unlabeled motion data. After selective verification, this expanded dataset improved model robustness while reducing manual labeling effort.
+  </p>
+
+  <p class="text-muted fs-5" style="text-align: justify;">
+    The core architecture used in our project is a <strong>Long Short-Term Memory (LSTM)</strong> neural network, specifically designed to recognize patterns in time-series motion data.
+  </p>
+
+  <ul class="text-muted fs-5">
+    <li><strong>Semi-Supervised Labeling:</strong> Combines a small amount of labeled data with large unlabeled data through pseudo-labeling.</li>
+    <li><strong>LSTM Network:</strong> 3-layer recurrent model with dropout regularization for temporal pattern detection.</li>
+    <li><strong>Sliding Window Input:</strong> Motion data is segmented into 5-second time windows for sequential analysis.</li>
+    <li><strong>Confidence Filtering:</strong> Only predictions with >90% confidence are used to reinforce training or trigger alerts.</li>
+  </ul>
+
+  <p class="text-muted fs-5" style="text-align: justify;">
+    This method balances labeling efficiency and model accuracy, enabling real-time classification of complex motion patterns such as seizure events and posture-related incidents.
+  </p>
+</section>
+
 
     <!-- Classification Section -->
     <section class="card shadow-lg p-4 mb-5 rounded" data-aos="fade-up">
