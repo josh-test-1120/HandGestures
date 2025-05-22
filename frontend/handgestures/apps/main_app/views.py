@@ -1,4 +1,3 @@
-
 import mysql.connector
 from mysql.connector import errorcode
 
@@ -15,6 +14,9 @@ import json
 import random
 # This is to load from the .env file
 from decouple import config
+
+import os
+from django.conf import settings
 
 
 CONFIG = {
@@ -216,3 +218,41 @@ def live_demo_prediction(request):
         return JsonResponse(dict(zip(range(predictions_this_request), predictions)))
     
     return JsonResponse({'error': 'Invalid request'}, status=400)
+
+
+def download_template(request):
+    """
+    Serves the template.CSV file for download; implemented 5-22-2025 (SCRUM Sprint 7)
+    """
+    #'all' multiple possible paths for the template file
+    possible_paths = [
+        os.path.join(settings.BASE_DIR, '..', '..', 'backend', 'template.CSV'),  # Two levels up
+        os.path.join(settings.BASE_DIR, '..', 'backend', 'template.CSV'),       # One level up
+        os.path.join(settings.BASE_DIR, 'backend', 'template.CSV'),             # Same level
+        os.path.join(os.path.dirname(settings.BASE_DIR), 'backend', 'template.CSV'),  # Alternative approach
+    ]
+    
+    template_path = None
+    for path in possible_paths:
+        if os.path.exists(path):
+            template_path = path
+            break
+    
+    if template_path is None:
+        #in the case that the file is not found, create a simple template content
+        template_content = "Timestamp(ms),AccelX(g),AccelY(g),AccelZ(g),GyroX(deg/s),GyroY(deg/s),GyroZ(deg/s),DistanceLeft(cm),DistanceRight(cm)\n"
+        response = HttpResponse(template_content, content_type='text/csv')
+        response['Content-Disposition'] = 'attachment; filename="template.csv"'
+        return response
+    
+    try:
+        with open(template_path, 'r') as file:
+            response = HttpResponse(file.read(), content_type='text/csv')
+            response['Content-Disposition'] = 'attachment; filename="template.csv"'
+            return response
+    except (FileNotFoundError, IOError) as e:
+        #Fallback: return the template content directly
+        template_content = "Timestamp(ms),AccelX(g),AccelY(g),AccelZ(g),GyroX(deg/s),GyroY(deg/s),GyroZ(deg/s),DistanceLeft(cm),DistanceRight(cm)\n"
+        response = HttpResponse(template_content, content_type='text/csv')
+        response['Content-Disposition'] = 'attachment; filename="template.csv"'
+        return response
