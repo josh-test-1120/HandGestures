@@ -36,7 +36,7 @@
       </figcaption>
   </figure>
       <p class="text-muted fs-5" style="text-align: justify;">
-         This flow diagram illustrates the complete machine learning pipeline used in our seizure detection system. From raw data acquisition to classification, each stage is designed to ensure reliable real-time performance in distinguishing between seizure and non-seizure motion patterns.
+        This flow diagram illustrates the complete machine learning pipeline used in our seizure detection system. From raw data acquisition to classification, each stage is designed to ensure reliable real-time performance in distinguishing between seizure and non-seizure motion patterns.
       </p>
       <ul class="text-muted fs-5">
        <li ><strong>Data Collection:</strong> IMU sensors capture real-time acceleration and rotation data from the user.</li>
@@ -51,11 +51,21 @@
     <!-- Data Collection Section -->
     <section class="card shadow-lg p-4 mb-5 rounded" data-aos="fade-up">
       <h2 class="fw-bold text-primary mb-4">Data Collection</h2>
+      <img src="{% static 'main_app/img/hand_device.jpg' %}" alt="Hand Device" class="img-fluid shadow rounded mx-auto d-block mb-3" style="max-height: 504px;">
+      <p class="text-muted fs-5" style="text-align: justify;">
+        The user wears a device which has a gyroscope, accelerometer, and a pair of sound devices which sense left and right distance from surfaces.
+        This data is then written to a CSV file on the user's computer as x, y, and z rotation, x, y, and z acceleration, and left and right distances.
+      </p>
     </section>
 
     <!-- Data Preprocessing/Feature Extraction Section -->
     <section class="card shadow-lg p-4 mb-5 rounded" data-aos="fade-up">
       <h2 class="fw-bold text-primary mb-4">Data Preprocessing and Feature Extraction</h2>
+      <img src="{% static 'main_app/img/preprocessing.png' %}" alt="Preprocessing and Feature Extraction" class="img-fluid shadow rounded mx-auto d-block mb-3" style="max-width: 1000px;">
+      <p class="text-muted fs-5" style="text-align: justify;">
+        Noise removal and normalization is used on the data via python functions. Data is sent in set intervals.
+        Features are extracted by analyzing movement patterns within the time interval.
+      </p>
     </section>
 
     <!-- ML Methods Section -->
@@ -66,11 +76,26 @@
     <!-- Classification Section -->
     <section class="card shadow-lg p-4 mb-5 rounded" data-aos="fade-up">
       <h2 class="fw-bold text-primary mb-4">Classification</h2>
+      <img src="{% static 'main_app/img/classifications.png' %}" alt="Classifications" class="img-fluid shadow rounded mx-auto d-block mb-3" style="max-width: 1000px;">
+      <p class="text-muted fs-5" style="text-align: justify;">
+        Four classifications are used:
+      </p>
+      <ul class="text-muted">
+        <li><strong>Normal:</strong> Normal movement.</li>
+        <li><strong>Tremor:</strong> Movement indicative of a shaky seizure.</li>
+        <li><strong>Tonic:</strong> Movement indicative of a stiff seizure.</li>
+        <li><strong>Posture Change:</strong> Movement indicative of a sudden posture change or a fall.</li>
+      </ul>
     </section>
 
     <!-- Performance Evaluation Section -->
     <section class="card shadow-lg p-4 mb-5 rounded" data-aos="fade-up">
       <h2 class="fw-bold text-primary mb-4">Performance Evaluation</h2>
+      <img src="{% static 'main_app/img/prediction_accuracy.png' %}" alt="Prediction Accuracy" class="img-fluid shadow rounded mx-auto d-block mb-3" style="max-width: 1000px;">
+      <p class="text-muted fs-5" style="text-align: justify;">
+        Labeled data is used to analyze the accuracy of the model.
+        Labels are compared against predictions, and the percentage of matching predictions are recorded and shown on the summary page.
+      </p>
     </section>
     
     <!--
@@ -80,6 +105,7 @@
     <section class="card shadow-lg p-4 mb-5 rounded" data-aos="fade-up">
       <h2 class="fw-bold text-primary mb-4">ML Pipeline Diagram</h2>
       <img src="{% static 'main_app/img/ml_pipeline.png' %}" alt="Machine Learning Pipeline Diagram" class="img-fluid mx-auto d-block mb-3" style="max-width: 900px;">
+
     </section>
         
     -->
