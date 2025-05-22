@@ -3,10 +3,13 @@
  * Collects data from these sensors:
  * MPU-6050 (Accelerometer and Gyroscope)
  * HC-SR04 (Ultrasonics)
+ *
+ * Sends data to these components:
  * SPI (SD-Card)
+ * OLED Display
  *
  *
- * by Joshua Summers
+ * Author: Joshua Summers <joshua.summers@cwu.edu>
  */
 
 #include <MPU6050.h>
@@ -34,20 +37,17 @@
 #define SCREEN_ADDRESS 0x3C // OLED I2C Address (Hex)
 // Constants for the loop logic
 #define LIVE_DEBUG 0
-#define INTERVAL_MAX 5000 // span for collection
+#define INTERVAL_MAX 600 // span for collection
 
 // Ultrasonics
 NewPing sonarLeft(TRIG_PIN_LEFT, ECHO_PIN_LEFT, MAX_DISTANCE);
 NewPing sonarRight(TRIG_PIN_RIGHT, ECHO_PIN_RIGHT, MAX_DISTANCE);
-// unsigned int leftDist_cm;
-// unsigned int rightDist_cm;
 
 // Initialize OLED (I2C address 0x3C for most displays)
 Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, -1);
 
 // Initialize objects
 MPU6050 mpu; // MPU object
-// File dataFile; // File object
 
 // MPU-6050
 unsigned long lastMPUTime = 0;
@@ -120,7 +120,6 @@ bool verifySDHardware() {
           test = false;
         }
         testFile.close();
-        // SD.end();
       }
     }
     // Return the boolean test of the SD Hardware
@@ -151,12 +150,36 @@ void initDataFile() {
       }
       dataFile.close();
     }
-    // SD.end();
 }
+
+// Countdown before data collection for 128x32 OLED
+void countdownOLED(int seconds) {
+  for (int i = seconds; i > 0; i--) {
+    display.clearDisplay();
+    display.setTextSize(1); // Smaller size to fit in limited height
+    display.setTextColor(SSD1306_WHITE);
+    display.setCursor(28, 4); // Centered horizontally (approx)
+    display.print("Starting in");
+
+    display.setTextSize(2); // Larger for the countdown number
+    display.setCursor(56, 16); // Centered number
+    display.print(i);
+    
+    display.display();
+    delay(1000);
+  }
+
+  display.clearDisplay();
+  display.setTextSize(1);
+  display.setCursor(38, 12); // Roughly center "Starting!"
+  display.println("Starting!");
+  display.display();
+  delay(1000); // brief pause after countdown
+}
+
 
 // This is the function that will write the sensor data to the SD card
 void writeToSDCard(float leftDist, float rightDist, float ax, float ay, float az, float gx, float gy, float gz) {
-// void writeToSDCard() {
   // Get the current timestamp
   unsigned long currentTS = millis();
   // Open the Data File
@@ -178,17 +201,14 @@ void writeToSDCard(float leftDist, float rightDist, float ax, float ay, float az
   }
   // Close file and end SD session
   dataFile.close();
-  // SD.end();
 }
 
 // Initialize the OLED screen for Data Collection
 void initOLED_SD() {
   display.clearDisplay();
-  //display.setFont(&TomThumb);
   display.setFont();
   display.setTextSize(1);
   display.setTextColor(SSD1306_WHITE);
-  //display.setCursor(0, 5);
   display.setCursor(0, 0);
   display.println("Collecting Data...");
   display.display();
@@ -228,13 +248,10 @@ void updateOLED_MPU(unsigned int leftDist, unsigned int rightDist) {
 // Update the OLED with the Data interval processed
 void updateOLED_SD() {
   // --- DRAW TO OLED ---
-  //display.clearDisplay();
   initOLED_SD();
-  // display.setFont(&TomThumb);
   display.setFont();
   display.setTextSize(1);
   display.setTextColor(SSD1306_WHITE);
-  // display.setCursor(0, 12);
   display.setCursor(0, 10);
   display.print("Data Interval: ");
   display.println(interval);
@@ -243,8 +260,6 @@ void updateOLED_SD() {
 
 // Finish the SD collection message
 void finishOLED_SD() {
-  //display.clearDisplay();
-  //display.setFont(&TomThumb);
   display.setFont();
   display.setTextSize(1);
   display.setTextColor(SSD1306_WHITE);
@@ -263,7 +278,6 @@ void printOLED(int *line, char *text) {
   }
   display.setFont(&TomThumb);
   display.setCursor(0, *line);
-  //display.setTextSize(1);
   display.setTextColor(SSD1306_WHITE);
   display.println(text);
   display.display();
@@ -286,7 +300,6 @@ void setup() {
       display.clearDisplay();
       display.setFont(&TomThumb);
       display.setCursor(0,5);
-      //display.setTextSize(1);
       display.setTextColor(SSD1306_WHITE);
       display.println("System Booting!");
       display.display();
@@ -309,7 +322,8 @@ void setup() {
     initDataFile();
     // System initialization complete
     printOLED(&count, "System Initialized!");
-    delay(10000);
+    delay(3000);
+    countdownOLED(3);
     // Update OLED for collection
     initOLED_SD();
     delay(5); // Small delay
@@ -326,7 +340,6 @@ void loop() {
     unsigned int rightDist_cm = sonarRight.ping_cm();
     // Step 3: Write to SD-Card
     writeToSDCard(leftDist_cm, rightDist_cm, accelX, accelY, accelZ, gyroX, gyroY, gyroZ);
-    // writeToSDCard();
     // Step 4: Update OLED screen with interval
     if (interval % 50 == 0) updateOLED_SD();
     // Update OLED that collection is finished
@@ -334,7 +347,7 @@ void loop() {
   }
   else {
     SD.end();
-    exit(0);
+    for (;;) {}; // endless loop to avoid integer overflow
   }
   // Update counter
   interval++;
