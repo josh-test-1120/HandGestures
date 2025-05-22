@@ -58,15 +58,50 @@
       </p>
     </section>
 
-    <!-- Data Preprocessing/Feature Extraction Section -->
-    <section class="card shadow-lg p-4 mb-5 rounded" data-aos="fade-up">
-      <h2 class="fw-bold text-primary mb-4">Data Preprocessing and Feature Extraction</h2>
-      <img src="{% static 'main_app/img/preprocessing.png' %}" alt="Preprocessing and Feature Extraction" class="img-fluid shadow rounded mx-auto d-block mb-3" style="max-width: 1000px;">
-      <p class="text-muted fs-5" style="text-align: justify;">
-        Noise removal and normalization is used on the data via python functions. Data is sent in set intervals.
-        Features are extracted by analyzing movement patterns within the time interval.
-      </p>
-    </section>
+    <!-- Data Pipeline Explanation Section -->
+<section class="card shadow-lg p-4 mb-5 rounded" data-aos="fade-up">
+  <h2 class="fw-bold text-primary mb-4 text-center">Data Processing and Classification Pipeline</h2>
+  
+  <img src="{% static 'main_app/img/preprocessing.png' %}" alt="Preprocessing and Feature Extraction" class="img-fluid shadow rounded mx-auto d-block mb-4" style="max-width: 1000px;">
+
+  <div class="text-muted fs-5" style="text-align: justify;">
+    <p><strong>Raw Sensor Data:</strong> The system captures data from wearable sensors, including:
+      <ul>
+        <li><strong>Accelerometer (X, Y, Z)</strong> for detecting movement intensity and direction</li>
+        <li><strong>Gyroscope (Roll, Pitch, Yaw)</strong> for tracking orientation and rotation</li>
+        <li><strong>Ultrasound (Distance)</strong> for measuring proximity, aiding in fall detection</li>
+      </ul>
+    </p>
+
+    <p><strong>Preprocessing:</strong> Before analysis, data undergoes:
+      <ul>
+        <li><strong>Filtering:</strong> Noise removal for cleaner signals</li>
+        <li><strong>Segmentation:</strong> Dividing data into 5-second windows for temporal analysis</li>
+        <li><strong>Normalization:</strong> Ensuring consistent data ranges across features</li>
+      </ul>
+    </p>
+
+    <p><strong>Feature Extraction:</strong> Features are derived from sensor data using three domains:
+      <ul>
+        <li><strong>Time-Domain:</strong> Jerk (dAccel/dt), Zero-Crossing Rate, Signal Magnitude Area</li>
+        <li><strong>Frequency-Domain:</strong> Power Spectral Density (PSD) peaks at 3–5Hz and Spectral Entropy</li>
+        <li><strong>Time-Frequency:</strong> Wavelet Coefficients capturing motion over time and frequency</li>
+      </ul>
+    </p>
+
+    <p><strong>Model Inference:</strong> An LSTM Neural Network (with 3 hidden layers and dropout regularization) processes the features. A threshold ensures only predictions with >90% confidence are considered.</p>
+
+    <p><strong>Final Output:</strong> The model classifies the user’s movement into one of the following:
+      <ul>
+        <li><strong>Normal Movement</strong></li>
+        <li><strong>Tonic-Clonic Seizure</strong> (identified via 3–5Hz signal frequency)</li>
+        <li><strong>Myoclonic Seizure</strong> (shock-like movement pattern)</li>
+        <li><strong>Postural Change / Fall</strong> (detected via wavelet-based pattern)</li>
+      </ul>
+    </p>
+  </div>
+</section>
+
 
     <!-- ML Methods Section -->
     <section class="card shadow-lg p-4 mb-5 rounded" data-aos="fade-up">
