@@ -80,12 +80,12 @@
   </div>
 
   <!-- Description -->
-  <p class="text-muted" style="text-align: justify;">
+  <p class="text-muted fs-5" style="text-align: justify;">
     The user wears a sensor-equipped device that captures real-time motion data. The data is transmitted to a processing unit and eventually visualized on the front-end.
   </p>
 
   <!-- Components List -->
-  <ul class="text-muted">
+  <ul class="text-muted fs-5">
     <li>Wearable IMU sensors (MPU6050)</li>
     <li>Arduino Nano or Uno for local processing</li>
     <li>Bluetooth module for wireless data transfer</li>
@@ -99,10 +99,10 @@
     <section class="card shadow-lg p-4 mb-5 rounded" data-aos="fade-up">
       <h2 class="fw-bold text-primary mb-4">Data Flow</h2>
       <img src="{% static 'main_app/img/data_flow_diagram.png' %}" alt="Data Flow Diagram" class="img-fluid shadow rounded mx-auto d-block mb-3" style="max-width: 1000px;">
-      <p class="text-muted" style="text-align: justify;">
+      <p class="text-muted fs-5" style="text-align: justify;">
         This diagram illustrates the complete data flow of the Hand Motion Recognition system. Motion data is collected from an Arduino Nano or Uno and stored on an SD card. This data is used both for frontend data visualization and backend machine learning model training. Once the model is trained, it is deployed to make real-time motion predictions displayed on the demo pages.
       </p>
-      <ul class="text-muted">
+      <ul class="text-muted fs-5">
         <li>Sensor data collected and optionally saved to SD card</li>
         <li>Processed data sent to web interface</li>
         <li>Data forwarded to backend for classification</li>
@@ -114,10 +114,10 @@
     <section class="card shadow-lg p-4 mb-5 rounded" data-aos="fade-up">
       <h2 class="fw-bold text-primary mb-4">Hardware Architecture</h2>
       <img src="{% static 'main_app/img/hardware_diagram.png' %}" alt="Hardware Diagram" class="img-fluid shadow rounded mx-auto d-block mb-3" style="max-width: 1000px;">
-      <p class ="text-muted" style="text-align: justify;">
+      <p class ="text-muted fs-5" style="text-align: justify;">
           The hardware architecture diagram outlines the key components and interconnections in our Arduino-based Hand Motion Recognition system. The system integrates multiple sensors and interfaces to capture, process, and store motion data efficiently for real-time and offline analysis.
       </p>
-      <ul class="text-muted">
+      <ul class="text-muted fs-5">
         <li>9V battery supplies power and is regulated to 5V for system stability</li>
         <li>ATmega328P microcontroller acts as the central processing unit</li>
         <li>MPU-6050 (Accelerometer/Gyroscope) connected via I2C for motion data</li>
@@ -130,7 +130,7 @@
     <!-- Machine Learning Model Section -->
     <section class="card shadow-lg p-4 mb-5 rounded" data-aos="fade-up">
       <h2 class="fw-bold text-primary mb-4">Machine Learning</h2>
-      <p class="text-muted" style="text-align: justify;">
+      <p class="text-muted fs-5" style="text-align: justify;">
         We have a dedicated page that explores our machine learning model in detail, including how it was developed, trained, and deployed for real-time motion recognition. To learn more about the algorithms and techniques behind our system, visit the machine learning page below.
       </p>
       <a href="{% url 'main_app:machine_learning' %}" class="btn btn-outline-primary btn-lg px-4">Learn More</a>
