@@ -20,7 +20,8 @@ urlpatterns = [
 	path("machine_learning/", views.machine_learning, name="machine_learning"),
 	path("live-demo/", views.live_demo, name="live_demo"),
 	path("contact/", views.contact, name='contact'),
-	path("live_demo_prediction/", views.live_demo_prediction, name="live_demo_prediction")
+	path("live_demo_prediction/", views.live_demo_prediction, name="live_demo_prediction"),
+	path("download-template/", views.download_template, name="download_template"),
 	#path('api/report/', views.api_report, name='api_report'),  # Example
 
 	# Regex matcher

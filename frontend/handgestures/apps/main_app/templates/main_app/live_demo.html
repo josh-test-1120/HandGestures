@@ -43,6 +43,7 @@
             <button id="startBtn" class="btn">Start Demo</button>
             <button id="stopBtn" class="btn">Stop Demo</button>
             <button id="clearBtn" class="btn">Clear Data</button>
+            <button id="contributeBtn" class="btn">Contribute</button>
         </div>
         <div class="alert alert-info mt-2" role="alert" style="max-width: 500px;">
             <strong>Note:</strong> 1s of real time = 10s of demo time (i.e. 10 data points).
@@ -403,6 +404,7 @@
         const startBtn = document.getElementById('startBtn');
         const stopBtn = document.getElementById('stopBtn');
         const clearBtn = document.getElementById('clearBtn');
+        const contributeBtn = document.getElementById('contributeBtn');
 
         //ADDED EVENT LISTENERS FOR BUTTONS 4-24-2025 (SCRUM Sprint 3)
 
@@ -615,6 +617,17 @@
             predictionChart.data.labels = [];
             predictionChart.data.datasets.forEach(ds => ds.data = []);
             predictionChart.update();
+        });
+
+        //Event: Contribute button event listener - download template.csv (implemented 5-22-2025 SCRUM Sprint 7)
+        contributeBtn.addEventListener('click', function() {
+            //creates a temporary link to download the template
+            const link = document.createElement('a');
+            link.href = '/download-template/';
+            link.download = 'template.csv';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
         });
 
         /*
