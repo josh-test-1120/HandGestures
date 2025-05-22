@@ -19,28 +19,34 @@
     <section class="mb-5">
       <div class="text-center text-white p-5 rounded-4 mx-3" style="background: linear-gradient(to right, #31b3fe, #7d7676);" data-aos="fade-down">
         <h1 class="fw-bold display-5 mb-4">Machine Learning Model</h1>
-        <p class="lead text-light px-md-5" style="text-align:center">
-          Explore the algorithms, data processing, and training techniques behind our real-time motion recognition system.
-        </p>
+        <h2 class="lead text-light mb-0">Explore the algorithms, data processing, and training techniques behind our real-time motion recognition system.</h2>
       </div>
     </section>
 
     <!-- ML Flow Prototype Section -->
     <section class="card shadow-lg p-4 mb-5 rounded" data-aos="fade-up">
       <h2 class="fw-bold text-primary mb-4">ML Flow Prototype</h2>
-      <img src="{% static 'main_app/img/ml-prototype.png' %}" alt="ML Flow Prototype Diagram" class="img-fluid shadow rounded mx-auto d-block mb-3" style="max-width: 1000px;">
+     <figure class="text-center">
+         <img src="{% static 'main_app/img/ml-prototype.png' %}" 
+         alt="ML Flow Prototype Diagram" 
+         class="img-fluid shadow rounded mx-auto mb-2" 
+         style="max-width: 1000px;">
+        <figcaption class="text-muted fw-semibold small">
+         Source: <a href="https://doi.org/10.1007/s11227-023-05299-9" target="_blank">Flow Prototype</a>
+      </figcaption>
+  </figure>
       <p class="text-muted fs-5" style="text-align: justify;">
         This flow diagram illustrates the complete machine learning pipeline used in our seizure detection system. From raw data acquisition to classification, each stage is designed to ensure reliable real-time performance in distinguishing between seizure and non-seizure motion patterns.
       </p>
-      <ul class="text-muted">
-        <li><strong>Data Collection:</strong> IMU sensors capture real-time acceleration and rotation data from the user.</li>
-        <li><strong>Preprocessing:</strong> Raw data is cleaned, normalized, and segmented into time windows for analysis.</li>
-        <li><strong>Feature Extraction:</strong> Statistical and frequency-based features are extracted to represent motion patterns.</li>
-        <li><strong>ML Methods:</strong> Machine learning models (e.g., Random Forest, SVM) are trained on labeled datasets.</li>
-        <li><strong>Classification:</strong> The system classifies each time window as either “Seizure” or “Non-Seizure.”</li>
-        <li><strong>Performance Evaluation:</strong> Accuracy, precision, recall, and confusion matrix are used to assess system effectiveness.</li>
-      </ul>
-    </section>
+      <ul class="text-muted fs-5">
+       <li ><strong>Data Collection:</strong> IMU sensors capture real-time acceleration and rotation data from the user.</li>
+      <li><strong>Preprocessing:</strong> Raw data is cleaned, normalized, and segmented into time windows for analysis.</li>
+    <li><strong>Feature Extraction:</strong> Statistical and frequency-based features are extracted to represent motion patterns.</li>
+    <li><strong>ML Methods:</strong> Machine learning models (e.g., Random Forest, SVM) are trained on labeled datasets.</li>
+    <li><strong>Classification:</strong> The system classifies each time window as either “Seizure” or “Non-Seizure.”</li>
+    <li><strong>Performance Evaluation:</strong> Accuracy, precision, recall, and confusion matrix are used to assess system effectiveness.</li>
+  </ul>
+</section>
 
     <!-- Data Collection Section -->
     <section class="card shadow-lg p-4 mb-5 rounded" data-aos="fade-up">
