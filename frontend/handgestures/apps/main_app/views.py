@@ -37,7 +37,7 @@ except mysql.connector.Error as err:
     elif err.errno == errorcode.ER_BAD_DB_ERROR:
         connection_error = "Database does not exist"
     else:
-        connection_error = err
+        connection_error = "MySQL connection error: " + str(err)
 else:
     cursor = connection.cursor()
 
@@ -84,31 +84,36 @@ def contact(request):
 def summary_page_update(request):
     query_string = """
         SELECT ParticipantCount,
-            RowCount,
-            CorrectCount
+            RowCount
         FROM RunningData;
     """
     
+    query_error = ""
+    
+    # TODO: get prediction_accuracy from server file once it exists
     participants = 0
     data_points = 0
     prediction_accuracy = 0.0
     
     if cursor is not None:
-        cursor.execute(query_string)
-        result = next(iter(cursor.fetchall()), None)
-        if result is not None:
+        try:
+            cursor.execute(query_string)
+            result = next(iter(cursor.fetchall()), None)
+            if result is not None:
+                
+                participants = result[0]
+                data_points = result[1]
+                
+        except Exception as mysql_exception:
             
-            participants = result[0]
-            data_points = result[1]
-            if data_points != 0:
-                prediction_accuracy = (result[2] / data_points) * 100
-            else:
-                prediction_accuracy = 0.0
+            query_error = "MySQL query error: " + str(mysql_exception)
     
     summary_data = {
         "participants": "{:,}".format(participants),
         "data_points": "{:,}".format(data_points),
         "prediction_accuracy": "{:,.2f}".format(prediction_accuracy),
+        "connection_error": connection_error,
+        "query_error": query_error,
     }
     
     return JsonResponse(summary_data)
@@ -137,6 +142,8 @@ def demo_page_update(request):
         FROM RunningData;
     """
     
+    query_error = ""
+    
     avg_accel_x = 0.0
     avg_accel_y = 0.0
     avg_accel_z = 0.0
@@ -147,24 +154,30 @@ def demo_page_update(request):
     max_rotation = [0.0, 0.0, 0.0]
     
     if cursor is not None:
-        
-        cursor.execute(query_string_top_accel)
-        iter_results = iter(cursor.fetchall())
-        max_accel = [next(iter_results, (0.0,))[0] for _ in range(len(max_accel))]
-        
-        cursor.execute(query_string_top_rotation)
-        iter_results = iter(cursor.fetchall())
-        max_rotation = [next(iter_results, (0.0,))[0] for _ in range(len(max_rotation))]
-        
-        cursor.execute(query_string_averages)
-        result = next(iter(cursor.fetchall()), None)
-        if result is not None:
-            avg_accel_x = result[0]
-            avg_accel_y = result[1]
-            avg_accel_z = result[2]
-            avg_rotation_x = result[3]
-            avg_rotation_y = result[4]
-            avg_rotation_z = result[5]
+        try:
+            cursor.execute(query_string_top_accel)
+            iter_results = iter(cursor.fetchall())
+            max_accel = [next(iter_results, (0.0,))[0] for _ in range(len(max_accel))]
+            
+            cursor.execute(query_string_top_rotation)
+            iter_results = iter(cursor.fetchall())
+            max_rotation = [next(iter_results, (0.0,))[0] for _ in range(len(max_rotation))]
+            
+            cursor.execute(query_string_averages)
+            result = next(iter(cursor.fetchall()), None)
+            
+            if result is not None:
+                
+                avg_accel_x = result[0]
+                avg_accel_y = result[1]
+                avg_accel_z = result[2]
+                avg_rotation_x = result[3]
+                avg_rotation_y = result[4]
+                avg_rotation_z = result[5]
+                
+        except Exception as mysql_exception:
+            
+            query_error = "MySQL query error: " + str(mysql_exception)
     
     demo_data = {
         "avg_x_accel": "average x acceleration: {:,.3f}".format(avg_accel_x),
@@ -185,6 +198,8 @@ def demo_page_update(request):
         "second_fastest_rot_explanation": "Explanation: n/a",
         "third_fastest_rot": "3rd fastest rotation outlier: {:,.3f}".format(max_rotation[2]),
         "third_fastest_rot_explanation": "Explanation: n/a",
+        "connection_error": connection_error,
+        "query_error": query_error,
     }
     
     return JsonResponse(demo_data)

@@ -35,7 +35,7 @@
 
     <!-- Accelerometer Section -->
 <section class="mb-5">
-  <h3 class="text-center fw-bold mb-4" data-aos="fade-up">Accelerometer</h3>
+  <h3 id="loading-text-id" class="text-center fw-bold mb-4" data-aos="fade-up">LOADING</h3>
   <div class="row mb-4">
     <div class="col-md-12">
       <div class="card shadow-sm p-4 mb-5 rounded" data-aos="fade-up">
@@ -239,6 +239,9 @@
           document.getElementById('second-max-rot-explanation-text').textContent = data.second_fastest_rot_explanation;
           document.getElementById('third-max-rot-text').textContent = data.third_fastest_rot;
           document.getElementById('third-max-rot-explanation-text').textContent = data.third_fastest_rot_explanation;
+          
+          if (data.connection_error) console.log(data.connection_error);
+          if (data.query_error) console.log(data.query_error);
         })
         .catch(error => {
           console.error('Error getting demo info:', error);

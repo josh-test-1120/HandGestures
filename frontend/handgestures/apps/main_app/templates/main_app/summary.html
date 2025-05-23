@@ -178,6 +178,9 @@
           document.getElementById('participants-text').textContent = data.participants;
           document.getElementById('data-points-text').textContent = data.data_points;
           document.getElementById('prediction-accuracy-text').textContent = data.prediction_accuracy;
+          
+          if (data.connection_error) console.log(data.connection_error);
+          if (data.query_error) console.log(data.query_error);
         })
         .catch(error => console.error('Summary update failed:', error))
         .finally(() => waitingForRequest = false);
