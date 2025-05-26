@@ -51,7 +51,14 @@
     <!-- Data Collection Section -->
     <section class="card shadow-lg p-4 mb-5 rounded" data-aos="fade-up">
       <h2 class="fw-bold text-primary mb-4">Data Collection</h2>
-      <img src="{% static 'main_app/img/hand_device.jpg' %}" alt="Hand Device" class="img-fluid shadow rounded mx-auto d-block mb-3" style="max-height: 504px;">
+      <div class="row mb-3">
+    <div class="col-md-6">
+      <img src="{% static 'main_app/img/hardware_inside.jpeg' %}" alt="Hardware Inside" class="img-fluid shadow rounded mx-auto d-block" style="max-height: 504px;">
+    </div>
+    <div class="col-md-6">
+      <img src="{% static 'main_app/img/hardware_outside.jpg' %}" alt="Hardware outside" class="img-fluid shadow rounded mx-auto d-block" style="max-height: 504px;">
+    </div>
+  </div>
       <p class="text-muted fs-5" style="text-align: justify;">
         The user wears a device which has a gyroscope, accelerometer, and a pair of sound devices which sense left and right distance from surfaces.
         This data is then written to a CSV file on the user's computer as x, y, and z rotation, x, y, and z acceleration, and left and right distances.
