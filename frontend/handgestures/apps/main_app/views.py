@@ -275,7 +275,6 @@ def download_template(request):
         return response
 
 
-@csrf_exempt
 @require_http_methods(["POST"])
 def upload_contribution(request):
     """Handle CSV file upload to Azure blob storage"""
