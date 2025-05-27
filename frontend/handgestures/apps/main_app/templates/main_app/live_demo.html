@@ -39,12 +39,21 @@
             <div>Loading and parsing CSV...</div>
         </div>
         <!-- Control buttons for the live demo -->
-        <div class="controls">
-            <button id="importCSV" class="btn">Import CSV</button>
-            <button id="startBtn" class="btn">Start Demo</button>
-            <button id="stopBtn" class="btn">Stop Demo</button>
-            <button id="clearBtn" class="btn">Clear Data</button>
-            <button id="contributeBtn" class="btn">Contribute</button>
+        <div class="controls d-flex justify-content-between align-items-center flex-wrap">
+            <!-- Demo control buttons (left side) -->
+            <div class="demo-buttons">
+                <button id="importCSV" class="btn btn-outline-primary me-2 mb-2">Import CSV</button>
+                <button id="startBtn" class="btn btn-outline-primary me-2 mb-2">Start Demo</button>
+                <button id="stopBtn" class="btn btn-outline-primary me-2 mb-2">Stop Demo</button>
+                <button id="clearBtn" class="btn btn-outline-primary me-2 mb-2">Clear Data</button>
+            </div>
+            
+            <!-- Contribute button (right side) -->
+            <div class="contribute-section">
+                <button id="contributeBtn" class="btn btn-outline-primary px-4 py-2 mb-2">
+                    🤝 Contribute Data
+                </button>
+            </div>
         </div>
         <div class="alert alert-info mt-2" role="alert" style="max-width: 500px;">
             <strong>Note:</strong> 1s of real time = 10s of demo time (i.e. 10 data points).
