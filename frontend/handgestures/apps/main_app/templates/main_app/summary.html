@@ -51,7 +51,7 @@
         <div class="col-md-4">
           <div class="stat-box card shadow-sm h-100">
             <h6 class="text-muted">Prediction Accuracy</h6>
-            <div id="prediction-accuracy-text" class="display-5 text-purple fw-bold">0%</div>
+            <div id="prediction-accuracy-text" class="display-5 text-purple fw-bold">0.00%</div>
             <p class="mb-0 small">Accuracy of trained model</p>
           </div>
         </div>
@@ -177,13 +177,18 @@
         .then(data => {
           document.getElementById('participants-text').textContent = data.participants;
           document.getElementById('data-points-text').textContent = data.data_points;
-          document.getElementById('prediction-accuracy-text').textContent = data.prediction_accuracy;
           
           if (data.connection_error) console.log(data.connection_error);
           if (data.query_error) console.log(data.query_error);
         })
         .catch(error => console.error('Summary update failed:', error))
         .finally(() => waitingForRequest = false);
+        
+        fetch("{% static 'main_app/data/prediction_accuracy.txt' %}")
+        .then(response => response.text())
+        .then(prediction => {
+          document.getElementById('prediction-accuracy-text').textContent = prediction;
+        });
     }
   </script>
 

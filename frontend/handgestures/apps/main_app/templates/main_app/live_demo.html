@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token }}">
     <title>Live Demo - Arduino Data</title>
     {% load static %}
     <link rel="stylesheet" href="{% static 'main_app/css/style.css' %}">
@@ -38,12 +39,21 @@
             <div>Loading and parsing CSV...</div>
         </div>
         <!-- Control buttons for the live demo -->
-        <div class="controls">
-            <button id="importCSV" class="btn">Import CSV</button>
-            <button id="startBtn" class="btn">Start Demo</button>
-            <button id="stopBtn" class="btn">Stop Demo</button>
-            <button id="clearBtn" class="btn">Clear Data</button>
-            <button id="contributeBtn" class="btn">Contribute</button>
+        <div class="controls d-flex justify-content-between align-items-center flex-wrap">
+            <!-- Demo control buttons (left side) -->
+            <div class="demo-buttons">
+                <button id="importCSV" class="btn btn-outline-primary me-2 mb-2">Import CSV</button>
+                <button id="startBtn" class="btn btn-outline-primary me-2 mb-2">Start Demo</button>
+                <button id="stopBtn" class="btn btn-outline-primary me-2 mb-2">Stop Demo</button>
+                <button id="clearBtn" class="btn btn-outline-primary me-2 mb-2">Clear Data</button>
+            </div>
+            
+            <!-- Contribute button (right side) -->
+            <div class="contribute-section">
+                <button id="contributeBtn" class="btn btn-outline-primary px-4 py-2 mb-2">
+                    🤝 Contribute Data
+                </button>
+            </div>
         </div>
         <div class="alert alert-info mt-2" role="alert" style="max-width: 500px;">
             <strong>Note:</strong> 1s of real time = 10s of demo time (i.e. 10 data points).
@@ -145,6 +155,77 @@
         </section>
     </main>
     {% include 'main_app/footer.html' %}
+
+    <!-- Contribute Modal; implemented 5-26-2025 (SCRUM Sprint 7) -->
+    <div class="modal fade" id="contributeModal" tabindex="-1" aria-labelledby="contributeModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="contributeModalLabel">
+                        Contribute to our ML Model Training Dataset
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="alert alert-info" role="alert">
+                        <strong>Data Contribution Notice:</strong> Download a template to contribute your hand gesture data to our Azure ML model training dataset. All data is securely stored through Azure blob containers and helps improve our gesture recognition accuracy.
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="card h-100">
+                                <div class="card-body text-center">
+                                    <div class="display-1 text-primary mb-3">📥</div>
+                                    <h6 class="card-title">Download Template</h6>
+                                    <p class="card-text small">Get the CSV template with the correct format for data collection.</p>
+                                    <button id="downloadTemplateBtn" class="btn btn-primary">
+                                        Download
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card h-100">
+                                <div class="card-body text-center">
+                                    <div class="display-1 text-success mb-3">☁️</div>
+                                    <h6 class="card-title">Upload Your Data</h6>
+                                    <p class="card-text small">Upload your filled CSV file to contribute to our training dataset.</p>
+                                    <input type="file" id="contributeFileInput" accept=".csv" style="display: none;">
+                                    <button id="uploadDataBtn" class="btn btn-success">
+                                        Upload
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Upload Progress Bar -->
+                    <div id="uploadProgress" class="mt-3" style="display: none;">
+                        <div class="d-flex align-items-center">
+                            <div class="spinner-border spinner-border-sm text-success me-2" role="status">
+                                <span class="visually-hidden">Uploading...</span>
+                            </div>
+                            <span>Uploading to Azure storage...</span>
+                        </div>
+                        <div class="progress mt-2">
+                            <div id="uploadProgressBar" class="progress-bar bg-success" role="progressbar" style="width: 0%"></div>
+                        </div>
+                    </div>
+                    
+                    <!-- Upload Success/Error Messages -->
+                    <div id="uploadSuccess" class="alert alert-success mt-3" style="display: none;">
+                        <strong>Success!</strong> Your data has been uploaded successfully to the training dataset.
+                    </div>
+                    <div id="uploadError" class="alert alert-danger mt-3" style="display: none;">
+                        <strong>Error:</strong> <span id="uploadErrorMessage">Failed to upload data. Please try again.</span>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- JAVASCRIPT CODE -->
     <script>
@@ -619,16 +700,7 @@
             predictionChart.update();
         });
 
-        //Event: Contribute button event listener - download template.csv (implemented 5-22-2025 SCRUM Sprint 7)
-        contributeBtn.addEventListener('click', function() {
-            //creates a temporary link to download the template
-            const link = document.createElement('a');
-            link.href = '/download-template/';
-            link.download = 'template.csv';
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-        });
+        //JavaScript for Contribute button functionality moved to contribute.js (5-26-2025)
 
         /*
          Toast alert functions & spike/abnormal activity detection 
@@ -696,6 +768,7 @@
         AOS.init({ duration: 1000, once: true });
     </script>
     <script src="{% static 'main_app/js/darkmode.js' %}"></script>
-    <script src="{% static 'main_app/js/export.js' %}"></script> 
+    <script src="{% static 'main_app/js/export.js' %}"></script>
+    <script src="{% static 'main_app/js/contribute.js' %}"></script> 
 </body>
 </html>
