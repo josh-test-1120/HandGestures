@@ -7,3 +7,4 @@ python-decouple==3.8
 setuptools==75.8.0
 sqlparse==0.5.2
 wheel==0.45.1
+azure-storage-blob==12.19.0

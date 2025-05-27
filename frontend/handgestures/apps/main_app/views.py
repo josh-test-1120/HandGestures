@@ -17,7 +17,9 @@ from decouple import config
 
 import os
 from django.conf import settings
-
+#this is to get the current date and time for uploading the file into the blob storage
+from datetime import datetime
+from django.views.decorators.http import require_http_methods
 
 CONFIG = {
     "host": config('DB_HOST'),
@@ -271,3 +273,73 @@ def download_template(request):
         response = HttpResponse(template_content, content_type='text/csv')
         response['Content-Disposition'] = 'attachment; filename="template.csv"'
         return response
+
+
+@csrf_exempt
+@require_http_methods(["POST"])
+def upload_contribution(request):
+    """Handle CSV file upload to Azure blob storage"""
+    try:
+        #max file size (2 MB in bytes)
+        MAX_FILE_SIZE = 2 * 1024 * 1024  # 2 MB
+        
+        if 'csv_file' not in request.FILES:
+            return JsonResponse({'success': False, 'error': 'No file provided'})
+        
+        csv_file = request.FILES['csv_file']
+        container_name = request.POST.get('container', 'public-contributions')
+        
+        #CSV file type validation
+        if not csv_file.name.lower().endswith('.csv'):
+            return JsonResponse({'success': False, 'error': 'Invalid file type. Please upload a CSV file.'})
+        
+        #file size validation
+        if csv_file.size > MAX_FILE_SIZE:
+            size_mb = csv_file.size / (1024 * 1024)
+            return JsonResponse({
+                'success': False, 
+                'error': f'File size exceeds 2 MB limit. Your file is {size_mb:.2f} MB.'
+            })
+        
+        #creates unique filename with timestamp
+        timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+        filename = f"contribution_{timestamp}_{csv_file.name}"
+        
+        #Azure credentials from .env file
+        storage_account_name = config('AZURE_STORAGE_ACCOUNT_NAME')
+        storage_account_key = config('AZURE_STORAGE_ACCOUNT_KEY')
+        
+        #initializes Azure client (w/ error handling)
+        try:
+            from azure.storage.blob import BlobServiceClient
+            blob_service_client = BlobServiceClient(
+                account_url=f"https://{storage_account_name}.blob.core.windows.net",
+                credential=storage_account_key
+            )
+        except ImportError:
+            return JsonResponse({'success': False, 'error': 'Azure storage not configured'})
+        except Exception as e:
+            return JsonResponse({'success': False, 'error': f'Azure connection failed: {str(e)}'})
+        
+        #uploads to blob storage
+        try:
+            blob_client = blob_service_client.get_blob_client(
+                container=container_name,
+                blob=filename
+            )
+            
+            #resets file pointer and upload
+            csv_file.seek(0)
+            blob_client.upload_blob(csv_file.read(), overwrite=True)
+            
+            return JsonResponse({
+                'success': True, 
+                'message': 'File uploaded successfully',
+                'filename': filename
+            })
+            
+        except Exception as upload_error:
+            return JsonResponse({'success': False, 'error': f'Upload failed: {str(upload_error)}'})
+        
+    except Exception as e:
+        return JsonResponse({'success': False, 'error': f'Unexpected error: {str(e)}'})
