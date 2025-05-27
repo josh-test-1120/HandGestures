@@ -65,6 +65,10 @@ input {
   border-radius: 8px;
 }
 
+.wide-container {
+  max-width: 95% !important;
+}
+
 h1 {
   color: #2c3e50;
   border-bottom: 2px solid #eee;
@@ -197,6 +201,12 @@ h1 {
 }
 
 /* ========== List Group for Dark Mode ========== */
+.bg-dark .text-muted,
+.bg-dark .lead,
+.bg-dark small {
+    color: #ccc !important;
+}
+
 .bg-dark .list-group-item {
   background-color: #1f1f1f;
   border-color: #444;
