@@ -92,10 +92,8 @@ def summary_page_update(request):
     
     query_error = ""
     
-    # TODO: get prediction_accuracy from server file once it exists
     participants = 0
     data_points = 0
-    prediction_accuracy = 0.0
     
     if cursor is not None:
         try:
@@ -110,10 +108,10 @@ def summary_page_update(request):
             
             query_error = "MySQL query error: " + str(mysql_exception)
     
+    # Prediction accuracy is found in a server file and loaded in JavaScript
     summary_data = {
         "participants": "{:,}".format(participants),
         "data_points": "{:,}".format(data_points),
-        "prediction_accuracy": "{:,.2f}".format(prediction_accuracy),
         "connection_error": connection_error,
         "query_error": query_error,
     }
@@ -122,60 +120,64 @@ def summary_page_update(request):
 
 
 def demo_page_update(request):
-    query_string_top_accel = """
-        SELECT AccelTotal
-        FROM HandData
-        ORDER BY AccelTotal DESC LIMIT 3;
-    """
-    
-    query_string_top_rotation = """
-        SELECT GyroTotal
-        FROM HandData
-        ORDER BY GyroTotal DESC LIMIT 3;
-    """
-    
-    query_string_averages = """
-        SELECT AverageXAccel,
+    query_string = """
+        WITH MaxValues(MaxAccelX, MaxAccelY, MaxAccelZ, MaxGyroX, MaxGyroY, MaxGyroZ) AS (
+            SELECT MAX(ABS(AccelX)),
+                MAX(ABS(AccelY)),
+                MAX(ABS(AccelZ)),
+                MAX(ABS(GyroX)),
+                MAX(ABS(GyroY)),
+                MAX(ABS(GyroZ))
+            FROM handdata
+        )
+        SELECT MaxAccelX,
+            MaxAccelY,
+            MaxAccelZ,
+            MaxGyroX,
+            MaxGyroY,
+            MaxGyroZ,
+            AverageXAccel,
             AverageYAccel,
             AverageZAccel,
             AverageXRotation,
             AverageYRotation,
             AverageZRotation
-        FROM RunningData;
+        FROM MaxValues JOIN RunningData;
     """
     
     query_error = ""
     
+    max_accel_x = 0.0
+    max_accel_y = 0.0
+    max_accel_z = 0.0
+    max_gyro_x = 0.0
+    max_gyro_y = 0.0
+    max_gyro_z = 0.0
     avg_accel_x = 0.0
     avg_accel_y = 0.0
     avg_accel_z = 0.0
     avg_rotation_x = 0.0
     avg_rotation_y = 0.0
     avg_rotation_z = 0.0
-    max_accel = [0.0, 0.0, 0.0]
-    max_rotation = [0.0, 0.0, 0.0]
     
     if cursor is not None:
         try:
-            cursor.execute(query_string_top_accel)
-            iter_results = iter(cursor.fetchall())
-            max_accel = [next(iter_results, (0.0,))[0] for _ in range(len(max_accel))]
-            
-            cursor.execute(query_string_top_rotation)
-            iter_results = iter(cursor.fetchall())
-            max_rotation = [next(iter_results, (0.0,))[0] for _ in range(len(max_rotation))]
-            
-            cursor.execute(query_string_averages)
+            cursor.execute(query_string)
             result = next(iter(cursor.fetchall()), None)
-            
             if result is not None:
                 
-                avg_accel_x = result[0]
-                avg_accel_y = result[1]
-                avg_accel_z = result[2]
-                avg_rotation_x = result[3]
-                avg_rotation_y = result[4]
-                avg_rotation_z = result[5]
+                max_accel_x = result[0]
+                max_accel_y = result[1]
+                max_accel_z = result[2]
+                max_gyro_x = result[3]
+                max_gyro_y = result[4]
+                max_gyro_z = result[5]
+                avg_accel_x = result[6]
+                avg_accel_y = result[7]
+                avg_accel_z = result[8]
+                avg_rotation_x = result[9]
+                avg_rotation_y = result[10]
+                avg_rotation_z = result[11]
                 
         except Exception as mysql_exception:
             
@@ -188,18 +190,12 @@ def demo_page_update(request):
         "avg_x_rot": "average x rotation: {:,.3f}".format(avg_rotation_x),
         "avg_y_rot": "average y rotation: {:,.3f}".format(avg_rotation_y),
         "avg_z_rot": "average z rotation: {:,.3f}".format(avg_rotation_z),
-        "first_fastest_accel": "1st fastest acceleration outlier: {:,.3f}".format(max_accel[0]),
-        "first_fastest_accel_explanation": "Explanation: n/a",
-        "second_fastest_accel": "2nd fastest acceleration outlier: {:,.3f}".format(max_accel[1]),
-        "second_fastest_accel_explanation": "Explanation: n/a",
-        "third_fastest_accel": "3rd fastest acceleration outlier: {:,.3f}".format(max_accel[2]),
-        "third_fastest_accel_explanation": "Explanation: n/a",
-        "first_fastest_rot": "1st fastest rotation outlier: {:,.3f}".format(max_rotation[0]),
-        "first_fastest_rot_explanation": "Explanation: n/a",
-        "second_fastest_rot": "2nd fastest rotation outlier: {:,.3f}".format(max_rotation[1]),
-        "second_fastest_rot_explanation": "Explanation: n/a",
-        "third_fastest_rot": "3rd fastest rotation outlier: {:,.3f}".format(max_rotation[2]),
-        "third_fastest_rot_explanation": "Explanation: n/a",
+        "first_fastest_accel": "fastest x acceleration: {:,.3f}".format(max_accel_x),
+        "second_fastest_accel": "fastest y acceleration: {:,.3f}".format(max_accel_y),
+        "third_fastest_accel": "fastest z acceleration: {:,.3f}".format(max_accel_z),
+        "first_fastest_rot": "fastest x rotation: {:,.3f}".format(max_gyro_x),
+        "second_fastest_rot": "fastest y rotation: {:,.3f}".format(max_gyro_y),
+        "third_fastest_rot": "fastest z rotation: {:,.3f}".format(max_gyro_z),
         "connection_error": connection_error,
         "query_error": query_error,
     }
