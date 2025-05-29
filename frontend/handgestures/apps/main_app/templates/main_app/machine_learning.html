@@ -32,7 +32,7 @@
          class="img-fluid shadow rounded mx-auto mb-2" 
          style="max-width: 1000px;">
         <figcaption class="text-muted fw-semibold small">
-         Source: <a href="https://doi.org/10.1007/s11227-023-05299-9" target="_blank">Flow Prototype</a>
+         Citation: <a href="https://doi.org/10.1007/s11227-023-05299-9" target="_blank">Flow Prototype</a>
       </figcaption>
   </figure>
       <p class="text-muted fs-5" style="text-align: justify;">
@@ -47,23 +47,36 @@
     <li><strong>Performance Evaluation:</strong> Accuracy, precision, recall, and confusion matrix are used to assess system effectiveness.</li>
   </ul>
 </section>
-
-    <!-- Data Collection Section -->
-    <section class="card shadow-lg p-4 mb-5 rounded" data-aos="fade-up">
-      <h2 class="fw-bold text-primary mb-4">Data Collection</h2>
-      <div class="row mb-3">
+<!-- Data Collection section-->
+<section class="card shadow-lg p-4 mb-5 rounded" data-aos="fade-up">
+  <h2 class="fw-bold text-primary mb-4">Data Collection</h2>
+  <div class="row mb-3">
     <div class="col-md-6">
-      <img src="{% static 'main_app/img/hardware_inside.jpeg' %}" alt="Hardware Inside" class="img-fluid shadow rounded mx-auto d-block" style="max-height: 504px;">
+      <img src="{% static 'main_app/img/hardware3.jpeg' %}" alt="Internal Hardware View" class="img-fluid shadow rounded mx-auto d-block" style="max-height: 504px;">
     </div>
     <div class="col-md-6">
-      <img src="{% static 'main_app/img/hardware_outside.jpg' %}" alt="Hardware outside" class="img-fluid shadow rounded mx-auto d-block" style="max-height: 504px;">
+      <img src="{% static 'main_app/img/hardware_outside.jpg' %}" alt="External Interface View" class="img-fluid shadow rounded mx-auto d-block" style="max-height: 504px;">
     </div>
   </div>
-      <p class="text-muted fs-5" style="text-align: justify;">
-        The user wears a device which has a gyroscope, accelerometer, and a pair of sound devices which sense left and right distance from surfaces.
-        This data is then written to a CSV file on the user's computer as x, y, and z rotation, x, y, and z acceleration, and left and right distances.
-      </p>
-    </section>
+  <p class="text-muted fs-5" style="text-align: justify;">
+    The wearable device is housed in a custom-built cardboard enclosure and includes a set of sensors and electronics for motion and distance tracking. 
+    On the outside, a tactile push-button allows user interaction, and a compact OLED screen is embedded to display live feedback or status updates.
+    Inside the enclosure, the system integrates multiple components wired together, including:
+  </p>
+  <ul class="text-muted fs-5">
+    <li><strong>Microcontroller Unit:</strong> A central microcontroller (such as Arduino Nano) handles data processing and sensor communication.</li>
+    <li><strong>IMU Module:</strong> Includes a gyroscope and accelerometer to track x, y, and z rotational and acceleration movements.</li>
+    <li><strong>Ultrasonic Distance Sensors:</strong> Positioned to the sides to detect left and right distance from nearby surfaces for spatial awareness.</li>
+    <li><strong>OLED Display:</strong> Mounted externally, it provides real-time display of sensor readings or status info.</li>
+    <li><strong>Push Button:</strong> A user interface component to trigger data collection or mode changes.</li>
+    <li><strong>Power Supply:</strong> A small Li-Po battery or USB connection powers the internal components.</li>
+  </ul>
+  <p class="text-muted fs-5" style="text-align: justify;">
+    All collected data—such as motion vectors and proximity readings—is logged and written to a CSV file on the connected computer. 
+    This setup is crucial for later analysis, such as training machine learning models for motion classification or seizure detection.
+  </p>
+</section>
+
 
     <!-- Data Pipeline Explanation Section -->
 <section class="card shadow-lg p-4 mb-5 rounded" data-aos="fade-up">
@@ -142,24 +155,53 @@
     <section class="card shadow-lg p-4 mb-5 rounded" data-aos="fade-up">
       <h2 class="fw-bold text-primary mb-4">Classification</h2>
       <img src="{% static 'main_app/img/classifications.png' %}" alt="Classifications" class="img-fluid shadow rounded mx-auto d-block mb-3" style="max-width: 1000px;">
+    
       <p class="text-muted fs-5" style="text-align: justify;">
-        Four classifications are used:
+        Our seizure detection system classifies motion into four categories based on sensor input. These categories help distinguish between everyday movement and potentially dangerous seizure activity.
       </p>
-      <ul class="text-muted">
-        <li><strong>Normal:</strong> Normal movement.</li>
-        <li><strong>Tremor:</strong> Movement indicative of a shaky seizure.</li>
-        <li><strong>Tonic:</strong> Movement indicative of a stiff seizure.</li>
-        <li><strong>Posture Change:</strong> Movement indicative of a sudden posture change or a fall.</li>
+    
+      <ul class="text-muted fs-5">
+        <li>
+          <strong>Normal (No Seizure):</strong>  
+          This classification represents typical daily movements such as walking, writing, eating, or adjusting posture. It indicates a stable condition with no irregular muscle contractions, no involuntary jerking, and consistent orientation. Sensor readings show smooth acceleration and rotation patterns within normal thresholds.
+        </li>
+        <li>
+          <strong>Tremor (Hand Seizure):</strong>  
+          Characterized by rhythmic shaking or trembling, usually in the hands. This type of seizure often results in rapid, repetitive motion patterns detected in the accelerometer data. The system identifies these patterns as fine oscillations with high frequency but low amplitude.
+        </li>
+        <li>
+          <strong>Tonic (Arm Stiffening Seizure):</strong>  
+          Marked by sudden and sustained muscle contractions, typically causing the arms to become rigid. The sensors detect a sudden increase in resistance to motion, minimal limb movement, and consistent stiff posturing. These are recognized through near-zero dynamic acceleration despite continuous muscle tension.
+        </li>
+        <li>
+          <strong>Postural (Posture Change Seizure):</strong>  
+          Involves sudden changes in body position or loss of balance, often leading to falls or abrupt leaning. The system identifies this through rapid shifts in acceleration and orientation, especially when combined with a drop in height or sideways tilting, suggesting instability or collapse.
+        </li>
       </ul>
+    
+      <p class="text-muted fs-5" style="text-align: justify;">
+        These classifications allow the system to provide real-time alerts, support caregivers, and improve safety for individuals with epilepsy by monitoring movement patterns continuously and non-invasively.
+      </p>
     </section>
 
     <!-- Performance Evaluation Section -->
     <section class="card shadow-lg p-4 mb-5 rounded" data-aos="fade-up">
       <h2 class="fw-bold text-primary mb-4">Performance Evaluation</h2>
       <img src="{% static 'main_app/img/prediction_accuracy.png' %}" alt="Prediction Accuracy" class="img-fluid shadow rounded mx-auto d-block mb-3" style="max-width: 1000px;">
+    
       <p class="text-muted fs-5" style="text-align: justify;">
-        Labeled data is used to analyze the accuracy of the model.
-        Labels are compared against predictions, and the percentage of matching predictions are recorded and shown on the summary page.
+        Our trained model achieved a high prediction accuracy of <strong>98.76%</strong>, calculated by comparing predicted labels with ground-truth annotations.
+        This metric reflects the percentage of correct classifications across all categories.
+      </p>
+    
+      <p class="text-muted fs-5" style="text-align: justify;">
+        In addition to accuracy, further evaluation metrics such as <strong>precision, recall,</strong> and <strong>F1-score</strong> are calculated for each class 
+        (Normal, Tremor, Tonic, Postural) to assess classification performance more comprehensively.
+      </p>
+    
+      <p class="text-muted fs-5" style="text-align: justify;">
+        Evaluation is based on a labeled dataset of <em>10000</em> samples, using a <em>87.65%</em> train/test split. 
+        The model architecture is based on <em>4</em> types, optimized for real-time classification with wearable motion data.
       </p>
     </section>
     
