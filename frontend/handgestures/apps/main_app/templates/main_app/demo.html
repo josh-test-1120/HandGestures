@@ -75,11 +75,8 @@
     <div class="card shadow-sm p-4 rounded h-100 w-100" data-aos="fade-up" data-aos-delay="200">
       <h5 class="card-title">Acceleration Data Outliers</h5>
       <div id="first-max-accel-text">0</div>
-      <div id="first-max-accel-explanation-text">0</div><br>
       <div id="second-max-accel-text">0</div>
-      <div id="second-max-accel-explanation-text">0</div><br>
       <div id="third-max-accel-text">0</div>
-      <div id="third-max-accel-explanation-text">0</div><br>
     </div>
   </div>
 </div>
@@ -128,11 +125,8 @@
     <div class="card shadow-sm p-4 rounded h-100 w-100" data-aos="fade-up" data-aos-delay="200">
       <h5 class="card-title">Rotation Data Outliers</h5>
       <div id="first-max-rot-text">0</div>
-      <div id="first-max-rot-explanation-text">0</div><br>
       <div id="second-max-rot-text">0</div>
-      <div id="second-max-rot-explanation-text">0</div><br>
       <div id="third-max-rot-text">0</div>
-      <div id="third-max-rot-explanation-text">0</div><br>
     </div>
   </div>
 </div>
@@ -227,18 +221,12 @@
           document.getElementById('avg-z-rot-text').textContent = data.avg_z_rot;
 
           document.getElementById('first-max-accel-text').textContent = data.first_fastest_accel;
-          document.getElementById('first-max-accel-explanation-text').textContent = data.first_fastest_accel_explanation;
           document.getElementById('second-max-accel-text').textContent = data.second_fastest_accel;
-          document.getElementById('second-max-accel-explanation-text').textContent = data.second_fastest_accel_explanation;
           document.getElementById('third-max-accel-text').textContent = data.third_fastest_accel;
-          document.getElementById('third-max-accel-explanation-text').textContent = data.third_fastest_accel_explanation;
 
           document.getElementById('first-max-rot-text').textContent = data.first_fastest_rot;
-          document.getElementById('first-max-rot-explanation-text').textContent = data.first_fastest_rot_explanation;
           document.getElementById('second-max-rot-text').textContent = data.second_fastest_rot;
-          document.getElementById('second-max-rot-explanation-text').textContent = data.second_fastest_rot_explanation;
           document.getElementById('third-max-rot-text').textContent = data.third_fastest_rot;
-          document.getElementById('third-max-rot-explanation-text').textContent = data.third_fastest_rot_explanation;
           
           if (data.connection_error) console.log(data.connection_error);
           if (data.query_error) console.log(data.query_error);
