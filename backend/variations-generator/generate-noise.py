@@ -617,7 +617,7 @@ def process_all_csvs(input_dir, floor, ceiling, interval, variant_name='variants
             dirs.remove(variant_name)  # Don't walk into existing variant dirs
         # Process the rest of the directory files
         for file in files:
-            if file.endswith(".csv"):
+            if file.endswith(".csv") or file.endswith(".CSV"):
                 input_csv = os.path.join(root, file)
                 
                 # Create variants directory in same directory as source file
