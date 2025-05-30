@@ -637,7 +637,7 @@ def process_all_csvs(input_dir, floor, ceiling, interval, variant_name='variants
                     file_base, file_ext = os.path.splitext(file)
                     output_filename = f'{file_base}_{variant_name}_scale{scale_str}'
                     output_base = os.path.join(variants_dir, f'{output_filename}')
-                    output_path = os.path.join(variants_dir, f'{output_filename}.{file_ext}')
+                    output_path = os.path.join(variants_dir, f'{output_filename}{file_ext}')
                     
                     # Process the file
                     processor = MovementPreservingNoiseGenerator(
