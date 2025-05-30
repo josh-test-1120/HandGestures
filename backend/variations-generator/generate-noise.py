@@ -21,6 +21,13 @@ from scipy.stats import truncnorm
 import matplotlib.pyplot as plt
 import argparse
 from pathlib import Path
+import random
+
+# Noise Scale Constants
+NOISE_SCALE_FLOOR = 0.1
+NOISE_SCALE_CEILING = 5.1
+NOISE_SCALE_INTERVAL = 0.1
+
 class MovementPreservingNoiseGenerator:
     """
     This is the class responsible for generating noise
@@ -30,7 +37,7 @@ class MovementPreservingNoiseGenerator:
     Additionally, prominence, thresholds, and smoothing windows
     made for usable noise based on the types of sensor data
     """
-    def __init__(self, noise_scale=1.0, plot=False, name=None):
+    def __init__(self, noise_scale=1.0, plot=False, name=None, random_seed=None, debug=False):
         """Intitialize class instance
 
         Args:
@@ -40,8 +47,16 @@ class MovementPreservingNoiseGenerator:
         """
         self.noise_scale = noise_scale
         self.plot = plot
-        self.protection_zone = 5  # Samples around peaks with reduced noise
-        self.name = name.split('.')[0]
+        self.name = name.split('.')[0] if name else None
+        self.protection_zone = 5
+        self.debug = debug
+        
+        # Initialize random state
+        self.random_seed = random_seed
+        if random_seed is not None:
+            np.random.seed(random_seed)
+            random.seed(random_seed + 1)  # Using different seed for Python's random
+
         # These are the accelerometer parameters for noise, peak detection, and smoothing
         self.accel_params = {
             'base_std': 0.006 * self.noise_scale, # Base noise floor
@@ -142,7 +157,7 @@ class MovementPreservingNoiseGenerator:
             np.ndarray: Array of `size` samples from the truncated normal distribution.
         """
         a, b = (lower - mean) / std, (upper - mean) / std
-        return truncnorm.rvs(a, b, loc=mean, scale=std, size=size)
+        return truncnorm.rvs(a, b, loc=mean, scale=std, size=size, random_state=self.random_seed)
 
     def get_peaks_and_mask(self, signal, params, protection_zone, normalize=True):
         """
@@ -200,14 +215,15 @@ class MovementPreservingNoiseGenerator:
 
         combined_mask = np.maximum(smooth_mask, base_mask.astype(float))
 
-        # Debug output
-        print(f"--- Sensor Axis Debug ---")
-        print(f"Signal median: {signal_median:.4f}")
-        print(f"Signal mean: {signal_mean:.4f}")
-        print(f"Peak count: {len(filtered_peaks)}")
-        print(f"Adaptive threshold: {adaptive_thresh:.4f}")
-        print(f"Min/Max signal: {np.min(signal):.4f} / {np.max(signal):.4f}")
-        print(f"Peak mask (protected samples): {np.sum(combined_mask > 0)}")
+        if (self.debug):
+            # Debug output
+            print(f"--- Sensor Axis Debug ---")
+            print(f"Signal median: {signal_median:.4f}")
+            print(f"Signal mean: {signal_mean:.4f}")
+            print(f"Peak count: {len(filtered_peaks)}")
+            print(f"Adaptive threshold: {adaptive_thresh:.4f}")
+            print(f"Min/Max signal: {np.min(signal):.4f} / {np.max(signal):.4f}")
+            print(f"Peak mask (protected samples): {np.sum(combined_mask > 0)}")
 
         return filtered_peaks, combined_mask, adaptive_thresh
 
@@ -233,7 +249,6 @@ class MovementPreservingNoiseGenerator:
             if signal[p] >= min_peak_height_high or signal[p] <= min_peak_height_low
         ]
         return np.array(filtered_peaks, dtype=int)
-
 
     def create_smooth_peak_mask(self, length, peaks, protection_zone):
         """
@@ -293,7 +308,7 @@ class MovementPreservingNoiseGenerator:
         a = (lower_bound - 0) / noise_std
         b = (upper_bound - 0) / noise_std
 
-        noise = truncnorm.rvs(a, b, loc=0, scale=noise_std, size=n)
+        noise = truncnorm.rvs(a, b, loc=0, scale=noise_std, size=n, random_state=self.random_seed)
 
         if hasattr(self, 'noise_scale'):
             noise *= self.noise_scale
@@ -337,16 +352,17 @@ class MovementPreservingNoiseGenerator:
             noisy_signal = signal + noise
             noisy_data[:, axis] = noisy_signal
 
-            # Debug output
-            print(f"--- Sensor: {sensor_type}, Axis: {axis} ---")
-            print(f"Signal median: {np.median(signal):.4f}")
-            print(f"Peak count: {len(peaks)}")
-            print(f"Adaptive threshold: {adaptive_thresh:.4f}")
-            print(f"Base signal min/max: {np.min(signal):.4f} / {np.max(signal):.4f}")
-            print(f"Noisy signal min/max: {np.min(noisy_signal):.4f} / {np.max(noisy_signal):.4f}")
-            print(f"Noise std (mean): {np.std(noise):.4f}")
-            print(f"Bias noise (mean/std): {np.mean(noise):.4f} / {np.std(noise):.4f}")
-            print(f"Peak mask sum (protected samples): {np.sum(peak_mask > 0)}")
+            if (self.debug):
+                # Debug output
+                print(f"--- Sensor: {sensor_type}, Axis: {axis} ---")
+                print(f"Signal median: {np.median(signal):.4f}")
+                print(f"Peak count: {len(peaks)}")
+                print(f"Adaptive threshold: {adaptive_thresh:.4f}")
+                print(f"Base signal min/max: {np.min(signal):.4f} / {np.max(signal):.4f}")
+                print(f"Noisy signal min/max: {np.min(noisy_signal):.4f} / {np.max(noisy_signal):.4f}")
+                print(f"Noise std (mean): {np.std(noise):.4f}")
+                print(f"Bias noise (mean/std): {np.mean(noise):.4f} / {np.std(noise):.4f}")
+                print(f"Peak mask sum (protected samples): {np.sum(peak_mask > 0)}")
 
         return noisy_data
 
@@ -398,21 +414,22 @@ class MovementPreservingNoiseGenerator:
         )
 
         # Add occasional spikes
-        spike_mask = (~significant_changes) & (np.random.random(n_samples) < params['spike_prob'])
+        spike_mask = (~significant_changes) & (np.random.RandomState(self.random_seed).random(n_samples) < params['spike_prob'])
         noise[spike_mask] += np.random.normal(
             0, params['base_std'] * params['spike_std_multiplier'], np.sum(spike_mask)
         ) * self.noise_scale
-
+        
         # Dropout: simulate missing returns but keep some floor
-        dropout_mask = np.random.random(n_samples) > params['dropout_prob']
+        dropout_mask = np.random.RandomState(self.random_seed).random(n_samples) > params['dropout_prob']
         noisy = (noisy + noise) * dropout_mask + (1.0 - dropout_mask) * np.clip(clean_sonar * 0.3, 5.0, None)
 
         # Clamp extreme low values (valleys)
         min_floor = np.percentile(clean_sonar, 1) * 0.5
         noisy = np.clip(noisy, min_floor, None)
 
-        print(f"Sonar axis 0 - Peaks: {len(peaks)}, RepThresh: {adaptive_thresh:.3f}, "
-            f"Min: {np.min(noisy):.3f}, Max: {np.max(noisy):.3f}, Mean: {np.mean(noisy):.3f}")
+        if (self.debug):
+            print(f"Sonar axis 0 - Peaks: {len(peaks)}, RepThresh: {adaptive_thresh:.3f}, "
+                f"Min: {np.min(noisy):.3f}, Max: {np.max(noisy):.3f}, Mean: {np.mean(noisy):.3f}")
 
         return noisy
 
@@ -459,9 +476,15 @@ class MovementPreservingNoiseGenerator:
         df[float_cols] = df[float_cols].round(3)
         
         df.to_csv(output_file, index=False)
+        
+        # If plotting is enabled, generate the visualization
+        if self.plot:
+            self._plot_results_compare_all_with_noise(df, self.original_data, )
+        
+        # Return the DataFrame of the updated data adjusted with noise
         return df
     
-    def plot_results_compare_all_with_noise(self, df, original_data=None):
+    def _plot_results_compare_all_with_noise(self, df, original_data=None):
         """Plot the results for all sensors with noise
 
         Args:
@@ -568,11 +591,15 @@ class MovementPreservingNoiseGenerator:
         axs[-1].set_xlabel('Sample Number')
 
         plt.tight_layout()
-        plt.savefig(f'full_sensor_noise_comparison-movement-preservation-{self.name}.png', dpi=300)
-        plt.show()
+        plt.savefig(f'{self.name}.png', dpi=300)
+        #plt.show()
+        plt.close()
 
-def process_all_csvs(input_dir, output_dir, variant_name, plot):
-    """This will process all the CSVs in a directory and output results to directory
+def process_all_csvs(input_dir, floor, ceiling, interval, variant_name='variants', plot=False):
+    """
+    This will process all the CSVs in a directory and output results to variant
+    directory. This performs an OS walk to find CSV files, but ignores the variant output
+    directory to avoid recursive walks.
 
     Args:
         input_dir (str): This is the input directory
@@ -580,40 +607,71 @@ def process_all_csvs(input_dir, output_dir, variant_name, plot):
         variant_name (str): This is the name of the variant (coding for variants)
         plot (bool): Boolean that defines wether to plot the results or not
     """
-    for root, _, files in os.walk(input_dir):
+    # Get ready to start processing CSVs
+    variant_count = 0
+    print(f'Starting data variant generation on {input_dir}...')
+    # Walk the source directory
+    for root, dirs, files in os.walk(input_dir):
+        # Skip directories that match our variant_name (case-sensitive)
+        if variant_name in dirs:
+            dirs.remove(variant_name)  # Don't walk into existing variant dirs
+        # Process the rest of the directory files
         for file in files:
             if file.endswith(".csv"):
                 input_csv = os.path.join(root, file)
-                relative_path = os.path.relpath(input_csv, input_dir)
-                base_name = os.path.splitext(relative_path)[0]  # e.g., subfolder/file without .csv
-                file_base = file.split('.')[0]
-
-                for scale in range(1, 6):  # noise_scale from 1 to 5
-                    noise_scale = float(scale)
-
-                    processor = MovementPreservingNoiseGenerator(noise_scale, plot, f'{file_base}_{variant_name}_scale{scale}')
-
-                    output_path = os.path.join(output_dir, f"{file_base}_{variant_name}_scale{scale}.csv")
-                    os.makedirs(os.path.dirname(output_path), exist_ok=True)
-
+                
+                # Create variants directory in same directory as source file
+                variants_dir = os.path.join(root, variant_name)
+                os.makedirs(variants_dir, exist_ok=True)
+                
+                # Create a base seed from file path hash for reproducibility
+                file_hash = hash(os.path.join(root, file)) & 0xFFFFFFFF
+                
+                # Iterate through noise scales from 0.1 to 5.0 in 0.1 increments
+                for i, noise_scale in enumerate(np.arange(floor, ceiling, interval)):
+                    # Create unique seed for this variant
+                    current_seed = file_hash + i
+                    scale_str = f"{noise_scale:.1f}".replace('.', '_')
+                    
+                    # Generate variant filename
+                    file_base, file_ext = os.path.splitext(file)
+                    output_filename = f'{file_base}_{variant_name}_scale{scale_str}'
+                    output_base = os.path.join(variants_dir, f'{output_filename}')
+                    output_path = os.path.join(variants_dir, f'{output_filename}.{file_ext}')
+                    
+                    # Process the file
+                    processor = MovementPreservingNoiseGenerator(
+                        noise_scale=noise_scale,
+                        plot=plot,
+                        name=output_filename,
+                        random_seed=current_seed
+                    )
+                    
                     result = processor.process_csv(input_csv, output_path)
-                    print(f"Saved noisy file: {output_path}")
+                    variant_count += 1
+    #print(f"Created variant {i+1}/50: {output_path} (scale: {noise_scale:.1f})")
+    print(f'Completed variant generation on {input_dir}. Generated {variant_count} variants.')
 
-                    if plot:
-                        processor.plot_results_compare_all_with_noise(result, processor.original_data)
+                    # if plot:
+                    #     processor.plot_results_compare_all_with_noise(result, processor.original_data)
 
 # Multi File Program
 if __name__ == "__main__":
     # Setup the argument parser
     parser = argparse.ArgumentParser(description='Add realistic noise variants to sensor data in multiple CSV files')
     parser.add_argument('input_dir', help='Directory containing input CSV files')
-    parser.add_argument('output_dir', help='Directory to store output CSV files with noise added')
-    parser.add_argument('variant_name', help='Name of this variant set (used in output filenames)')
     parser.add_argument('--plot', action='store_true', help='Show comparison plots')
+    parser.add_argument('--noise-floor', type=float, default=NOISE_SCALE_FLOOR, help='Lowest noise scale value (start value)')
+    parser.add_argument('--noise-ceiling', type=float, default=NOISE_SCALE_CEILING, help='Largest noise scale value (end value)')
+    parser.add_argument('--noise-interval', type=float, default=NOISE_SCALE_INTERVAL, help='Interval of change in noise scale')
 
     args = parser.parse_args()
 
-    process_all_csvs(args.input_dir, args.output_dir, args.variant_name, args.plot)
+    process_all_csvs(args.input_dir,
+                     floor=args.noise_floor,
+                     ceiling=args.noise_ceiling,
+                     interval=args.noise_interval,
+                     plot=args.plot)
 
 
 # # Single File Program
