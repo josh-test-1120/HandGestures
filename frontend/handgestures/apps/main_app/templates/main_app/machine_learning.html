@@ -24,29 +24,41 @@
     </section>
 
     <!-- ML Flow Prototype Section -->
-    <section class="card shadow-lg p-4 mb-5 rounded" data-aos="fade-up">
-      <h2 class="fw-bold text-primary mb-4">ML Flow Prototype</h2>
-     <figure class="text-center">
-         <img src="{% static 'main_app/img/ml-prototype.png' %}" 
+<section class="card shadow-lg p-4 mb-5 rounded" data-aos="fade-up">
+  <h2 class="fw-bold text-primary mb-4">ML Flow Prototype</h2>
+  <figure class="text-center">
+    <img src="{% static 'main_app/img/ml-prototype.png' %}" 
          alt="ML Flow Prototype Diagram" 
          class="img-fluid shadow rounded mx-auto mb-2" 
          style="max-width: 1000px;">
-        <figcaption class="text-muted fw-semibold small">
-         Citation: <a href="https://doi.org/10.1007/s11227-023-05299-9" target="_blank">Flow Prototype</a>
-      </figcaption>
+    <figcaption class="text-muted fw-semibold small">
+      Citation: <a href="https://doi.org/10.1007/s11227-023-05299-9" target="_blank">Flow Prototype</a>
+    </figcaption>
   </figure>
-      <p class="text-muted fs-5" style="text-align: justify;">
-        This flow diagram illustrates the complete machine learning pipeline used in our seizure detection system. From raw data acquisition to classification, each stage is designed to ensure reliable real-time performance in distinguishing between seizure and non-seizure motion patterns.
-      </p>
-      <ul class="text-muted fs-5">
-       <li ><strong>Data Collection:</strong> IMU sensors capture real-time acceleration and rotation data from the user.</li>
-      <li><strong>Preprocessing:</strong> Raw data is cleaned, normalized, and segmented into time windows for analysis.</li>
-    <li><strong>Feature Extraction:</strong> Statistical and frequency-based features are extracted to represent motion patterns.</li>
-    <li><strong>ML Methods:</strong> Machine learning models (e.g., Random Forest, SVM) are trained on labeled datasets.</li>
-    <li><strong>Classification:</strong> The system classifies each time window as either “Seizure” or “Non-Seizure.”</li>
-    <li><strong>Performance Evaluation:</strong> Accuracy, precision, recall, and confusion matrix are used to assess system effectiveness.</li>
-  </ul>
+  <p class="text-muted fs-5" style="text-align: justify;">
+    This flow diagram illustrates the complete machine learning pipeline used in our seizure detection system. From raw data acquisition to classification, each stage is designed to ensure reliable real-time performance in distinguishing between seizure and non-seizure motion patterns.
+  </p>
+
+  <p class="text-muted fs-5" style="text-align: justify;">
+    1. <strong>Data Collection:</strong> IMU sensors capture real-time acceleration and rotation data from the user.
+  </p>
+  <p class="text-muted fs-5" style="text-align: justify;">
+    2. <strong>Preprocessing:</strong> Raw data is cleaned, normalized, and segmented into time windows for analysis.
+  </p>
+  <p class="text-muted fs-5" style="text-align: justify;">
+    3. <strong>Feature Extraction:</strong> Statistical and frequency-based features are extracted to represent motion patterns.
+  </p>
+  <p class="text-muted fs-5" style="text-align: justify;">
+    4. <strong>ML Methods:</strong> Machine learning models (e.g., Random Forest, SVM) are trained on labeled datasets.
+  </p>
+  <p class="text-muted fs-5" style="text-align: justify;">
+    5. <strong>Classification:</strong> The system classifies each time window as either “Seizure” or “Non-Seizure.”
+  </p>
+  <p class="text-muted fs-5" style="text-align: justify;">
+    6. <strong>Performance Evaluation:</strong> Accuracy, precision, recall, and confusion matrix are used to assess system effectiveness.
+  </p>
 </section>
+
 <!-- Data Collection section-->
 <section class="card shadow-lg p-4 mb-5 rounded" data-aos="fade-up">
   <h2 class="fw-bold text-primary mb-4">Data Collection</h2>
@@ -63,14 +75,24 @@
     On the outside, a tactile push-button allows user interaction, and a compact OLED screen is embedded to display live feedback or status updates.
     Inside the enclosure, the system integrates multiple components wired together, including:
   </p>
-  <ul class="text-muted fs-5">
-    <li><strong>Microcontroller Unit:</strong> A central microcontroller (such as Arduino Nano) handles data processing and sensor communication.</li>
-    <li><strong>IMU Module:</strong> Includes a gyroscope and accelerometer to track x, y, and z rotational and acceleration movements.</li>
-    <li><strong>Ultrasonic Distance Sensors:</strong> Positioned to the sides to detect left and right distance from nearby surfaces for spatial awareness.</li>
-    <li><strong>OLED Display:</strong> Mounted externally, it provides real-time display of sensor readings or status info.</li>
-    <li><strong>Push Button:</strong> A user interface component to trigger data collection or mode changes.</li>
-    <li><strong>Power Supply:</strong> A small Li-Po battery or USB connection powers the internal components.</li>
-  </ul>
+  <p class="text-muted fs-5" style="text-align: justify;">
+    1. <strong>Microcontroller Unit:</strong> A central microcontroller (such as Arduino Nano) handles data processing and sensor communication.
+  </p>
+  <p class="text-muted fs-5" style="text-align: justify;">
+    2. <strong>IMU Module:</strong> Includes a gyroscope and accelerometer to track x, y, and z rotational and acceleration movements.
+  </p>
+  <p class="text-muted fs-5" style="text-align: justify;">
+    3. <strong>Ultrasonic Distance Sensors:</strong> Positioned to the sides to detect left and right distance from nearby surfaces for spatial awareness.
+  </p>
+  <p class="text-muted fs-5" style="text-align: justify;">
+    4. <strong>OLED Display:</strong> Mounted externally, it provides real-time display of sensor readings or status info.
+  </p>
+  <p class="text-muted fs-5" style="text-align: justify;">
+    5. <strong>Push Button:</strong> A user interface component to trigger data collection or mode changes.
+  </p>
+  <p class="text-muted fs-5" style="text-align: justify;">
+    6. <strong>Power Supply:</strong> A small Li-Po battery or USB connection powers the internal components.
+  </p>
   <p class="text-muted fs-5" style="text-align: justify;">
     All collected data—such as motion vectors and proximity readings—is logged and written to a CSV file on the connected computer. 
     This setup is crucial for later analysis, such as training machine learning models for motion classification or seizure detection.
@@ -85,42 +107,31 @@
   <img src="{% static 'main_app/img/preprocessing.png' %}" alt="Preprocessing and Feature Extraction" class="img-fluid shadow rounded mx-auto d-block mb-4" style="max-width: 1000px;">
 
   <div class="text-muted fs-5" style="text-align: justify;">
-    <p><strong>Raw Sensor Data:</strong> The system captures data from wearable sensors, including:
-      <ul>
-        <li><strong>Accelerometer (X, Y, Z)</strong> for detecting movement intensity and direction</li>
-        <li><strong>Gyroscope (Roll, Pitch, Yaw)</strong> for tracking orientation and rotation</li>
-        <li><strong>Ultrasound (Distance)</strong> for measuring proximity, aiding in fall detection</li>
-      </ul>
-    </p>
+    <p class="fs-5"><strong>Raw Sensor Data:</strong> The system captures data from wearable sensors, including:</p>
+    <p class="fs-5">1. <strong>Accelerometer (X, Y, Z):</strong> Detects movement intensity and direction.</p>
+    <p class="fs-5">2. <strong>Gyroscope (Roll, Pitch, Yaw):</strong> Tracks orientation and rotational motion.</p>
+    <p class="fs-5">3. <strong>Ultrasound (Distance):</strong> Measures proximity to surfaces, supporting fall detection analysis.</p>
 
-    <p><strong>Preprocessing:</strong> Before analysis, data undergoes:
-      <ul>
-        <li><strong>Filtering:</strong> Noise removal for cleaner signals</li>
-        <li><strong>Segmentation:</strong> Dividing data into 5-second windows for temporal analysis</li>
-        <li><strong>Normalization:</strong> Ensuring consistent data ranges across features</li>
-      </ul>
-    </p>
+    <p class="fs-5"><strong>Preprocessing:</strong> Before analysis, the raw sensor data undergoes several cleaning and preparation steps:</p>
+    <p class="fs-5">4. <strong>Filtering:</strong> Removes signal noise to produce cleaner, more reliable data.</p>
+    <p class="fs-5">5. <strong>Segmentation:</strong> Splits data into consistent 5-second windows for time-based analysis.</p>
+    <p class="fs-5">6. <strong>Normalization:</strong> Aligns value ranges across features for uniform input into the model.</p>
 
-    <p><strong>Feature Extraction:</strong> Features are derived from sensor data using three domains:
-      <ul>
-        <li><strong>Time-Domain:</strong> Jerk (dAccel/dt), Zero-Crossing Rate, Signal Magnitude Area</li>
-        <li><strong>Frequency-Domain:</strong> Power Spectral Density (PSD) peaks at 3–5Hz and Spectral Entropy</li>
-        <li><strong>Time-Frequency:</strong> Wavelet Coefficients capturing motion over time and frequency</li>
-      </ul>
-    </p>
+    <p class="fs-5"><strong>Feature Extraction:</strong> Key features are derived from sensor readings using three analytical domains:</p>
+    <p class="fs-5">7. <strong>Time-Domain:</strong> Includes jerk (dAccel/dt), zero-crossing rate, and signal magnitude area.</p>
+    <p class="fs-5">8. <strong>Frequency-Domain:</strong> Extracts power spectral density (PSD) peaks at 3–5Hz and spectral entropy values.</p>
+    <p class="fs-5">9. <strong>Time-Frequency Domain:</strong> Utilizes wavelet coefficients to capture dynamic motion patterns over time and frequency.</p>
 
-    <p><strong>Model Inference:</strong> An LSTM Neural Network (with 3 hidden layers and dropout regularization) processes the features. A threshold ensures only predictions with >90% confidence are considered.</p>
+    <p class="fs-5"><strong>Model Inference:</strong> An LSTM Neural Network (with three hidden layers and dropout regularization) processes the extracted features. A confidence threshold ensures only predictions above 90% certainty are accepted.</p>
 
-    <p><strong>Final Output:</strong> The model classifies the user’s movement into one of the following:
-      <ul>
-        <li><strong>Normal Movement</strong></li>
-        <li><strong>Tonic-Clonic Seizure</strong> (identified via 3–5Hz signal frequency)</li>
-        <li><strong>Myoclonic Seizure</strong> (shock-like movement pattern)</li>
-        <li><strong>Postural Change / Fall</strong> (detected via wavelet-based pattern)</li>
-      </ul>
-    </p>
+    <p class="fs-5"><strong>Final Output:</strong> The model classifies the user’s movement into the following categories:</p>
+    <p class="fs-5">10. <strong>Normal Movement</strong></p>
+    <p class="fs-5">11. <strong>Tonic-Clonic Seizure:</strong> Characterized by rhythmic motion patterns around 3–5Hz frequency.</p>
+    <p class="fs-5">12. <strong>Myoclonic Seizure:</strong> Identified by sudden, shock-like jerking movements.</p>
+    <p class="fs-5">13. <strong>Postural Change / Fall:</strong> Detected using wavelet pattern recognition for abrupt position shifts.</p>
   </div>
 </section>
+
 
 <!--Machine Learning Methods-->
 <section class="card shadow-lg p-4 mb-5 rounded" data-aos="fade-up">
@@ -138,12 +149,18 @@
     The core architecture used in our project is a <strong>Long Short-Term Memory (LSTM)</strong> neural network, specifically designed to recognize patterns in time-series motion data.
   </p>
 
-  <ul class="text-muted fs-5">
-    <li><strong>Semi-Supervised Labeling:</strong> Combines a small amount of labeled data with large unlabeled data through pseudo-labeling.</li>
-    <li><strong>LSTM Network:</strong> 3-layer recurrent model with dropout regularization for temporal pattern detection.</li>
-    <li><strong>Sliding Window Input:</strong> Motion data is segmented into 5-second time windows for sequential analysis.</li>
-    <li><strong>Confidence Filtering:</strong> Only predictions with >90% confidence are used to reinforce training or trigger alerts.</li>
-  </ul>
+  <p class="text-muted fs-5" style="text-align: justify;">
+    1. <strong>Semi-Supervised Labeling:</strong> Combines a small amount of labeled data with a large pool of unlabeled data using a pseudo-labeling strategy.
+  </p>
+  <p class="text-muted fs-5" style="text-align: justify;">
+    2. <strong>LSTM Network:</strong> Utilizes a 3-layer recurrent architecture with dropout regularization to detect temporal patterns in motion sequences.
+  </p>
+  <p class="text-muted fs-5" style="text-align: justify;">
+    3. <strong>Sliding Window Input:</strong> Segments incoming motion data into 5-second windows, allowing the model to analyze sequential trends.
+  </p>
+  <p class="text-muted fs-5" style="text-align: justify;">
+    4. <strong>Confidence Filtering:</strong> Only model predictions with over 90% confidence are accepted for real-time alerts or used to reinforce training.
+  </p>
 
   <p class="text-muted fs-5" style="text-align: justify;">
     This method balances labeling efficiency and model accuracy, enabling real-time classification of complex motion patterns such as seizure events and posture-related incidents.
@@ -160,31 +177,32 @@
         Our seizure detection system classifies motion into four categories based on sensor input. These categories help distinguish between everyday movement and potentially dangerous seizure activity.
       </p>
     
-      <ul class="text-muted fs-5">
-        <li>
-          <strong>Normal (No Seizure):</strong>  
-          This classification represents typical daily movements such as walking, writing, eating, or adjusting posture. It indicates a stable condition with no irregular muscle contractions, no involuntary jerking, and consistent orientation. Sensor readings show smooth acceleration and rotation patterns within normal thresholds.
-        </li>
-        <li>
-          <strong>Tremor (Hand Seizure):</strong>  
-          Characterized by rhythmic shaking or trembling, usually in the hands. This type of seizure often results in rapid, repetitive motion patterns detected in the accelerometer data. The system identifies these patterns as fine oscillations with high frequency but low amplitude.
-        </li>
-        <li>
-          <strong>Tonic (Arm Stiffening Seizure):</strong>  
-          Marked by sudden and sustained muscle contractions, typically causing the arms to become rigid. The sensors detect a sudden increase in resistance to motion, minimal limb movement, and consistent stiff posturing. These are recognized through near-zero dynamic acceleration despite continuous muscle tension.
-        </li>
-        <li>
-          <strong>Postural (Posture Change Seizure):</strong>  
-          Involves sudden changes in body position or loss of balance, often leading to falls or abrupt leaning. The system identifies this through rapid shifts in acceleration and orientation, especially when combined with a drop in height or sideways tilting, suggesting instability or collapse.
-        </li>
-      </ul>
+      <p class="text-muted fs-5" style="text-align: justify;">
+        1. <strong>Normal (No Seizure):</strong>  
+        This classification represents typical daily movements such as walking, writing, adjusting posture, and other normal everyday activities.. It indicates a stable condition with no irregular muscle contractions, no involuntary jerking, and consistent orientation. Sensor readings show smooth acceleration and rotation patterns within normal thresholds.
+      </p>
+    
+      <p class="text-muted fs-5" style="text-align: justify;">
+        2. <strong>Tremor (Hand Seizure):</strong>  
+        Characterized by rhythmic shaking or trembling, usually in the hands. This type of seizure often results in rapid, repetitive motion patterns detected in the accelerometer data. The system identifies these patterns as fine oscillations with high frequency but low amplitude.
+      </p>
+    
+      <p class="text-muted fs-5" style="text-align: justify;">
+        3. <strong>Tonic (Arm Stiffening Seizure):</strong>  
+        Marked by sudden and sustained muscle contractions, typically causing the arms to become rigid. The sensors detect a sudden increase in resistance to motion, minimal limb movement, and consistent stiff posturing. These are recognized through near-zero dynamic acceleration despite continuous muscle tension.
+      </p>
+    
+      <p class="text-muted fs-5" style="text-align: justify;">
+        4. <strong>Postural (Posture Change Seizure):</strong>  
+        Involves sudden changes in body position or loss of balance, often leading to falls or abrupt leaning. The system identifies this through rapid shifts in acceleration and orientation, especially when combined with a drop in height or sideways tilting, suggesting instability or collapse.
+      </p>
     
       <p class="text-muted fs-5" style="text-align: justify;">
         These classifications allow the system to provide real-time alerts, support caregivers, and improve safety for individuals with epilepsy by monitoring movement patterns continuously and non-invasively.
       </p>
     </section>
 
-    <!-- Performance Evaluation Section -->
+    <!-- Performance Evaluation Section 
     <section class="card shadow-lg p-4 mb-5 rounded" data-aos="fade-up">
       <h2 class="fw-bold text-primary mb-4">Performance Evaluation</h2>
       <img src="{% static 'main_app/img/prediction_accuracy.png' %}" alt="Prediction Accuracy" class="img-fluid shadow rounded mx-auto d-block mb-3" style="max-width: 1000px;">
@@ -204,6 +222,7 @@
         The model architecture is based on <em>4</em> types, optimized for real-time classification with wearable motion data.
       </p>
     </section>
+  -->
     
     <!--
     TODO: decide if we want to include this section (commented out on purpose as of now; 5-12-2025)
