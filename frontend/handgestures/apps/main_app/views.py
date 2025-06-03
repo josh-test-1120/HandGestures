@@ -21,6 +21,23 @@ from django.conf import settings
 from datetime import datetime
 from django.views.decorators.http import require_http_methods
 
+import torch
+import torch.nn as nn
+
+
+class SeizureLSTM(nn.Module):
+    def __init__(self, input_size=8, hidden_size=64, num_layers=2, num_classes=4):
+        super(SeizureLSTM, self).__init__()
+        self.lstm = nn.LSTM(input_size, hidden_size, num_layers, batch_first=True)
+        self.fc = nn.Linear(hidden_size, num_classes)
+
+    def forward(self, x):
+        out, _ = self.lstm(x)
+        out = out[:, -1, :]  # Last time step
+        out = self.fc(out)
+        return out
+
+
 CONFIG = {
     "host": config('DB_HOST'),
     "user": config('DB_USER'),
@@ -49,6 +66,25 @@ else:
 
 # Import models from different applications
 # from ..<different_app>.models import <table_name>
+
+
+def load_model():
+    import __main__
+    setattr(__main__, "SeizureLSTM", SeizureLSTM)
+
+    file_path = os.path.join(
+        os.path.dirname(os.path.abspath(__file__)),
+        'static',
+        'main_app',
+        'data',
+        'NeuroTech-1.pt'
+    )
+    
+    loaded_model = torch.load(file_path, weights_only=False)
+    loaded_model.eval()
+    
+    return loaded_model
+
 
 # Create your views here.
 def index(request):
@@ -208,29 +244,53 @@ def demo_page_update(request):
 @csrf_exempt
 def live_demo_prediction(request):
     
+    label_map = {
+        "normal": 0,
+        "tremor": 1,
+        "tonic": 2,
+        "postural": 3
+    }
+    
     sample_predictions = [0.125, 0.2, 0.375, 0.3]
     
     if request.method == 'POST':
         data = json.loads(request.body)
-        #print(*data, sep="\n")
         
         # replace below with neural network output once it's ready
         predictions_this_request = len(data)
         predictions = [None] * predictions_this_request
         
         for idx in range(predictions_this_request):
-            sample_predictions_idx = (round(data[idx]["time"]) % 20) // 5
-            prediction = {
-                "Shaking": sample_predictions[(sample_predictions_idx + 0) % len(sample_predictions)],
-                "Posture": sample_predictions[(sample_predictions_idx + 1) % len(sample_predictions)],
-                "Fall": sample_predictions[(sample_predictions_idx + 2) % len(sample_predictions)],
-                "Normal": sample_predictions[(sample_predictions_idx + 3) % len(sample_predictions)],
+            current_data = data[idx]
+            
+            data_list = torch.tensor([[[
+                current_data["time"],
+                current_data["accelx"],
+                current_data["accely"],
+                current_data["accelz"],
+                current_data["gyrox"],
+                current_data["gyroy"],
+                current_data["gyroz"],
+                current_data["distanceLeft"],
+                current_data["distanceRight"],
+            ]]], dtype=torch.float32)
+            
+            prediction = list(map(float, live_demo_prediction.loaded_model(data_list)[0]))
+            
+            prediction_dict = {
+                "Normal": prediction[label_map["normal"]],
+                "Tremor": prediction[label_map["tremor"]],
+                "Tonic": prediction[label_map["tonic"]],
+                "Postural": prediction[label_map["postural"]],
             }
-            predictions[idx] = prediction
+            
+            predictions[idx] = prediction_dict
         
         return JsonResponse(dict(zip(range(predictions_this_request), predictions)))
     
     return JsonResponse({'error': 'Invalid request'}, status=400)
+
+live_demo_prediction.loaded_model = load_model()
 
 
 def download_template(request):

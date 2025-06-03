@@ -50,19 +50,20 @@ function parsePredictions(text, data) {
   const header = lines[0].split(',');
   const idx = {
     time: header.indexOf('Timestamp(ms)'),
-    shaking: header.indexOf('Shaking'),
-    posture: header.indexOf('Posture'),
-    fall: header.indexOf('Fall'),
     normal: header.indexOf('Normal'),
+    tremor: header.indexOf('Tremor'),
+    tonic: header.indexOf('Tonic'),
+    postural: header.indexOf('Postural'),
   };
+  
   //add predictions to data
   for (let i = 1; i < lines.length; i++) {
     const row = lines[i].split(',');
     if (row.length < header.length) continue;
-    data.prediction.shaking.push(parseFloat(row[idx.shaking]));
-    data.prediction.posture.push(parseFloat(row[idx.posture]));
-    data.prediction.fall.push(parseFloat(row[idx.fall]));
     data.prediction.normal.push(parseFloat(row[idx.normal]));
+    data.prediction.tremor.push(parseFloat(row[idx.tremor]));
+    data.prediction.tonic.push(parseFloat(row[idx.tonic]));
+    data.prediction.postural.push(parseFloat(row[idx.postural]));
   }
 }
 
@@ -179,10 +180,10 @@ function setupCharts(data) {
     data: {
       labels: data.time,
       datasets: [
-        { label: 'Shaking', data: data.prediction.shaking, borderColor: 'rgba(255, 255, 0, 1)', backgroundColor: 'rgba(255, 255, 0, 0.2)', borderWidth: 1, pointRadius: 2, tension: 0.4 },
-        { label: 'Posture Change', data: data.prediction.posture, borderColor: 'rgba(255, 127, 0, 1)', backgroundColor: 'rgba(255, 127, 0, 0.2)', borderWidth: 1, pointRadius: 2, tension: 0.4 },
-        { label: 'Fall', data: data.prediction.fall, borderColor: 'rgba(255, 0, 0, 1)', backgroundColor: 'rgba(255, 0, 0, 0.2)', borderWidth: 1, pointRadius: 2, tension: 0.4 },
-        { label: 'Normal', data: data.prediction.normal, borderColor: 'rgba(0, 255, 0, 1)', backgroundColor: 'rgba(0, 255, 0, 0.2)', borderWidth: 1, pointRadius: 2, tension: 0.4 },
+        { label: 'Normal', data: data.prediction.normal, borderColor: 'rgba(255, 255, 0, 1)', backgroundColor: 'rgba(255, 255, 0, 0.2)', borderWidth: 1, pointRadius: 2, tension: 0.4 },
+        { label: 'Tremor', data: data.prediction.tremor, borderColor: 'rgba(255, 127, 0, 1)', backgroundColor: 'rgba(255, 127, 0, 0.2)', borderWidth: 1, pointRadius: 2, tension: 0.4 },
+        { label: 'Tonic', data: data.prediction.tonic, borderColor: 'rgba(255, 0, 0, 1)', backgroundColor: 'rgba(255, 0, 0, 0.2)', borderWidth: 1, pointRadius: 2, tension: 0.4 },
+        { label: 'Postural', data: data.prediction.postural, borderColor: 'rgba(0, 255, 0, 1)', backgroundColor: 'rgba(0, 255, 0, 0.2)', borderWidth: 1, pointRadius: 2, tension: 0.4 },
       ]
     },
     options: {
@@ -213,11 +214,11 @@ function setupCharts(data) {
     document.getElementById('ultrasonic-right-value').textContent = right !== undefined ? right.toFixed(1) : '-';
   }
 
-  function updatePredictionValues(shaking, posture, fall, normal) {
-    document.getElementById('shaking-percent').textContent = shaking !== undefined ? shaking.toFixed(3) : '-';
-    document.getElementById('posture-percent').textContent = posture !== undefined ? posture.toFixed(3) : '-';
-    document.getElementById('fall-percent').textContent = fall !== undefined ? fall.toFixed(3) : '-';
+  function updatePredictionValues(normal, tremor, tonic, postural) {
     document.getElementById('normal-percent').textContent = normal !== undefined ? normal.toFixed(3) : '-';
+    document.getElementById('tremor-percent').textContent = tremor !== undefined ? tremor.toFixed(3) : '-';
+    document.getElementById('tonic-percent').textContent = tonic !== undefined ? tonic.toFixed(3) : '-';
+    document.getElementById('postural-percent').textContent = postural !== undefined ? postural.toFixed(3) : '-';
   }
 
   //Chart.js hover events for Accelerometer/Gyroscope/Ultrasonic
