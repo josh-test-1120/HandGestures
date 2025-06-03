@@ -141,10 +141,10 @@
                     <div class="card shadow-sm p-4 mb-5 rounded" data-aos="fade-up">
                         <h5 class="card-title mb-4">Prediction</h5>
                         <div class="d-flex justify-content-between mb-3">
-                            <div>Shaking<br>Probability:<br><span class="fw-bold" id="shaking-percent">-</span></div>
-                            <div>Posture Change<br>Probability:<br><span class="fw-bold" id="posture-percent">-</span></div>
-                            <div>Fall<br>Probability:<br><span class="fw-bold" id="fall-percent">-</span></div>
                             <div>Normal<br>Probability:<br><span class="fw-bold" id="normal-percent">-</span></div>
+                            <div>Tremor<br>Probability:<br><span class="fw-bold" id="tremor-percent">-</span></div>
+                            <div>Tonic<br>Probability:<br><span class="fw-bold" id="tonic-percent">-</span></div>
+                            <div>Postural<br>Probability:<br><span class="fw-bold" id="postural-percent">-</span></div>
                         </div>
                         <div class="chart-container">
                             <canvas id="predictionChart"></canvas>
@@ -355,10 +355,10 @@
             data: {
                 labels: [],
                 datasets: [
-                    { label: 'Shaking', data: [], borderColor: 'rgba(255, 255, 0, 1)', backgroundColor: 'rgba(255, 255, 0, 0.2)', borderWidth: 1, pointRadius: 2, tension: 0.4 },
-                    { label: 'Posture Change', data: [], borderColor: 'rgba(255, 127, 0, 1)', backgroundColor: 'rgba(255, 127, 0, 0.2)', borderWidth: 1, pointRadius: 2, tension: 0.4 },
-                    { label: 'Fall', data: [], borderColor: 'rgba(255, 0, 0, 1)', backgroundColor: 'rgba(255, 0, 0, 0.2)', borderWidth: 1, pointRadius: 2, tension: 0.4 },
-                    { label: 'Normal', data: [], borderColor: 'rgba(0, 255, 0, 1)', backgroundColor: 'rgba(0, 255, 0, 0.2)', borderWidth: 1, pointRadius: 2, tension: 0.4 },
+                    { label: 'Normal', data: [], borderColor: 'rgba(255, 255, 0, 1)', backgroundColor: 'rgba(255, 255, 0, 0.2)', borderWidth: 1, pointRadius: 2, tension: 0.4 },
+                    { label: 'Tremor', data: [], borderColor: 'rgba(255, 127, 0, 1)', backgroundColor: 'rgba(255, 127, 0, 0.2)', borderWidth: 1, pointRadius: 2, tension: 0.4 },
+                    { label: 'Tonic', data: [], borderColor: 'rgba(255, 0, 0, 1)', backgroundColor: 'rgba(255, 0, 0, 0.2)', borderWidth: 1, pointRadius: 2, tension: 0.4 },
+                    { label: 'Postural', data: [], borderColor: 'rgba(0, 255, 0, 1)', backgroundColor: 'rgba(0, 255, 0, 0.2)', borderWidth: 1, pointRadius: 2, tension: 0.4 },
                 ]
             },
             options: {
@@ -396,11 +396,11 @@
           document.getElementById('ultrasonic-left-value').textContent = left !== undefined ? left.toFixed(2) : '-';
           document.getElementById('ultrasonic-right-value').textContent = right !== undefined ? right.toFixed(2) : '-';
         }
-        function updatePredictionValues(shaking, posture, fall, normal) {
-          document.getElementById('shaking-percent').textContent = shaking !== undefined ? shaking.toFixed(3) : '-';
-          document.getElementById('posture-percent').textContent = posture !== undefined ? posture.toFixed(3) : '-';
-          document.getElementById('fall-percent').textContent = fall !== undefined ? fall.toFixed(3) : '-';
+        function updatePredictionValues(normal, tremor, tonic, postural) {
           document.getElementById('normal-percent').textContent = normal !== undefined ? normal.toFixed(3) : '-';
+          document.getElementById('tremor-percent').textContent = tremor !== undefined ? tremor.toFixed(3) : '-';
+          document.getElementById('tonic-percent').textContent = tonic !== undefined ? tonic.toFixed(3) : '-';
+          document.getElementById('postural-percent').textContent = postural !== undefined ? postural.toFixed(3) : '-';
         }
 
         accelerometerChart.options.onHover = function(event, chartElement) {
@@ -571,10 +571,10 @@
             ];
             predictionChart.data.labels = [];
             predictionChart.data.datasets = [
-                { label: 'Shaking', data: [], borderColor: 'rgba(255, 255, 0, 1)', backgroundColor: 'rgba(255, 255, 0, 0.2)', borderWidth: 1, pointRadius: 2, tension: 0.4 },
-                { label: 'Posture Change', data: [], borderColor: 'rgba(255, 127, 0, 1)', backgroundColor: 'rgba(255, 127, 0, 0.2)', borderWidth: 1, pointRadius: 2, tension: 0.4 },
-                { label: 'Fall', data: [], borderColor: 'rgba(255, 0, 0, 1)', backgroundColor: 'rgba(255, 0, 0, 0.2)', borderWidth: 1, pointRadius: 2, tension: 0.4 },
-                { label: 'Normal', data: [], borderColor: 'rgba(0, 255, 0, 1)', backgroundColor: 'rgba(0, 255, 0, 0.2)', borderWidth: 1, pointRadius: 2, tension: 0.4 },
+                { label: 'Normal', data: [], borderColor: 'rgba(255, 255, 0, 1)', backgroundColor: 'rgba(255, 255, 0, 0.2)', borderWidth: 1, pointRadius: 2, tension: 0.4 },
+                { label: 'Tremor', data: [], borderColor: 'rgba(255, 127, 0, 1)', backgroundColor: 'rgba(255, 127, 0, 0.2)', borderWidth: 1, pointRadius: 2, tension: 0.4 },
+                { label: 'Tonic', data: [], borderColor: 'rgba(255, 0, 0, 1)', backgroundColor: 'rgba(255, 0, 0, 0.2)', borderWidth: 1, pointRadius: 2, tension: 0.4 },
+                { label: 'Postural', data: [], borderColor: 'rgba(0, 255, 0, 1)', backgroundColor: 'rgba(0, 255, 0, 0.2)', borderWidth: 1, pointRadius: 2, tension: 0.4 },
             ];
             accelerometerChart.update();
             gyroscopeChart.update();
@@ -649,10 +649,10 @@
                 })
                 .then(data => {
                     for (let i = 0; i < dataPointsPerInterval; i++) {
-                        predictionChart.data.datasets[0].data.push(data[i]["Shaking"]);
-                        predictionChart.data.datasets[1].data.push(data[i]["Posture"]);
-                        predictionChart.data.datasets[2].data.push(data[i]["Fall"]);
-                        predictionChart.data.datasets[3].data.push(data[i]["Normal"]);
+                        predictionChart.data.datasets[0].data.push(data[i]["Normal"]);
+                        predictionChart.data.datasets[1].data.push(data[i]["Tremor"]);
+                        predictionChart.data.datasets[2].data.push(data[i]["Tonic"]);
+                        predictionChart.data.datasets[3].data.push(data[i]["Postural"]);
                     }
                 });
                 
