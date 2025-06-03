@@ -34,7 +34,7 @@ function validateCSVColumns(text) {
     
     return {
         isValid: missingColumns.length === 0,
-        error: missingColumns.length > 0 ? 'Invalid CSV format detected' : null,
+        error: missingColumns.length > 0 ? '' : null,
         missingColumns: missingColumns
     };
 }
