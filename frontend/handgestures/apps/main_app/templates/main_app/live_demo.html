@@ -473,6 +473,41 @@
         let csvUltrasonicLeft = [];
         let csvUltrasonicRight = [];
 
+        //CSV column validation function; Implemented 6-3-2025, SCRUM 9
+        function validateCSVColumns(text) {
+            const lines = text.trim().split(/\r?\n/);
+            if (lines.length === 0) {
+                return { isValid: false, error: 'CSV file is empty', missingColumns: [] };
+            }
+            
+            const header = lines[0].split(',');
+            const requiredColumns = [
+                'Timestamp(ms)',
+                'AccelX(g)',
+                'AccelY(g)', 
+                'AccelZ(g)',
+                'GyroX(deg/s)',
+                'GyroY(deg/s)',
+                'GyroZ(deg/s)',
+                'DistanceLeft(cm)',
+                'DistanceRight(cm)'
+            ];
+            
+            const missingColumns = [];
+            
+            for (const column of requiredColumns) {
+                if (header.indexOf(column) === -1) {
+                    missingColumns.push(column);
+                }
+            }
+            
+            return {
+                isValid: missingColumns.length === 0,
+                error: missingColumns.length > 0 ? '' : null,
+                missingColumns: missingColumns
+            };
+        }
+
         //Slowdown demo variables; added 4-30-2025 (SCRUM Sprint 4)
         let demoInterval = null; //interval for updating the demo
         let demoIndex = 0; //index of the current data point to display
@@ -501,6 +536,18 @@
             const reader = new FileReader(); //FileReader API is used to read the contents of a file
             reader.onload = function(evt) {
                 try {
+                    //validates CSV columns first
+                    const validation = validateCSVColumns(evt.target.result);
+                    if (!validation.isValid) {
+                        loadingSpinner.style.display = 'none';
+                        
+                        //shows error with contribute button option
+                        const errorMessage = `❌ Invalid CSV Format\n\n${validation.error}\n\nPlease use the "🤝 Contribute Data" button to download the correct template with the proper CSV format.`;
+                        alert(errorMessage);
+                        
+                        return;
+                    }
+                    
                     let parsed = {
                         time: [],
                         accel: { x: [], y: [], z: [] },
