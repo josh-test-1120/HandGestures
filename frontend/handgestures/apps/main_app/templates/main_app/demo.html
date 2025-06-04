@@ -258,14 +258,14 @@
         prediction: { normal: [], tremor: [], tonic: [], postural: [] }
       };
 
-      fetch("{% static 'main_app/data/data-behavior-initial.csv' %}")
+      fetch("{% static 'main_app/data/Josh59.csv' %}")
         .then(response => response.text())
         .then(csvText => {
           parseCSV(csvText, data);
           setupCharts(data);  //moved setupCharts here since we don't need to wait for predictions
         });
 
-      fetch("{% static 'main_app/data/data-predictions.csv' %}")
+      fetch("{% static 'main_app/data/data-predictions.csv' %}") //this is CSV for ML modeling
         .then(response => response.text())
         .then(predictionsText => {
           parsePredictions(predictionsText, data);
