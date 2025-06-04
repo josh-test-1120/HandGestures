@@ -261,6 +261,12 @@ def live_demo_prediction(request):
         predictions = [None] * predictions_this_request
         
         for idx in range(predictions_this_request):
+            if not (
+                all([(isinstance(v, float) or isinstance(v, int)) for v in data[idx].values()])
+                and set(data[idx]) == {"time", "accelx", "accely", "accelz", "gyrox", "gyroy", "gyroz", "distanceLeft", "distanceRight"}
+            ):
+                return JsonResponse({'error': 'Invalid data'}, status=400)
+            
             current_data = data[idx]
             
             data_list = torch.tensor([[[
@@ -283,6 +289,8 @@ def live_demo_prediction(request):
                 "Tonic": prediction[label_map["tonic"]],
                 "Postural": prediction[label_map["postural"]],
             }
+            
+            # print(prediction_dict)
             
             predictions[idx] = prediction_dict
         

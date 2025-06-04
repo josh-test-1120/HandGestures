@@ -247,7 +247,7 @@
   <script>
     AOS.init({ duration: 1000, once: true });
     //Page-specific JavaScript for demo.html
-    document.addEventListener('DOMContentLoaded', function () {
+    document.addEventListener('DOMContentLoaded', async function () {
 
       let data = {
         time: [],
@@ -262,14 +262,21 @@
         .then(response => response.text())
         .then(csvText => {
           parseCSV(csvText, data);
-          setupCharts(data);  //moved setupCharts here since we don't need to wait for predictions
+        })
+        .catch(error => {
+          console.error('Error getting Josh59.csv:', error);
         });
 
-      fetch("{% static 'main_app/data/data-predictions.csv' %}") //this is CSV for ML modeling
+      await fetch("{% static 'main_app/data/data-predictions.csv' %}") // this is CSV for ML modeling
         .then(response => response.text())
         .then(predictionsText => {
           parsePredictions(predictionsText, data);
+        })
+        .catch(error => {
+          console.error('Error getting data-predictions.csv:', error);
         });
+      
+      setupCharts(data);
     });
   </script>
 

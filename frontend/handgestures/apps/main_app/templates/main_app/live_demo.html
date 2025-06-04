@@ -532,6 +532,11 @@
         csvFileInput.addEventListener('change', function(e) {
             const file = e.target.files[0];
             if (!file) return;
+            const maxSize = 2 * 1024 * 1024; // 2 MB
+            if (file.size > maxSize) {
+                alert('Max file size is ' + maxSize + '. Your file is ' + file.size + 'bytes.');
+                fileInput.value = ''; // Clear the input
+            }
             loadingSpinner.style.display = 'block';
             const reader = new FileReader(); //FileReader API is used to read the contents of a file
             reader.onload = function(evt) {
@@ -631,7 +636,7 @@
             demoIndex = 0;
             demoRunning = true;
 
-            demoInterval = setInterval(function() {
+            demoInterval = setInterval(async function() {
                 const dataPointsPerInterval = 10;
                 let arrayOfJson = Array(dataPointsPerInterval).fill(null);
                 let responseFromServer = null;
@@ -680,8 +685,11 @@
                     checkSpike(ultrasonicChart.data.datasets[0], ts);    // Left dist
                     checkSpike(ultrasonicChart.data.datasets[1], ts);    // Right dist
                 }
+                
+                // console.log("csvTime: " + csvTime.length);
+                
                 // TODO: consider if this needs to use CSRF tokens
-                fetch('/live_demo_prediction/', {
+                await fetch('/live_demo_prediction/', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -695,12 +703,15 @@
                     return response.json();
                 })
                 .then(data => {
-                    for (let i = 0; i < dataPointsPerInterval; i++) {
+                    for (let i = 0; i < dataPointsPerInterval && demoIndex < csvTime.length; i++) {
                         predictionChart.data.datasets[0].data.push(data[i]["Normal"]);
                         predictionChart.data.datasets[1].data.push(data[i]["Tremor"]);
                         predictionChart.data.datasets[2].data.push(data[i]["Tonic"]);
                         predictionChart.data.datasets[3].data.push(data[i]["Postural"]);
                     }
+                })
+                .catch(error => {
+                    console.error('Error getting predictions:', error);
                 });
                 
                 accelerometerChart.update();

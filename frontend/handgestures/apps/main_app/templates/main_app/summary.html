@@ -188,7 +188,8 @@
         .then(response => response.text())
         .then(prediction => {
           document.getElementById('prediction-accuracy-text').textContent = prediction;
-        });
+        })
+        .catch(error => console.error('Prediction accuracy update failed:', error));
     }
   </script>
 
