@@ -737,6 +737,10 @@
             exportTableRows = [];
             exportTableBody.innerHTML = '';
 
+            //clears any existing toast alerts
+            const toastContainer = document.getElementById('toastContainer');
+            toastContainer.innerHTML = '';
+
             if (demoInterval) clearInterval(demoInterval);
             demoRunning = false;
             demoIndex = 0;
@@ -765,9 +769,21 @@
          (added 5-17-2025 SCRUM Sprint 6)
         */
 
-        //toast alert for 4s
+        const MAX_TOASTS = 3; //max number of toasts to display at once (to limit the number of toasts displayed)
+
+        //toast alert for 4s with maximum limit of 3 toasts
         function showToast(message) {
             const container = document.getElementById('toastContainer');
+            
+            //checks to see if we have reached the maximum number of toasts
+            const existingToasts = container.querySelectorAll('.toast');
+            if (existingToasts.length >= MAX_TOASTS) {
+                //removes the oldest toast to make room
+                const oldestToast = existingToasts[0];
+                if (oldestToast) {
+                    oldestToast.remove();
+                }
+            }
 
             const toastEl = document.createElement('div');
             toastEl.className = 'toast align-items-center text-bg-danger border-0';
@@ -793,14 +809,14 @@
 
         //threshold values for each dataset (TODO: change after data collection phase is complete)
         const datasetThresholds = {
-            'Accel X':   { min: -0.9, max: 0.9 },
-            'Accel Y':   { min: -0.9, max: 1.2 },
-            'Accel Z':   { min: 0,    max: 1.4 },
-            'Gyro X':    { min: -200, max: 200 },
-            'Gyro Y':    { min: -125, max: 150 },
-            'Gyro Z':    { min: -175, max: 140 },
-            'Left Distance (cm)':  { min: -10, max: 180 },
-            'Right Distance (cm)': { min: -10, max: 180 }
+            'Accel X':   { min: -0.6, max: 0.4 },
+            'Accel Y':   { min: -1.0, max: -0.4 },
+            'Accel Z':   { min: 0.1,    max: 0.5 },
+            'Gyro X':    { min: -40, max: 35 },
+            'Gyro Y':    { min: -60, max: 60 },
+            'Gyro Z':    { min: -75, max: 100 },
+            'Left Distance (cm)':  { min: 0, max: 40 },
+            'Right Distance (cm)': { min: 40, max: 140 }
         };
 
         //checks if the value is outside the min/max threshold defined in datasetThresholds
