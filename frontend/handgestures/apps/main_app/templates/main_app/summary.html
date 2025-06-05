@@ -58,6 +58,31 @@
       </div>
     </section>
 
+    <!-- Overall Data Averages Containers (for summary page) -->
+    <section class="mb-5" data-aos="fade-up">
+      <div class="row mb-4 align-items-stretch">
+        <!-- Acceleration Data Averages -->
+        <div class="col-md-6 d-flex">
+          <div class="card shadow-sm p-4 rounded h-100 w-100" data-aos="fade-up" data-aos-delay="100">
+            <h5 class="card-title">Overall Acceleration Data Averages</h5>
+            <div id="avg-x-accel-text">0</div>
+            <div id="avg-y-accel-text">0</div>
+            <div id="avg-z-accel-text">0</div>
+          </div>
+        </div>
+
+        <!-- Rotation Data Averages -->
+        <div class="col-md-6 d-flex">
+          <div class="card shadow-sm p-4 rounded h-100 w-100" data-aos="fade-up" data-aos-delay="200">
+            <h5 class="card-title">Overall Rotation Data Averages</h5>
+            <div id="avg-x-rot-text">0</div>
+            <div id="avg-y-rot-text">0</div>
+            <div id="avg-z-rot-text">0</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <!-- Key Findings -->
     <section class="mb-5" data-aos="fade-up">
       <h3 class="section-title mb-4">Key Findings</h3>
@@ -190,6 +215,22 @@
           document.getElementById('prediction-accuracy-text').textContent = prediction;
         })
         .catch(error => console.error('Prediction accuracy update failed:', error));
+
+      //fetches acceleration and rotation data from demo endpoint
+      fetch('/demo_page_update/')
+        .then(response => response.json())
+        .then(data => {
+          document.getElementById('avg-x-accel-text').textContent = data.avg_x_accel;
+          document.getElementById('avg-y-accel-text').textContent = data.avg_y_accel;
+          document.getElementById('avg-z-accel-text').textContent = data.avg_z_accel;
+          document.getElementById('avg-x-rot-text').textContent = data.avg_x_rot;
+          document.getElementById('avg-y-rot-text').textContent = data.avg_y_rot;
+          document.getElementById('avg-z-rot-text').textContent = data.avg_z_rot;
+          
+          if (data.connection_error) console.log(data.connection_error);
+          if (data.query_error) console.log(data.query_error);
+        })
+        .catch(error => console.error('Demo data update failed:', error));
     }
   </script>
 
