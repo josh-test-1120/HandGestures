@@ -210,7 +210,7 @@
       if (waitingForRequest) return;
       waitingForRequest = true;
 
-      fetch('/demo_page_update/')
+      fetch('/demo_csv_data_update/')
         .then(response => response.json())
         .then(data => {
           document.getElementById('avg-x-accel-text').textContent = data.avg_x_accel;
@@ -228,11 +228,11 @@
           document.getElementById('second-max-rot-text').textContent = data.second_fastest_rot;
           document.getElementById('third-max-rot-text').textContent = data.third_fastest_rot;
           
-          if (data.connection_error) console.log(data.connection_error);
-          if (data.query_error) console.log(data.query_error);
+          if (data.file_error) console.log('CSV File Error:', data.file_error);
+          console.log('CSV rows processed:', data.data_points);
         })
         .catch(error => {
-          console.error('Error getting demo info:', error);
+          console.error('Error getting CSV info:', error);
         })
         .finally(() => {
           waitingForRequest = false;

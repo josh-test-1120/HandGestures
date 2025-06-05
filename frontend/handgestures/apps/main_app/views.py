@@ -10,6 +10,7 @@ from django import forms
 from django.views.decorators.csrf import csrf_exempt
 
 import json
+import csv
 
 import random
 # This is to load from the .env file
@@ -234,6 +235,102 @@ def demo_page_update(request):
         "third_fastest_rot": "fastest z rotation: {:,.3f}".format(max_gyro_z),
         "connection_error": connection_error,
         "query_error": query_error,
+    }
+    
+    return JsonResponse(demo_data)
+
+
+def demo_csv_data_update(request): #(added 6-5-2025 SCRUM Sprint 9)
+    """
+    Calculate averages and max values from the specific CSV file loaded in demo.html
+    This replaces database queries with direct CSV file processing
+    """
+    
+    #path to the CSV file that's loaded in demo.html
+    csv_file_path = os.path.join(
+        settings.BASE_DIR, 
+        'apps', 
+        'main_app', 
+        'static', 
+        'main_app', 
+        'data', 
+        'Josh59.csv'
+    )
+    
+    file_error = ""
+    data_points = 0
+    
+    #initializes variables with default values
+    accel_x_values = []
+    accel_y_values = []
+    accel_z_values = []
+    gyro_x_values = []
+    gyro_y_values = []
+    gyro_z_values = []
+    
+    try:
+        with open(csv_file_path, 'r') as file:
+            csv_reader = csv.DictReader(file)
+            
+            for row in csv_reader:
+                try:
+                    #extracts values from CSV
+                    accel_x = float(row.get('AccelX(g)', 0))
+                    accel_y = float(row.get('AccelY(g)', 0))
+                    accel_z = float(row.get('AccelZ(g)', 0))
+                    gyro_x = float(row.get('GyroX(deg/s)', 0))
+                    gyro_y = float(row.get('GyroY(deg/s)', 0))
+                    gyro_z = float(row.get('GyroZ(deg/s)', 0))
+                    
+                    accel_x_values.append(accel_x)
+                    accel_y_values.append(accel_y)
+                    accel_z_values.append(accel_z)
+                    gyro_x_values.append(gyro_x)
+                    gyro_y_values.append(gyro_y)
+                    gyro_z_values.append(gyro_z)
+                    
+                    data_points += 1
+                    
+                except (ValueError, KeyError) as e:
+                    continue #skips invalid rows
+                    
+    except FileNotFoundError:
+        file_error = f"CSV file not found: {csv_file_path}"
+    except Exception as e:
+        file_error = f"Error reading CSV file: {str(e)}"
+    
+    #calculates averages (same logic as Jack's version for demo_page_update)
+    avg_accel_x = sum(accel_x_values) / len(accel_x_values) if accel_x_values else 0.0
+    avg_accel_y = sum(accel_y_values) / len(accel_y_values) if accel_y_values else 0.0
+    avg_accel_z = sum(accel_z_values) / len(accel_z_values) if accel_z_values else 0.0
+    avg_rotation_x = sum(gyro_x_values) / len(gyro_x_values) if gyro_x_values else 0.0
+    avg_rotation_y = sum(gyro_y_values) / len(gyro_y_values) if gyro_y_values else 0.0
+    avg_rotation_z = sum(gyro_z_values) / len(gyro_z_values) if gyro_z_values else 0.0
+    
+    #calculates max absolute values (same logic as Jack's version for demo_page_update)
+    max_accel_x = max([abs(x) for x in accel_x_values]) if accel_x_values else 0.0
+    max_accel_y = max([abs(y) for y in accel_y_values]) if accel_y_values else 0.0
+    max_accel_z = max([abs(z) for z in accel_z_values]) if accel_z_values else 0.0
+    max_gyro_x = max([abs(x) for x in gyro_x_values]) if gyro_x_values else 0.0
+    max_gyro_y = max([abs(y) for y in gyro_y_values]) if gyro_y_values else 0.0
+    max_gyro_z = max([abs(z) for z in gyro_z_values]) if gyro_z_values else 0.0
+    
+    #formats response
+    demo_data = {
+        "avg_x_accel": "average x acceleration: {:,.3f}".format(avg_accel_x),
+        "avg_y_accel": "average y acceleration: {:,.3f}".format(avg_accel_y),
+        "avg_z_accel": "average z acceleration: {:,.3f}".format(avg_accel_z),
+        "avg_x_rot": "average x rotation: {:,.3f}".format(avg_rotation_x),
+        "avg_y_rot": "average y rotation: {:,.3f}".format(avg_rotation_y),
+        "avg_z_rot": "average z rotation: {:,.3f}".format(avg_rotation_z),
+        "first_fastest_accel": "fastest x acceleration: {:,.3f}".format(max_accel_x),
+        "second_fastest_accel": "fastest y acceleration: {:,.3f}".format(max_accel_y),
+        "third_fastest_accel": "fastest z acceleration: {:,.3f}".format(max_accel_z),
+        "first_fastest_rot": "fastest x rotation: {:,.3f}".format(max_gyro_x),
+        "second_fastest_rot": "fastest y rotation: {:,.3f}".format(max_gyro_y),
+        "third_fastest_rot": "fastest z rotation: {:,.3f}".format(max_gyro_z),
+        "file_error": file_error,
+        "data_points": data_points,
     }
     
     return JsonResponse(demo_data)

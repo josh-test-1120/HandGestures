@@ -15,6 +15,7 @@ urlpatterns = [
 	path("summary/", views.summary, name="summary"),
 	path("summary_page_update/", views.summary_page_update, name="summary_page_update"),
 	path("demo_page_update/", views.demo_page_update, name="demo_page_update"),
+	path("demo_csv_data_update/", views.demo_csv_data_update, name="demo_csv_data_update"),
 	path("structure/", views.structure, name="structure"),
 	path("demo/",views.demo, name="demo"),
 	path("machine_learning/", views.machine_learning, name="machine_learning"),
