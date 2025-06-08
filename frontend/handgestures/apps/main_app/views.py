@@ -1,7 +1,3 @@
-import mysql.connector
-from mysql.connector import errorcode
-
-# These are the most commonly used elements for application views
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.urls import reverse, resolve, NoReverseMatch
@@ -24,6 +20,9 @@ from django.views.decorators.http import require_http_methods
 
 import torch
 import torch.nn as nn
+from django.db import connections #import for Django's Database Backend
+from django.db.utils import OperationalError, DatabaseError, InterfaceError
+import mysql.connector.errorcode as errorcode
 
 
 class SeizureLSTM(nn.Module):
@@ -39,27 +38,44 @@ class SeizureLSTM(nn.Module):
         return out
 
 
-CONFIG = {
-    "host": config('DB_HOST'),
-    "user": config('DB_USER'),
-    "password": config('DB_PASSWORD'),
-    "database": config('DB_NAME')
-}
-
-connection = None
-cursor = None
-connection_error = ""
-try:
-     connection = mysql.connector.connect(**CONFIG)
-except mysql.connector.Error as err:
-    if err.errno == errorcode.ER_ACCESS_DENIED_ERROR:
-        connection_error = "Something is wrong with the user name or password"
-    elif err.errno == errorcode.ER_BAD_DB_ERROR:
-        connection_error = "Database does not exist"
-    else:
-        connection_error = "MySQL connection error: " + str(err)
-else:
-    cursor = connection.cursor()
+#uses Django's Database Backend instead of raw MySQL connector (Implemented 6-8-2025) 
+def get_mysql_connection():
+    try:
+        connection = connections['mysql']
+        cursor = connection.cursor()
+        return connection, cursor, ""
+    except OperationalError as err:
+        #for handling specific MySQL error codes
+        error_message = str(err)
+        
+        #access denied (authentication) errors
+        if "Access denied" in error_message or "authentication" in error_message.lower():
+            return None, None, "Something is wrong with the user name or password"
+        
+        #database doesn't exist errors
+        elif "Unknown database" in error_message or "database does not exist" in error_message.lower():
+            return None, None, "Database does not exist"
+        
+        #connection/SSL errors
+        elif "Lost connection" in error_message or "SSL" in error_message or "EOF occurred" in error_message:
+            return None, None, f"MySQL connection/SSL error: {str(err)}"
+        
+        #host/network errors
+        elif "Can't connect" in error_message or "timeout" in error_message.lower():
+            return None, None, f"MySQL network error: {str(err)}"
+        
+        #generic operational error
+        else:
+            return None, None, f"MySQL operational error: {str(err)}"
+            
+    except DatabaseError as err:
+        return None, None, f"MySQL database error: {str(err)}"
+        
+    except InterfaceError as err:
+        return None, None, f"MySQL interface error: {str(err)}"
+        
+    except Exception as err:
+        return None, None, f"Database connection error: {str(err)}"
 
 
 # Import your models for this application
@@ -132,6 +148,7 @@ def summary_page_update(request):
     participants = 0
     data_points = 0
     
+    connection, cursor, connection_error = get_mysql_connection()
     if cursor is not None:
         try:
             cursor.execute(query_string)
@@ -197,6 +214,7 @@ def demo_page_update(request):
     avg_rotation_y = 0.0
     avg_rotation_z = 0.0
     
+    connection, cursor, connection_error = get_mysql_connection()
     if cursor is not None:
         try:
             cursor.execute(query_string)
