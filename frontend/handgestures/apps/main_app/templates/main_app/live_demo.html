@@ -772,7 +772,7 @@
         const MAX_TOASTS = 3; //max number of toasts to display at once (to limit the number of toasts displayed)
 
         //toast alert for 4s with maximum limit of 3 toasts
-        function showToast(message) {
+        function showToast(message, backgroundColor) {
             const container = document.getElementById('toastContainer');
             
             //checks to see if we have reached the maximum number of toasts
@@ -786,10 +786,12 @@
             }
 
             const toastEl = document.createElement('div');
-            toastEl.className = 'toast align-items-center text-bg-danger border-0';
+            toastEl.className = 'toast align-items-center border-0';
             toastEl.role = 'alert';
             toastEl.setAttribute('aria-live', 'assertive');
             toastEl.setAttribute('aria-atomic', 'true');
+            toastEl.style.backgroundColor = backgroundColor;
+            toastEl.style.color = 'white';
             toastEl.innerHTML = `
                 <div class="d-flex">
                     <div class="toast-body">${message}</div>
@@ -819,6 +821,18 @@
             'Right Distance (cm)': { min: 40, max: 140 }
         };
 
+        //color mapping for each dataset to match chart colors exactly as defined in chart.js
+        const datasetColors = {
+            'Accel X': 'rgba(52, 152, 219, 1)',      
+            'Accel Y': 'rgba(39, 174, 96, 1)',       
+            'Accel Z': 'rgba(231, 76, 60, 1)',      
+            'Gyro X': 'rgba(155, 89, 182, 1)',       
+            'Gyro Y': 'rgba(241, 196, 15, 1)',       
+            'Gyro Z': 'rgba(26, 188, 156, 1)',      
+            'Left Distance (cm)': 'rgba(39, 174, 96, 1)',   
+            'Right Distance (cm)': 'rgba(231, 76, 60, 1)'   
+        };
+
         //checks if the value is outside the min/max threshold defined in datasetThresholds
         function checkSpike(ds, timestamp) {
             const n = ds.data.length;
@@ -830,9 +844,11 @@
             if (thresh.min !== null && val < thresh.min) outOfRange = true;
             if (thresh.max !== null && val > thresh.max) outOfRange = true;
             if (outOfRange) {
+                const color = datasetColors[ds.label];
                 showToast(
                     `Spike detected on ${ds.label}: `
-                    + `${val.toFixed(2)} @ ${timestamp}s`
+                    + `${val.toFixed(2)} @ ${timestamp}s`,
+                    color
                 );
             }
         }
