@@ -56,7 +56,7 @@
             </div>
         </div>
         <div class="alert alert-info mt-2" role="alert" style="max-width: 500px;">
-            <strong>Note:</strong> 1s of real time = 10s of demo time (i.e. 10 data points).
+            <strong>Note:</strong> 1s of real time = 1s of demo time (i.e. 20 data points).
         </div>
         <!-- Accelerometer & Gyroscope -->
         <div class="row mb-4">
@@ -637,7 +637,7 @@
             demoRunning = true;
 
             demoInterval = setInterval(async function() {
-                const dataPointsPerInterval = 10;
+                const dataPointsPerInterval = 20;
                 let arrayOfJson = Array(dataPointsPerInterval).fill(null);
                 let responseFromServer = null;
                 for (let i = 0; i < dataPointsPerInterval && demoIndex < csvTime.length; i++, demoIndex++) {
@@ -722,7 +722,7 @@
                     clearInterval(demoInterval);
                     demoRunning = false;
                 }
-            }, 1000);//1000ms = 1s in real life, 10 data points per interval
+            }, 1000);//1000ms = 1s in real life, 20 data points per interval
         });
 
         //Event: Stop Demo event listener implemented 4-30-2025 (SCRUM Sprint 4)
