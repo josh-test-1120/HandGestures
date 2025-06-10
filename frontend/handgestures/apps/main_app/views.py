@@ -97,7 +97,7 @@ def load_model():
         'NeuroTech-1.pt'
     )
     
-    loaded_model = torch.load(file_path, weights_only=False)
+    loaded_model = torch.load(file_path, weights_only=False, map_location="cpu")
     loaded_model.eval()
     
     return loaded_model
