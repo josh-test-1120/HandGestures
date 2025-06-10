@@ -24,61 +24,6 @@ from django.db import connections #import for Django's Database Backend
 from django.db.utils import OperationalError, DatabaseError, InterfaceError
 import mysql.connector.errorcode as errorcode
 
-
-class SeizureLSTM(nn.Module):
-    def __init__(self, input_size=8, hidden_size=64, num_layers=2, num_classes=4):
-        super(SeizureLSTM, self).__init__()
-        self.lstm = nn.LSTM(input_size, hidden_size, num_layers, batch_first=True)
-        self.fc = nn.Linear(hidden_size, num_classes)
-
-    def forward(self, x):
-        out, _ = self.lstm(x)
-        out = out[:, -1, :]  # Last time step
-        out = self.fc(out)
-        return out
-    
-# Model definition for Hands Gesture LSTM CNN (Added by Josh)
-class CNNLSTM(nn.Module):
-    def __init__(self, input_channels, num_classes):
-        super(CNNLSTM, self).__init__()
-        input_shape = (127, 127, 6)
-        self.cnn = nn.Sequential(
-            nn.Conv2d(input_channels, 32, 3, padding=1),
-            nn.ReLU(),
-            nn.MaxPool2d(2),  # 63x63
-
-            nn.Conv2d(32, 64, 3, padding=1),
-            nn.ReLU(),
-            nn.MaxPool2d(2),  # 31x31
-
-            nn.Conv2d(64, 128, 3, padding=1),
-            nn.ReLU(),
-            nn.MaxPool2d(2),  # 15x15
-        )
-        # Infer CNN output size dynamically
-        dummy_input = torch.zeros(1, input_channels, input_shape[0], input_shape[1])
-        cnn_output_dim = self.cnn(dummy_input).view(1, -1).size(1)
-
-        self.lstm = nn.LSTM(input_size=cnn_output_dim, hidden_size=128,
-                            batch_first=True, bidirectional=True)
-        self.classifier = nn.Sequential(
-            nn.Linear(128 * 2, 64),
-            nn.ReLU(),
-            nn.Dropout(0.3),
-            nn.Linear(64, num_classes)
-        )
-
-    def forward(self, x):
-        # x shape: (B, T, C, H, W)
-        B, T, C, H, W = x.shape
-        x = x.view(B * T, C, H, W)  # combine batch and time for CNN
-        x = self.cnn(x)
-        x = x.view(B, T, -1)  # separate batch and time
-        out, _ = self.lstm(x)
-        # Use output of last timestep
-        return self.classifier(out[:, -1, :])
-
-
 #uses Django's Database Backend instead of raw MySQL connector (Implemented 6-8-2025) 
 def get_mysql_connection():
     try:
@@ -128,27 +73,34 @@ def get_mysql_connection():
 
 def load_model():
     import __main__
-    setattr(__main__, "SeizureLSTM", SeizureLSTM)
+    from .models.LSTMCNN import CNNLSTM, SeizureLSTM
 
-    file_path = os.path.join(
+    model_file_path = os.path.join(
         os.path.dirname(os.path.abspath(__file__)),
         'static',
         'main_app',
         'data',
         'NeuroTech-1.pt'
     )
+    cwt_file_path = os.path.join(
+        os.path.dirname(os.path.abspath(__file__)),
+        'static',
+        'main_app',
+        'data',
+        'cwt_NeuroTech.pt'
+    )
     # Initial device state
     device = torch.device("cpu")
     # Load the file to get the labels
-    loaded_model = torch.load(file_path, weights_only=False, map_location=device)
-    label_dict = loaded_model['label_dict']
+    # Load dataset
+    cwt_data = torch.load(cwt_file_path, map_location="cpu", weights_only=False)
+    x_test = cwt_data["x_test"]
+    y_test = cwt_data["y_test"]
+    label_dict = cwt_data['label_dict']
     # Initialize the model, so we can send it the weights
     model = CNNLSTM(input_channels=6, num_classes=len(label_dict)).to(device)
     # Load the data weights into the model
-    model.load_state_dict(
-    torch.load(file_path,
-               map_location=device,
-               weights_only=False))
+    model.load_state_dict(torch.load(model_file_path, weights_only=False, map_location=device))
     
     model.eval()
     
