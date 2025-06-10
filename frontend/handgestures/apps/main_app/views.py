@@ -521,3 +521,68 @@ def upload_contribution(request):
         
     except Exception as e:
         return JsonResponse({'success': False, 'error': f'Unexpected error: {str(e)}'})
+
+
+@csrf_exempt
+def calculate_dynamic_thresholds(request):
+    """Calculate dynamic thresholds for major spike detection only, avoiding false positives from normal variations"""
+    if request.method != 'POST':
+        return JsonResponse({'error': 'POST method required'}, status=405)
+    
+    try:
+        import numpy as np
+        data = json.loads(request.body)
+        
+        thresholds = {}
+        
+        #accelerometer data
+        for axis, values in data.get('accel', {}).items():
+            if values:
+                signal = np.array(values)
+                mean_val = np.mean(signal)
+                std_val = np.std(signal)
+                
+                #uses 4 standard deviations for major spike detection only
+                #also ensures minimum threshold of 10% of mean to avoid tiny variations
+                threshold_range = max(4.0 * std_val, abs(mean_val) * 0.1)
+                
+                thresholds[f'Accel {axis.upper()}'] = {
+                    'min': float(mean_val - threshold_range),
+                    'max': float(mean_val + threshold_range)
+                }
+        
+        #gyroscope data
+        for axis, values in data.get('gyro', {}).items():
+            if values:
+                signal = np.array(values)
+                mean_val = np.mean(signal)
+                std_val = np.std(signal)
+                
+                #gyro uses 3.5 standard deviations
+                threshold_range = 3.5 * std_val
+                
+                thresholds[f'Gyro {axis.upper()}'] = {
+                    'min': float(mean_val - threshold_range),
+                    'max': float(mean_val + threshold_range)
+                }
+        
+        #processes ultrasonic data using percentiles 
+        for sensor, values in data.get('ultrasonic', {}).items():
+            if values:
+                signal = np.array(values)
+                
+                #uses 1st and 99th percentiles for major spike detection only
+                #captures only extreme outliers in distance measurements
+                percentile_low = np.percentile(signal, 1)
+                percentile_high = np.percentile(signal, 99)
+                
+                sensor_name = 'Left Distance (cm)' if sensor == 'left' else 'Right Distance (cm)'
+                thresholds[sensor_name] = {
+                    'min': float(percentile_low),
+                    'max': float(percentile_high)
+                }
+        
+        return JsonResponse({'thresholds': thresholds})
+        
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)
