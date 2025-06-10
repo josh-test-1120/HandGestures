@@ -816,7 +816,7 @@
         //threshold values for each dataset (dynamically calculated below)
         let datasetThresholds = {};
 
-        //calculate dynamic thresholds using statistical methods for anomaly detection (implemented 6-8-2025)
+        //calculate dynamic thresholds for major spike detection only (implemented 6-8-2025)
         async function calculateDynamicThresholds() {
             try {
                 const response = await fetch('/calculate_thresholds/', { //fetches the dynamic thresholds from the server
