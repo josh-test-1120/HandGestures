@@ -73,7 +73,7 @@ def get_mysql_connection():
 
 def load_model():
     import __main__
-    from .models.LSTMCNN import CNNLSTM, SeizureLSTM
+    from .models.LSTMCNN import CNNLSTM
 
     model_file_path = os.path.join(
         os.path.dirname(os.path.abspath(__file__)),

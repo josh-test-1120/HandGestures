@@ -1,12 +1,6 @@
 import torch
 import torch.nn as nn
 
-# Define a dummy class with the old name to trick the unpickler
-class SeizureLSTM(torch.nn.Module):
-    def __init__(self, *args, **kwargs):
-        super().__init__()
-
-
 # Model definition
 class CNNLSTM(nn.Module):
     def __init__(self, input_channels, num_classes):
