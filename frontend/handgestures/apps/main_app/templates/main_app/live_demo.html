@@ -135,19 +135,43 @@
 
         <!-- Predictions Section -->
         <section class="mb-5">
-            <h3 class="text-center fw-bold mb-4" data-aos="fade-up">Prediction</h3>
+            <h3 class="text-center fw-bold mb-4" data-aos="fade-up">Neural Network Predictions</h3>
             <div class="row mb-4">
                 <div class="col-md-12">
                     <div class="card shadow-sm p-4 mb-5 rounded" data-aos="fade-up">
-                        <h5 class="card-title mb-4">Prediction</h5>
-                        <div class="d-flex justify-content-between mb-3">
-                            <div>Normal<br>Probability:<br><span class="fw-bold" id="normal-percent">-</span></div>
-                            <div>Tremor<br>Probability:<br><span class="fw-bold" id="tremor-percent">-</span></div>
-                            <div>Tonic<br>Probability:<br><span class="fw-bold" id="tonic-percent">-</span></div>
-                            <div>Postural<br>Probability:<br><span class="fw-bold" id="postural-percent">-</span></div>
+                        <h5 class="card-title mb-4">Model Predictions (Available after CSV demo completes)</h5>
+                        <div class="row text-center mb-4">
+                            <div class="col-md-3">
+                                <div class="prediction-box p-3 rounded" style="background-color: rgba(255, 255, 0, 0.1); border: 2px solid rgba(255, 255, 0, 0.3);">
+                                    <h6>Normal</h6>
+                                    <div class="fs-4 fw-bold" id="normal-percent">Waiting...</div>
+                                    <small class="text-muted">Probability</small>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="prediction-box p-3 rounded" style="background-color: rgba(255, 127, 0, 0.1); border: 2px solid rgba(255, 127, 0, 0.3);">
+                                    <h6>Tremor</h6>
+                                    <div class="fs-4 fw-bold" id="tremor-percent">Waiting...</div>
+                                    <small class="text-muted">Probability</small>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="prediction-box p-3 rounded" style="background-color: rgba(255, 0, 0, 0.1); border: 2px solid rgba(255, 0, 0, 0.3);">
+                                    <h6>Tonic</h6>
+                                    <div class="fs-4 fw-bold" id="tonic-percent">Waiting...</div>
+                                    <small class="text-muted">Probability</small>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="prediction-box p-3 rounded" style="background-color: rgba(0, 255, 0, 0.1); border: 2px solid rgba(0, 255, 0, 0.3);">
+                                    <h6>Postural</h6>
+                                    <div class="fs-4 fw-bold" id="postural-percent">Waiting...</div>
+                                    <small class="text-muted">Probability</small>
+                                </div>
+                            </div>
                         </div>
-                        <div class="chart-container">
-                            <canvas id="predictionChart"></canvas>
+                        <div class="text-center">
+                            <div id="prediction-status" class="text-muted">Import CSV and run demo to generate predictions</div>
                         </div>
                     </div>
                 </div>
@@ -348,38 +372,7 @@
             }
         });
 
-        //Prediction Chart
-        const predictionCtx = document.getElementById('predictionChart').getContext('2d');
-        let predictionChart = new Chart(predictionCtx, {
-            type: 'line',
-            data: {
-                labels: [],
-                datasets: [
-                    { label: 'Normal', data: [], borderColor: 'rgba(255, 255, 0, 1)', backgroundColor: 'rgba(255, 255, 0, 0.2)', borderWidth: 1, pointRadius: 2, tension: 0.4 },
-                    { label: 'Tremor', data: [], borderColor: 'rgba(255, 127, 0, 1)', backgroundColor: 'rgba(255, 127, 0, 0.2)', borderWidth: 1, pointRadius: 2, tension: 0.4 },
-                    { label: 'Tonic', data: [], borderColor: 'rgba(255, 0, 0, 1)', backgroundColor: 'rgba(255, 0, 0, 0.2)', borderWidth: 1, pointRadius: 2, tension: 0.4 },
-                    { label: 'Postural', data: [], borderColor: 'rgba(0, 255, 0, 1)', backgroundColor: 'rgba(0, 255, 0, 0.2)', borderWidth: 1, pointRadius: 2, tension: 0.4 },
-                ]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                scales: {
-                    x: {
-                        type: 'linear',
-                        title: {
-                            display: true,
-                            text: 'Time (s)'
-                        },
-                        ticks: {
-                            stepSize: 5,
-                            callback: function(value) { return value + 's'; }
-                        }
-                    },
-                    y: { beginAtZero: true }
-                }
-            }
-        });
+        // Prediction chart removed - using neural network model predictions instead
 
         // functions ran by graphs when the mouse it over a graph point.
         function updateAccValues(x, y, z) {
@@ -396,12 +389,7 @@
           document.getElementById('ultrasonic-left-value').textContent = left !== undefined ? left.toFixed(2) : '-';
           document.getElementById('ultrasonic-right-value').textContent = right !== undefined ? right.toFixed(2) : '-';
         }
-        function updatePredictionValues(normal, tremor, tonic, postural) {
-          document.getElementById('normal-percent').textContent = normal !== undefined ? normal.toFixed(3) : '-';
-          document.getElementById('tremor-percent').textContent = tremor !== undefined ? tremor.toFixed(3) : '-';
-          document.getElementById('tonic-percent').textContent = tonic !== undefined ? tonic.toFixed(3) : '-';
-          document.getElementById('postural-percent').textContent = postural !== undefined ? postural.toFixed(3) : '-';
-        }
+        // updatePredictionValues function removed - using neural network predictions
 
         accelerometerChart.options.onHover = function(event, chartElement) {
           if (chartElement.length > 0) {
@@ -441,19 +429,7 @@
           }
         };
 
-        predictionChart.options.onHover = function(event, chartElement) {
-          if (chartElement.length > 0) {
-            const idx = chartElement[0].index;
-            updatePredictionValues(
-              predictionChart.data.datasets[0].data[idx],
-              predictionChart.data.datasets[1].data[idx],
-              predictionChart.data.datasets[2].data[idx],
-              predictionChart.data.datasets[3].data[idx]
-            );
-          } else {
-            updatePredictionValues();
-          }
-        };
+        // Prediction chart hover events removed - using neural network predictions
 
         //basic variables for data handling
         let isConnected = false;
@@ -467,6 +443,7 @@
         //CSV Data Storage
         let csvData = null;
         let csvParsed = false;
+        let csvContent = null; // Store original CSV content for neural network processing
         let csvTime = [];
         let csvAccel = { x: [], y: [], z: [] };
         let csvGyro = { x: [], y: [], z: [] };
@@ -553,6 +530,9 @@
                         return;
                     }
                     
+                    // Store original CSV content for neural network processing
+                    csvContent = evt.target.result;
+                    
                     let parsed = {
                         time: [],
                         accel: { x: [], y: [], z: [] },
@@ -560,13 +540,16 @@
                         ultrasonicLeft: [],
                         ultrasonicRight: []
                     };
-                    parseCSV(evt.target.result, parsed);
+                    parseCSV(csvContent, parsed);
                     csvTime = parsed.time;
                     csvAccel = parsed.accel;
                     csvGyro = parsed.gyro;
                     csvUltrasonicLeft = parsed.ultrasonicLeft;
                     csvUltrasonicRight = parsed.ultrasonicRight;
                     csvParsed = true;
+                    
+                    // Reset prediction display when new CSV is loaded
+                    resetPredictionDisplay();
                     
                     //calls dynamic thresholds function
                     calculateDynamicThresholds().then(() => {
@@ -625,17 +608,12 @@
                     tension: 0.4
                 }
             ];
-            predictionChart.data.labels = [];
-            predictionChart.data.datasets = [
-                { label: 'Normal', data: [], borderColor: 'rgba(255, 255, 0, 1)', backgroundColor: 'rgba(255, 255, 0, 0.2)', borderWidth: 1, pointRadius: 2, tension: 0.4 },
-                { label: 'Tremor', data: [], borderColor: 'rgba(255, 127, 0, 1)', backgroundColor: 'rgba(255, 127, 0, 0.2)', borderWidth: 1, pointRadius: 2, tension: 0.4 },
-                { label: 'Tonic', data: [], borderColor: 'rgba(255, 0, 0, 1)', backgroundColor: 'rgba(255, 0, 0, 0.2)', borderWidth: 1, pointRadius: 2, tension: 0.4 },
-                { label: 'Postural', data: [], borderColor: 'rgba(0, 255, 0, 1)', backgroundColor: 'rgba(0, 255, 0, 0.2)', borderWidth: 1, pointRadius: 2, tension: 0.4 },
-            ];
             accelerometerChart.update();
             gyroscopeChart.update();
             ultrasonicChart.update();
-            predictionChart.update();
+            
+            // Reset prediction display for new demo
+            resetPredictionDisplay();
 
             demoIndex = 0;
             demoRunning = true;
@@ -659,8 +637,6 @@
                     ultrasonicChart.data.labels.push(Number(csvTime[demoIndex]));
                     ultrasonicChart.data.datasets[0].data.push(csvUltrasonicLeft[demoIndex]);
                     ultrasonicChart.data.datasets[1].data.push(csvUltrasonicRight[demoIndex]);
-
-                    predictionChart.data.labels.push(Number(csvTime[demoIndex]));
 
                     arrayOfJson[i] = {
                         time: Number(csvTime[demoIndex]),
@@ -690,41 +666,15 @@
                     checkSpike(ultrasonicChart.data.datasets[1], ts);    // Right dist
                 }
                 
-                // console.log("csvTime: " + csvTime.length);
-                
-                // TODO: consider if this needs to use CSRF tokens
-                await fetch('/live_demo_prediction/', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(arrayOfJson)
-                })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error("response wasn't okay");
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    for (let i = 0; i < dataPointsPerInterval && demoIndex < csvTime.length; i++) {
-                        predictionChart.data.datasets[0].data.push(data[i]["Normal"]);
-                        predictionChart.data.datasets[1].data.push(data[i]["Tremor"]);
-                        predictionChart.data.datasets[2].data.push(data[i]["Tonic"]);
-                        predictionChart.data.datasets[3].data.push(data[i]["Postural"]);
-                    }
-                })
-                .catch(error => {
-                    console.error('Error getting predictions:', error);
-                });
-                
                 accelerometerChart.update();
                 gyroscopeChart.update();
                 ultrasonicChart.update();
-                predictionChart.update();
+                
                 if (demoIndex >= csvTime.length) {
                     clearInterval(demoInterval);
                     demoRunning = false;
+                    // Demo completed - generate neural network predictions
+                    generateNeuralNetworkPredictions();
                 }
             }, 1000);//1000ms = 1s in real life, 20 data points per interval
         });
@@ -761,9 +711,8 @@
             ultrasonicChart.data.datasets.forEach(ds => ds.data = []);
             ultrasonicChart.update();
             
-            predictionChart.data.labels = [];
-            predictionChart.data.datasets.forEach(ds => ds.data = []);
-            predictionChart.update();
+            // Reset prediction display
+            resetPredictionDisplay();
         });
 
         //JavaScript for Contribute button functionality moved to contribute.js (5-26-2025)
@@ -874,6 +823,71 @@
                     color
                 );
             }
+        }
+
+        // Neural Network Prediction Functions
+        function resetPredictionDisplay() {
+            document.getElementById('normal-percent').textContent = 'Waiting...';
+            document.getElementById('tremor-percent').textContent = 'Waiting...';
+            document.getElementById('tonic-percent').textContent = 'Waiting...';
+            document.getElementById('postural-percent').textContent = 'Waiting...';
+            document.getElementById('prediction-status').textContent = 'Import CSV and run demo to generate predictions';
+        }
+
+        function generateNeuralNetworkPredictions() {
+            if (!csvContent) {
+                document.getElementById('prediction-status').textContent = 'Error: No CSV data available';
+                return;
+            }
+
+            // Update status to show loading
+            document.getElementById('prediction-status').textContent = 'Generating neural network predictions...';
+            document.getElementById('normal-percent').textContent = 'Loading...';
+            document.getElementById('tremor-percent').textContent = 'Loading...';
+            document.getElementById('tonic-percent').textContent = 'Loading...';
+            document.getElementById('postural-percent').textContent = 'Loading...';
+
+            // Call the neural network prediction endpoint
+            fetch('/live_demo_model_predictions/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': document.querySelector('[name=csrf-token]').content
+                },
+                body: JSON.stringify({ csv_content: csvContent })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    const predictions = data.predictions;
+                    
+                    // Update prediction displays with model output
+                    document.getElementById('normal-percent').textContent = 
+                        predictions.Normal ? (predictions.Normal * 100).toFixed(1) + '%' : 'N/A';
+                    document.getElementById('tremor-percent').textContent = 
+                        predictions.Tremor ? (predictions.Tremor * 100).toFixed(1) + '%' : 'N/A';
+                    document.getElementById('tonic-percent').textContent = 
+                        predictions.Tonic ? (predictions.Tonic * 100).toFixed(1) + '%' : 'N/A';
+                    document.getElementById('postural-percent').textContent = 
+                        predictions.Postural ? (predictions.Postural * 100).toFixed(1) + '%' : 'N/A';
+                    
+                    document.getElementById('prediction-status').textContent = 'Neural network predictions generated successfully!';
+                } else {
+                    document.getElementById('prediction-status').textContent = 'Error: ' + data.error;
+                    document.getElementById('normal-percent').textContent = 'Error';
+                    document.getElementById('tremor-percent').textContent = 'Error';
+                    document.getElementById('tonic-percent').textContent = 'Error';
+                    document.getElementById('postural-percent').textContent = 'Error';
+                }
+            })
+            .catch(error => {
+                console.error('Error generating neural network predictions:', error);
+                document.getElementById('prediction-status').textContent = 'Failed to generate predictions';
+                document.getElementById('normal-percent').textContent = 'Error';
+                document.getElementById('tremor-percent').textContent = 'Error';
+                document.getElementById('tonic-percent').textContent = 'Error';
+                document.getElementById('postural-percent').textContent = 'Error';
+            });
         }
     </script>
     <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>

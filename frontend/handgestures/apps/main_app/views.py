@@ -681,3 +681,97 @@ def demo_model_predictions(request):
             'success': False,
             'error': f'Model prediction error: {str(e)}'
         }, status=500)
+
+
+@csrf_exempt
+def live_demo_model_predictions(request):
+    """
+    Generate model predictions for the live demo page using uploaded CSV data
+    """
+    if request.method != 'POST':
+        return JsonResponse({'error': 'POST method required'}, status=405)
+    
+    try:
+        # Get CSV data from request
+        data = json.loads(request.body)
+        csv_content = data.get('csv_content', '')
+        
+        if not csv_content:
+            return JsonResponse({'error': 'No CSV content provided'}, status=400)
+        
+        # Save CSV content to a temporary file for processing
+        import tempfile
+        with tempfile.NamedTemporaryFile(mode='w', delete=False, suffix='.csv') as temp_file:
+            temp_file.write(csv_content)
+            temp_csv_path = temp_file.name
+        
+        try:
+            # Load the model
+            model = load_model()
+            
+            # Process the temporary CSV file
+            from .models.Preprocess import ProcessCWTSingle
+            cwt_processor = ProcessCWTSingle()
+            cwt_result = cwt_processor.process_single_csv_cwt(temp_csv_path)
+            
+            if cwt_result is None:
+                return JsonResponse({'error': 'Failed to preprocess CSV data'}, status=500)
+            
+            # Try to load the label dictionary
+            cwt_file_path = os.path.join(
+                os.path.dirname(os.path.abspath(__file__)),
+                'static',
+                'main_app',
+                'data',
+                'cwt_NeuroTech.pt'
+            )
+            
+            # Default label mapping
+            default_labels = {0: 'normal', 1: 'tremor', 2: 'tonic', 3: 'postural'}
+            
+            try:
+                cwt_data = torch.load(cwt_file_path, map_location="cpu", weights_only=False)
+                label_dict = cwt_data['label_dict']
+                idx_to_label = {v: k for k, v in label_dict.items()}
+            except (FileNotFoundError, Exception):
+                idx_to_label = default_labels
+            
+            # Run inference
+            model.eval()
+            with torch.no_grad():
+                # Reshape for the model: (batch, time, channels, height, width)
+                if len(cwt_result.shape) == 4:
+                    cwt_input = torch.from_numpy(cwt_result).permute(0, 3, 1, 2).unsqueeze(1).float()
+                else:
+                    cwt_input = torch.from_numpy(cwt_result).float()
+                    if len(cwt_input.shape) == 3:
+                        cwt_input = cwt_input.unsqueeze(0)
+                
+                # Get model predictions
+                outputs = model(cwt_input)
+                probabilities = torch.nn.functional.softmax(outputs, dim=-1)
+                predictions = probabilities[0].cpu().numpy().tolist()
+            
+            # Create prediction dictionary
+            prediction_dict = {}
+            for idx, prob in enumerate(predictions):
+                label = idx_to_label.get(idx, f"class_{idx}")
+                display_label = label.capitalize()
+                prediction_dict[display_label] = prob
+            
+            return JsonResponse({
+                'success': True,
+                'predictions': prediction_dict,
+                'message': 'Neural network predictions generated successfully'
+            })
+            
+        finally:
+            # Clean up temporary file
+            if os.path.exists(temp_csv_path):
+                os.unlink(temp_csv_path)
+        
+    except Exception as e:
+        return JsonResponse({
+            'success': False,
+            'error': f'Live demo prediction error: {str(e)}'
+        }, status=500)

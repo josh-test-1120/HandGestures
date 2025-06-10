@@ -23,6 +23,7 @@ urlpatterns = [
 	path("live-demo/", views.live_demo, name="live_demo"),
 	path("contact/", views.contact, name='contact'),
 	path("live_demo_prediction/", views.live_demo_prediction, name="live_demo_prediction"),
+	path("live_demo_model_predictions/", views.live_demo_model_predictions, name="live_demo_model_predictions"),
 	path("download-template/", views.download_template, name="download_template"),
 	path("upload-contribution/", views.upload_contribution, name="upload_contribution"),
 	path('calculate_thresholds/', views.calculate_dynamic_thresholds, name='calculate_thresholds'),
