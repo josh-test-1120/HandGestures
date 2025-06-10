@@ -358,15 +358,12 @@ def demo_csv_data_update(request): #(added 6-5-2025 SCRUM Sprint 9)
 # TODO: send data to the neural network once it's made.
 @csrf_exempt
 def live_demo_prediction(request):
-    
     label_map = {
         "normal": 0,
         "tremor": 1,
         "tonic": 2,
         "postural": 3
     }
-    
-    sample_predictions = [0.125, 0.2, 0.375, 0.3]
     
     if request.method == 'POST':
         data = json.loads(request.body)
@@ -396,7 +393,7 @@ def live_demo_prediction(request):
                 current_data["distanceRight"],
             ]]], dtype=torch.float32)
             
-            prediction = list(map(float, live_demo_prediction.loaded_model(data_list)[0]))
+            prediction = list(map(float, nn.functional.softmax(live_demo_prediction.loaded_model(data_list)[0], dim=-1)))
             
             prediction_dict = {
                 "Normal": prediction[label_map["normal"]],
