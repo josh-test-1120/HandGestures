@@ -24,6 +24,7 @@ urlpatterns = [
 	path("live_demo_prediction/", views.live_demo_prediction, name="live_demo_prediction"),
 	path("download-template/", views.download_template, name="download_template"),
 	path("upload-contribution/", views.upload_contribution, name="upload_contribution"),
+	path('calculate_thresholds/', views.calculate_dynamic_thresholds, name='calculate_thresholds'),
 	#path('api/report/', views.api_report, name='api_report'),  # Example
 
 	# Regex matcher

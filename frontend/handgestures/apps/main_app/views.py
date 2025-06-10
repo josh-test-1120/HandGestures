@@ -521,3 +521,66 @@ def upload_contribution(request):
         
     except Exception as e:
         return JsonResponse({'success': False, 'error': f'Unexpected error: {str(e)}'})
+
+
+@csrf_exempt
+def calculate_dynamic_thresholds(request):
+    """Calculate dynamic thresholds using statistical methods for anomaly detection"""
+    if request.method != 'POST':
+        return JsonResponse({'error': 'POST method required'}, status=405)
+    
+    try:
+        import numpy as np
+        data = json.loads(request.body)
+        
+        thresholds = {}
+        
+        #accelerometer data
+        for axis, values in data.get('accel', {}).items():
+            if values:
+                signal = np.array(values)
+                mean_val = np.mean(signal)
+                std_val = np.std(signal)
+                
+                #uses 2.5 standard deviations for anomaly detection
+                threshold_range = 2.5 * std_val
+                
+                thresholds[f'Accel {axis.upper()}'] = {
+                    'min': float(mean_val - threshold_range),
+                    'max': float(mean_val + threshold_range)
+                }
+        
+        #gyroscope data
+        for axis, values in data.get('gyro', {}).items():
+            if values:
+                signal = np.array(values)
+                mean_val = np.mean(signal)
+                std_val = np.std(signal)
+                
+                #uses 2.5 standard deviations for anomaly detection
+                threshold_range = 2.5 * std_val
+                
+                thresholds[f'Gyro {axis.upper()}'] = {
+                    'min': float(mean_val - threshold_range),
+                    'max': float(mean_val + threshold_range)
+                }
+        
+        #processes ultrasonic data using percentiles 
+        for sensor, values in data.get('ultrasonic', {}).items():
+            if values:
+                signal = np.array(values)
+                
+                #uses 5th and 95th percentiles for ultrasonic sensors (better for distance measurements)
+                percentile_low = np.percentile(signal, 5)
+                percentile_high = np.percentile(signal, 95)
+                
+                sensor_name = 'Left Distance (cm)' if sensor == 'left' else 'Right Distance (cm)'
+                thresholds[sensor_name] = {
+                    'min': float(percentile_low),
+                    'max': float(percentile_high)
+                }
+        
+        return JsonResponse({'thresholds': thresholds})
+        
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)

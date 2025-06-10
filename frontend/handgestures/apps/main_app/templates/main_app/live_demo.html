@@ -567,8 +567,12 @@
                     csvUltrasonicLeft = parsed.ultrasonicLeft;
                     csvUltrasonicRight = parsed.ultrasonicRight;
                     csvParsed = true;
-                    loadingSpinner.style.display = 'none';
-                    alert('CSV loaded! Press Start Demo to visualize.');
+                    
+                    //calls dynamic thresholds function
+                    calculateDynamicThresholds().then(() => {
+                        loadingSpinner.style.display = 'none';
+                        alert('CSV loaded with dynamic thresholds! Press Start Demo to visualize.');
+                    });
                 } catch (err) {
                     loadingSpinner.style.display = 'none';
                     alert('Error parsing CSV: ' + err.message);
@@ -809,17 +813,36 @@
             toastEl.addEventListener('hidden.bs.toast', () => toastEl.remove());
         }
 
-        //threshold values for each dataset (TODO: change after data collection phase is complete)
-        const datasetThresholds = {
-            'Accel X':   { min: -0.6, max: 0.4 },
-            'Accel Y':   { min: -1.0, max: -0.4 },
-            'Accel Z':   { min: 0.1,    max: 0.5 },
-            'Gyro X':    { min: -40, max: 35 },
-            'Gyro Y':    { min: -60, max: 60 },
-            'Gyro Z':    { min: -75, max: 100 },
-            'Left Distance (cm)':  { min: 0, max: 40 },
-            'Right Distance (cm)': { min: 40, max: 140 }
-        };
+        //threshold values for each dataset (dynamically calculated below)
+        let datasetThresholds = {};
+
+        //calculate dynamic thresholds using statistical methods for anomaly detection (implemented 6-8-2025)
+        async function calculateDynamicThresholds() {
+            try {
+                const response = await fetch('/calculate_thresholds/', { //fetches the dynamic thresholds from the server
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': document.querySelector('[name=csrf-token]').content
+                    },
+                    body: JSON.stringify({
+                        accel: { x: csvAccel.x, y: csvAccel.y, z: csvAccel.z },
+                        gyro: { x: csvGyro.x, y: csvGyro.y, z: csvGyro.z },
+                        ultrasonic: { left: csvUltrasonicLeft, right: csvUltrasonicRight }
+                    })
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.thresholds) {
+                        datasetThresholds = data.thresholds;
+                        console.log('Dynamic thresholds calculated:', datasetThresholds);
+                    }
+                }
+            } catch (error) {
+                console.error('Error calculating thresholds:', error);
+            }
+        }
 
         //color mapping for each dataset to match chart colors exactly as defined in chart.js
         const datasetColors = {
