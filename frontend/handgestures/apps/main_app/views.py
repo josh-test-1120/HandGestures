@@ -106,6 +106,22 @@ def load_model():
     
     return model
 
+def preprocess_cwt():
+    # Include the proprocess class
+    from .models.Preprocess import ProcessCWTSingle
+    # Set the file path for the CSV
+    csv_file_path = os.path.join(
+        os.path.dirname(os.path.abspath(__file__)),
+        'static',
+        'main_app',
+        'data',
+        'Josh59.csv'
+    )
+    
+    # Proprocess the single file for inference
+    cwt_tensor = ProcessCWTSingle()
+    result = cwt_tensor.process_single_csv_cwt(csv_file_path)
+    return result
 
 # Create your views here.
 def index(request):
