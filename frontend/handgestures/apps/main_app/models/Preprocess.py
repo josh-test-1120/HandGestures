@@ -1,3 +1,10 @@
+import torch
+import pandas as pd
+import numpy as np
+import pywt
+from scipy.interpolate import interp1d
+from tqdm import tqdm
+
 class ProcessCWTSingle():
     def __init__(self, device=None, base_freq=50, target_len=127, **kwargs):
         self.target_len = 127
@@ -16,7 +23,7 @@ class ProcessCWTSingle():
     def _compute_cwt(self, signal_1d):
         signal_1d = signal_1d - signal_1d.median()
         coeff, _ = pywt.cwt(signal_1d.cpu().numpy(), self.scales, self.waveletname, 1)
-        tensor = torch.from_numpy(coeff[:, :target_len]).float().to(self.device)
+        tensor = torch.from_numpy(coeff[:, :self.target_len]).float().to(self.device)
         return self._normalize_cwt_tensor(tensor)
     
     def process_single_csv_cwt(self, csv_path):
@@ -38,31 +45,23 @@ class ProcessCWTSingle():
                 'GyroX(deg/s)', 'GyroY(deg/s)', 'GyroZ(deg/s)']
         signals = df[cols].values
     
-        # Unique timestamps
+        # Remove duplicate timestamps
         timestamps, unique_indices = np.unique(timestamps, return_index=True)
         signals = signals[unique_indices]
     
         duration_ms = timestamps[-1] - timestamps[0]
         duration_s = duration_ms / 1000.0
-        est_freq = len(timestamps) / duration_s if duration_s > 0 else base_freq
+        est_freq = len(timestamps) / duration_s if duration_s > 0 else self.base_freq
         est_freq = np.clip(est_freq, 10, 200)
-    
+
         if self.target_len is None:
-            target_len = int(duration_s * base_freq)
+            target_len = int(duration_s * self.base_freq)
             target_len = np.clip(target_len, 80, 160)
         else:
             target_len = self.target_len
-    
+
         uniform_timestamps = np.linspace(timestamps[0], timestamps[-1], num=target_len)
         resampled = np.zeros((target_len, len(cols)))
-        
-        # After removing duplicates
-        timestamps, unique_indices = np.unique(df['Timestamp(ms)'].values.astype(np.float64), return_index=True)
-
-        duration_ms = timestamps[-1] - timestamps[0]
-        duration_s = duration_ms / 1000.0
-        
-        estimated_len = int(duration_s * base_freq)
     
         for i in range(len(cols)):
             interp_func = interp1d(timestamps, signals[:, i], kind='linear', fill_value="extrapolate")

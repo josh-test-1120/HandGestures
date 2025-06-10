@@ -603,3 +603,81 @@ def calculate_dynamic_thresholds(request):
         
     except Exception as e:
         return JsonResponse({'error': str(e)}, status=500)
+
+
+def demo_model_predictions(request):
+    """
+    Generate model predictions for the demo page using the loaded model
+    """
+    try:
+        # Load the model
+        model = load_model()
+        
+        # Get the CWT processed data
+        cwt_result = preprocess_cwt()
+        
+        if cwt_result is None:
+            return JsonResponse({'error': 'Failed to preprocess data'}, status=500)
+        
+        # Try to load the label dictionary from the cwt file
+        cwt_file_path = os.path.join(
+            os.path.dirname(os.path.abspath(__file__)),
+            'static',
+            'main_app',
+            'data',
+            'cwt_NeuroTech.pt'
+        )
+        
+        # Default label mapping in case cwt file doesn't exist
+        default_labels = {0: 'normal', 1: 'tremor', 2: 'tonic', 3: 'postural'}
+        
+        try:
+            cwt_data = torch.load(cwt_file_path, map_location="cpu", weights_only=False)
+            label_dict = cwt_data['label_dict']
+            # Reverse the label dictionary to get index -> label mapping
+            idx_to_label = {v: k for k, v in label_dict.items()}
+        except (FileNotFoundError, Exception):
+            # Fallback to default labels if cwt file doesn't exist or can't be loaded
+            idx_to_label = default_labels
+        
+        # Run inference
+        model.eval()
+        with torch.no_grad():
+            # CWT result shape: (1, target_len, target_len, channels)
+            # Model expects: (B, T, C, H, W)
+            # Reshape for the model: (batch, time, channels, height, width)
+            if len(cwt_result.shape) == 4:
+                # Reshape from (1, target_len, target_len, channels) to (1, 1, channels, target_len, target_len)
+                cwt_input = torch.from_numpy(cwt_result).permute(0, 3, 1, 2).unsqueeze(1).float()
+            else:
+                # Fallback for unexpected shapes
+                cwt_input = torch.from_numpy(cwt_result).float()
+                if len(cwt_input.shape) == 3:
+                    cwt_input = cwt_input.unsqueeze(0)
+            
+            # Get model predictions
+            outputs = model(cwt_input)
+            probabilities = torch.nn.functional.softmax(outputs, dim=-1)
+            
+            # Convert to list for JSON serialization
+            predictions = probabilities[0].cpu().numpy().tolist()
+        
+        # Create prediction dictionary with proper labels
+        prediction_dict = {}
+        for idx, prob in enumerate(predictions):
+            label = idx_to_label.get(idx, f"class_{idx}")
+            # Capitalize first letter for display
+            display_label = label.capitalize()
+            prediction_dict[display_label] = prob
+        
+        return JsonResponse({
+            'success': True,
+            'predictions': prediction_dict,
+            'total_predictions': len(predictions)
+        })
+        
+    except Exception as e:
+        return JsonResponse({
+            'success': False,
+            'error': f'Model prediction error: {str(e)}'
+        }, status=500)

@@ -44,28 +44,7 @@ function parseCSV(text, data) {
   }
 }
 
-function parsePredictions(text, data) {
-  //add predictions to data
-  const lines = text.trim().split(/\r?\n/);
-  const header = lines[0].split(',');
-  const idx = {
-    time: header.indexOf('Timestamp(ms)'),
-    normal: header.indexOf('Normal'),
-    tremor: header.indexOf('Tremor'),
-    tonic: header.indexOf('Tonic'),
-    postural: header.indexOf('Postural'),
-  };
-  
-  //add predictions to data
-  for (let i = 1; i < lines.length; i++) {
-    const row = lines[i].split(',');
-    if (row.length < header.length) continue;
-    data.prediction.normal.push(parseFloat(row[idx.normal]));
-    data.prediction.tremor.push(parseFloat(row[idx.tremor]));
-    data.prediction.tonic.push(parseFloat(row[idx.tonic]));
-    data.prediction.postural.push(parseFloat(row[idx.postural]));
-  }
-}
+// parsePredictions function removed - predictions now come from the model endpoint
 
 //Chart.js setup
 function setupCharts(data) {
@@ -173,28 +152,7 @@ function setupCharts(data) {
     }
   });
 
-  //Predictions
-  const PredictionCtx = document.getElementById('predictionChart').getContext('2d');
-  const predictionChart = new Chart(PredictionCtx, {
-    type: 'line',
-    data: {
-      labels: data.time,
-      datasets: [
-        { label: 'Normal', data: data.prediction.normal, borderColor: 'rgba(255, 255, 0, 1)', backgroundColor: 'rgba(255, 255, 0, 0.2)', borderWidth: 1, pointRadius: 2, tension: 0.4 },
-        { label: 'Tremor', data: data.prediction.tremor, borderColor: 'rgba(255, 127, 0, 1)', backgroundColor: 'rgba(255, 127, 0, 0.2)', borderWidth: 1, pointRadius: 2, tension: 0.4 },
-        { label: 'Tonic', data: data.prediction.tonic, borderColor: 'rgba(255, 0, 0, 1)', backgroundColor: 'rgba(255, 0, 0, 0.2)', borderWidth: 1, pointRadius: 2, tension: 0.4 },
-        { label: 'Postural', data: data.prediction.postural, borderColor: 'rgba(0, 255, 0, 1)', backgroundColor: 'rgba(0, 255, 0, 0.2)', borderWidth: 1, pointRadius: 2, tension: 0.4 },
-      ]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      scales: {
-        x: { type: 'linear', title: { display: true, text: 'Time (s)' }, ticks: { stepSize: 5, callback: v => v + 's' } },
-        y: { beginAtZero: true }
-      }
-    }
-  });
+  // Prediction chart removed - predictions now displayed as percentages from model endpoint
 
   //Helper functions to update value displays
   function updateAccValues(x, y, z) {
@@ -214,12 +172,7 @@ function setupCharts(data) {
     document.getElementById('ultrasonic-right-value').textContent = right !== undefined ? right.toFixed(1) : '-';
   }
 
-  function updatePredictionValues(normal, tremor, tonic, postural) {
-    document.getElementById('normal-percent').textContent = normal !== undefined ? normal.toFixed(3) : '-';
-    document.getElementById('tremor-percent').textContent = tremor !== undefined ? tremor.toFixed(3) : '-';
-    document.getElementById('tonic-percent').textContent = tonic !== undefined ? tonic.toFixed(3) : '-';
-    document.getElementById('postural-percent').textContent = postural !== undefined ? postural.toFixed(3) : '-';
-  }
+  // updatePredictionValues function removed - predictions now updated by model endpoint
 
   //Chart.js hover events for Accelerometer/Gyroscope/Ultrasonic
   accelerometerChart.options.onHover = function(event, chartElement) {
@@ -260,19 +213,7 @@ function setupCharts(data) {
     }
   };
 
-  predictionChart.options.onHover = function(event, chartElement) {
-    if (chartElement.length > 0) {
-      const idx = chartElement[0].index;
-      updatePredictionValues(
-        predictionChart.data.datasets[0].data[idx],
-        predictionChart.data.datasets[1].data[idx],
-        predictionChart.data.datasets[2].data[idx],
-        predictionChart.data.datasets[3].data[idx]
-      );
-    } else {
-      updatePredictionValues();
-    }
-  };
+  // Prediction chart hover events removed - no longer using chart for predictions
 
-  return { accelerometerChart, gyroscopeChart, ultrasonicChart, predictionChart };
+  return { accelerometerChart, gyroscopeChart, ultrasonicChart };
 } 

@@ -226,3 +226,63 @@ h1 {
 .border {
   transition: border-color 0.3s ease;
 }
+
+/* ========== Prediction Box Styles ========== */
+.prediction-box {
+  transition: all 0.3s ease;
+  min-height: 120px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.prediction-box:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.prediction-box h6 {
+  margin-bottom: 10px;
+  font-weight: 600;
+  color: #495057;
+}
+
+.prediction-box .fs-4 {
+  margin: 5px 0;
+  font-weight: 700;
+  color: #212529;
+}
+
+.prediction-box small {
+  color: #6c757d;
+  font-size: 0.8rem;
+}
+
+/* Dark mode styles for prediction boxes */
+.bg-dark .prediction-box h6 {
+  color: #e9ecef;
+}
+
+.bg-dark .prediction-box .fs-4 {
+  color: #ffffff;
+}
+
+.bg-dark .prediction-box small {
+  color: #adb5bd;
+}
+
+#refresh-predictions {
+  background: linear-gradient(45deg, #007bff, #0056b3);
+  border: none;
+  border-radius: 25px;
+  padding: 10px 25px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+#refresh-predictions:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0, 123, 255, 0.3);
+}
