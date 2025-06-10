@@ -41,3 +41,7 @@ class CNNLSTM(nn.Module):
         out, _ = self.lstm(x)
         # Use output of last timestep
         return self.classifier(out[:, -1, :])
+
+
+# Alias for backward compatibility with saved models
+SeizureLSTM = CNNLSTM

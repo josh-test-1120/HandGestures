@@ -24,6 +24,24 @@ from django.db import connections #import for Django's Database Backend
 from django.db.utils import OperationalError, DatabaseError, InterfaceError
 import mysql.connector.errorcode as errorcode
 
+# Import model classes and make them available globally for PyTorch loading
+try:
+    from .models.LSTMCNN import CNNLSTM, SeizureLSTM
+    import __main__
+    # Make classes available in __main__ for PyTorch model loading
+    __main__.SeizureLSTM = SeizureLSTM
+    __main__.CNNLSTM = CNNLSTM
+    # Also make them available in the current module's globals
+    globals()['SeizureLSTM'] = SeizureLSTM
+    globals()['CNNLSTM'] = CNNLSTM
+except ImportError as e:
+    print(f"Warning: Could not import model classes: {e}")
+    # Create dummy classes to prevent import errors
+    class SeizureLSTM:
+        pass
+    class CNNLSTM:
+        pass
+
 #uses Django's Database Backend instead of raw MySQL connector (Implemented 6-8-2025) 
 def get_mysql_connection():
     try:
@@ -386,6 +404,13 @@ def live_demo_prediction(request):
     }
     
     if request.method == 'POST':
+        # Load model on first use
+        if live_demo_prediction.loaded_model is None:
+            try:
+                live_demo_prediction.loaded_model = load_model()
+            except Exception as e:
+                return JsonResponse({'error': f'Failed to load model: {str(e)}'}, status=500)
+        
         data = json.loads(request.body)
         
         # replace below with neural network output once it's ready
@@ -430,7 +455,7 @@ def live_demo_prediction(request):
     
     return JsonResponse({'error': 'Invalid request'}, status=400)
 
-live_demo_prediction.loaded_model = load_model()
+# Removed model initialization - will be placed at end of file
 
 
 def download_template(request):
@@ -610,8 +635,11 @@ def demo_model_predictions(request):
     Generate model predictions for the demo page using the loaded model
     """
     try:
-        # Load the model
-        model = load_model()
+        # Load model on first use
+        if demo_model_predictions.loaded_model is None:
+            demo_model_predictions.loaded_model = load_model()
+        
+        model = demo_model_predictions.loaded_model
         
         # Get the CWT processed data
         cwt_result = preprocess_cwt()
@@ -706,8 +734,11 @@ def live_demo_model_predictions(request):
             temp_csv_path = temp_file.name
         
         try:
-            # Load the model
-            model = load_model()
+            # Load model on first use
+            if live_demo_model_predictions.loaded_model is None:
+                live_demo_model_predictions.loaded_model = load_model()
+            
+            model = live_demo_model_predictions.loaded_model
             
             # Process the temporary CSV file
             from .models.Preprocess import ProcessCWTSingle
@@ -775,3 +806,9 @@ def live_demo_model_predictions(request):
             'success': False,
             'error': f'Live demo prediction error: {str(e)}'
         }, status=500)
+
+
+# Initialize model attributes - models will be loaded on first use to avoid startup errors
+live_demo_prediction.loaded_model = None
+demo_model_predictions.loaded_model = None
+live_demo_model_predictions.loaded_model = None
