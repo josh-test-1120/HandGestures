@@ -1,7 +1,3 @@
-import mysql.connector
-from mysql.connector import errorcode
-
-# These are the most commonly used elements for application views
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.urls import reverse, resolve, NoReverseMatch
@@ -10,6 +6,7 @@ from django import forms
 from django.views.decorators.csrf import csrf_exempt
 
 import json
+import csv
 
 import random
 # This is to load from the .env file
@@ -23,6 +20,9 @@ from django.views.decorators.http import require_http_methods
 
 import torch
 import torch.nn as nn
+from django.db import connections #import for Django's Database Backend
+from django.db.utils import OperationalError, DatabaseError, InterfaceError
+import mysql.connector.errorcode as errorcode
 
 
 class SeizureLSTM(nn.Module):
@@ -38,27 +38,44 @@ class SeizureLSTM(nn.Module):
         return out
 
 
-CONFIG = {
-    "host": config('DB_HOST'),
-    "user": config('DB_USER'),
-    "password": config('DB_PASSWORD'),
-    "database": config('DB_NAME')
-}
-
-connection = None
-cursor = None
-connection_error = ""
-try:
-     connection = mysql.connector.connect(**CONFIG)
-except mysql.connector.Error as err:
-    if err.errno == errorcode.ER_ACCESS_DENIED_ERROR:
-        connection_error = "Something is wrong with the user name or password"
-    elif err.errno == errorcode.ER_BAD_DB_ERROR:
-        connection_error = "Database does not exist"
-    else:
-        connection_error = "MySQL connection error: " + str(err)
-else:
-    cursor = connection.cursor()
+#uses Django's Database Backend instead of raw MySQL connector (Implemented 6-8-2025) 
+def get_mysql_connection():
+    try:
+        connection = connections['mysql']
+        cursor = connection.cursor()
+        return connection, cursor, ""
+    except OperationalError as err:
+        #for handling specific MySQL error codes
+        error_message = str(err)
+        
+        #access denied (authentication) errors
+        if "Access denied" in error_message or "authentication" in error_message.lower():
+            return None, None, "Something is wrong with the user name or password"
+        
+        #database doesn't exist errors
+        elif "Unknown database" in error_message or "database does not exist" in error_message.lower():
+            return None, None, "Database does not exist"
+        
+        #connection/SSL errors
+        elif "Lost connection" in error_message or "SSL" in error_message or "EOF occurred" in error_message:
+            return None, None, f"MySQL connection/SSL error: {str(err)}"
+        
+        #host/network errors
+        elif "Can't connect" in error_message or "timeout" in error_message.lower():
+            return None, None, f"MySQL network error: {str(err)}"
+        
+        #generic operational error
+        else:
+            return None, None, f"MySQL operational error: {str(err)}"
+            
+    except DatabaseError as err:
+        return None, None, f"MySQL database error: {str(err)}"
+        
+    except InterfaceError as err:
+        return None, None, f"MySQL interface error: {str(err)}"
+        
+    except Exception as err:
+        return None, None, f"Database connection error: {str(err)}"
 
 
 # Import your models for this application
@@ -80,7 +97,7 @@ def load_model():
         'NeuroTech-1.pt'
     )
     
-    loaded_model = torch.load(file_path, weights_only=False)
+    loaded_model = torch.load(file_path, weights_only=False, map_location="cpu")
     loaded_model.eval()
     
     return loaded_model
@@ -131,6 +148,7 @@ def summary_page_update(request):
     participants = 0
     data_points = 0
     
+    connection, cursor, connection_error = get_mysql_connection()
     if cursor is not None:
         try:
             cursor.execute(query_string)
@@ -196,6 +214,7 @@ def demo_page_update(request):
     avg_rotation_y = 0.0
     avg_rotation_z = 0.0
     
+    connection, cursor, connection_error = get_mysql_connection()
     if cursor is not None:
         try:
             cursor.execute(query_string)
@@ -239,19 +258,112 @@ def demo_page_update(request):
     return JsonResponse(demo_data)
 
 
+def demo_csv_data_update(request): #(added 6-5-2025 SCRUM Sprint 9)
+    """
+    Calculate averages and max values from the specific CSV file loaded in demo.html
+    This replaces database queries with direct CSV file processing
+    """
+    
+    #path to the CSV file that's loaded in demo.html
+    csv_file_path = os.path.join(
+        settings.BASE_DIR, 
+        'apps', 
+        'main_app', 
+        'static', 
+        'main_app', 
+        'data', 
+        'Josh59.csv'
+    )
+    
+    file_error = ""
+    data_points = 0
+    
+    #initializes variables with default values
+    accel_x_values = []
+    accel_y_values = []
+    accel_z_values = []
+    gyro_x_values = []
+    gyro_y_values = []
+    gyro_z_values = []
+    
+    try:
+        with open(csv_file_path, 'r') as file:
+            csv_reader = csv.DictReader(file)
+            
+            for row in csv_reader:
+                try:
+                    #extracts values from CSV
+                    accel_x = float(row.get('AccelX(g)', 0))
+                    accel_y = float(row.get('AccelY(g)', 0))
+                    accel_z = float(row.get('AccelZ(g)', 0))
+                    gyro_x = float(row.get('GyroX(deg/s)', 0))
+                    gyro_y = float(row.get('GyroY(deg/s)', 0))
+                    gyro_z = float(row.get('GyroZ(deg/s)', 0))
+                    
+                    accel_x_values.append(accel_x)
+                    accel_y_values.append(accel_y)
+                    accel_z_values.append(accel_z)
+                    gyro_x_values.append(gyro_x)
+                    gyro_y_values.append(gyro_y)
+                    gyro_z_values.append(gyro_z)
+                    
+                    data_points += 1
+                    
+                except (ValueError, KeyError) as e:
+                    continue #skips invalid rows
+                    
+    except FileNotFoundError:
+        file_error = f"CSV file not found: {csv_file_path}"
+    except Exception as e:
+        file_error = f"Error reading CSV file: {str(e)}"
+    
+    #calculates averages (same logic as Jack's version for demo_page_update)
+    avg_accel_x = sum(accel_x_values) / len(accel_x_values) if accel_x_values else 0.0
+    avg_accel_y = sum(accel_y_values) / len(accel_y_values) if accel_y_values else 0.0
+    avg_accel_z = sum(accel_z_values) / len(accel_z_values) if accel_z_values else 0.0
+    avg_rotation_x = sum(gyro_x_values) / len(gyro_x_values) if gyro_x_values else 0.0
+    avg_rotation_y = sum(gyro_y_values) / len(gyro_y_values) if gyro_y_values else 0.0
+    avg_rotation_z = sum(gyro_z_values) / len(gyro_z_values) if gyro_z_values else 0.0
+    
+    #calculates max absolute values (same logic as Jack's version for demo_page_update)
+    max_accel_x = max([abs(x) for x in accel_x_values]) if accel_x_values else 0.0
+    max_accel_y = max([abs(y) for y in accel_y_values]) if accel_y_values else 0.0
+    max_accel_z = max([abs(z) for z in accel_z_values]) if accel_z_values else 0.0
+    max_gyro_x = max([abs(x) for x in gyro_x_values]) if gyro_x_values else 0.0
+    max_gyro_y = max([abs(y) for y in gyro_y_values]) if gyro_y_values else 0.0
+    max_gyro_z = max([abs(z) for z in gyro_z_values]) if gyro_z_values else 0.0
+    
+    #formats response
+    demo_data = {
+        "avg_x_accel": "average x acceleration: {:,.3f}".format(avg_accel_x),
+        "avg_y_accel": "average y acceleration: {:,.3f}".format(avg_accel_y),
+        "avg_z_accel": "average z acceleration: {:,.3f}".format(avg_accel_z),
+        "avg_x_rot": "average x rotation: {:,.3f}".format(avg_rotation_x),
+        "avg_y_rot": "average y rotation: {:,.3f}".format(avg_rotation_y),
+        "avg_z_rot": "average z rotation: {:,.3f}".format(avg_rotation_z),
+        "first_fastest_accel": "fastest x acceleration: {:,.3f}".format(max_accel_x),
+        "second_fastest_accel": "fastest y acceleration: {:,.3f}".format(max_accel_y),
+        "third_fastest_accel": "fastest z acceleration: {:,.3f}".format(max_accel_z),
+        "first_fastest_rot": "fastest x rotation: {:,.3f}".format(max_gyro_x),
+        "second_fastest_rot": "fastest y rotation: {:,.3f}".format(max_gyro_y),
+        "third_fastest_rot": "fastest z rotation: {:,.3f}".format(max_gyro_z),
+        "file_error": file_error,
+        "data_points": data_points,
+    }
+    
+    return JsonResponse(demo_data)
+
+
 # TODO: consider if this needs to use CSRF tokens
 # TODO: send data to the neural network once it's made.
 @csrf_exempt
 def live_demo_prediction(request):
-    
     label_map = {
         "normal": 0,
         "tremor": 1,
         "tonic": 2,
         "postural": 3
     }
-    
-    sample_predictions = [0.125, 0.2, 0.375, 0.3]
     
     if request.method == 'POST':
         data = json.loads(request.body)
@@ -261,6 +373,12 @@ def live_demo_prediction(request):
         predictions = [None] * predictions_this_request
         
         for idx in range(predictions_this_request):
+            if not (
+                all([(isinstance(v, float) or isinstance(v, int)) for v in data[idx].values()])
+                and set(data[idx]) == {"time", "accelx", "accely", "accelz", "gyrox", "gyroy", "gyroz", "distanceLeft", "distanceRight"}
+            ):
+                return JsonResponse({'error': 'Invalid data'}, status=400)
+            
             current_data = data[idx]
             
             data_list = torch.tensor([[[
@@ -275,7 +393,7 @@ def live_demo_prediction(request):
                 current_data["distanceRight"],
             ]]], dtype=torch.float32)
             
-            prediction = list(map(float, live_demo_prediction.loaded_model(data_list)[0]))
+            prediction = list(map(float, nn.functional.softmax(live_demo_prediction.loaded_model(data_list)[0], dim=-1)))
             
             prediction_dict = {
                 "Normal": prediction[label_map["normal"]],
@@ -283,6 +401,8 @@ def live_demo_prediction(request):
                 "Tonic": prediction[label_map["tonic"]],
                 "Postural": prediction[label_map["postural"]],
             }
+            
+            # print(prediction_dict)
             
             predictions[idx] = prediction_dict
         
@@ -398,3 +518,68 @@ def upload_contribution(request):
         
     except Exception as e:
         return JsonResponse({'success': False, 'error': f'Unexpected error: {str(e)}'})
+
+
+@csrf_exempt
+def calculate_dynamic_thresholds(request):
+    """Calculate dynamic thresholds for major spike detection only, avoiding false positives from normal variations"""
+    if request.method != 'POST':
+        return JsonResponse({'error': 'POST method required'}, status=405)
+    
+    try:
+        import numpy as np
+        data = json.loads(request.body)
+        
+        thresholds = {}
+        
+        #accelerometer data
+        for axis, values in data.get('accel', {}).items():
+            if values:
+                signal = np.array(values)
+                mean_val = np.mean(signal)
+                std_val = np.std(signal)
+                
+                #uses 4 standard deviations for major spike detection only
+                #also ensures minimum threshold of 10% of mean to avoid tiny variations
+                threshold_range = max(4.0 * std_val, abs(mean_val) * 0.1)
+                
+                thresholds[f'Accel {axis.upper()}'] = {
+                    'min': float(mean_val - threshold_range),
+                    'max': float(mean_val + threshold_range)
+                }
+        
+        #gyroscope data
+        for axis, values in data.get('gyro', {}).items():
+            if values:
+                signal = np.array(values)
+                mean_val = np.mean(signal)
+                std_val = np.std(signal)
+                
+                #gyro uses 3.5 standard deviations
+                threshold_range = 3.5 * std_val
+                
+                thresholds[f'Gyro {axis.upper()}'] = {
+                    'min': float(mean_val - threshold_range),
+                    'max': float(mean_val + threshold_range)
+                }
+        
+        #processes ultrasonic data using percentiles 
+        for sensor, values in data.get('ultrasonic', {}).items():
+            if values:
+                signal = np.array(values)
+                
+                #uses 1st and 99th percentiles for major spike detection only
+                #captures only extreme outliers in distance measurements
+                percentile_low = np.percentile(signal, 1)
+                percentile_high = np.percentile(signal, 99)
+                
+                sensor_name = 'Left Distance (cm)' if sensor == 'left' else 'Right Distance (cm)'
+                thresholds[sensor_name] = {
+                    'min': float(percentile_low),
+                    'max': float(percentile_high)
+                }
+        
+        return JsonResponse({'thresholds': thresholds})
+        
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)

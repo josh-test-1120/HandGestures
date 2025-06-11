@@ -56,7 +56,7 @@
             </div>
         </div>
         <div class="alert alert-info mt-2" role="alert" style="max-width: 500px;">
-            <strong>Note:</strong> 1s of real time = 10s of demo time (i.e. 10 data points).
+            <strong>Note:</strong> 1s of real time = 1s of demo time (i.e. 20 data points).
         </div>
         <!-- Accelerometer & Gyroscope -->
         <div class="row mb-4">
@@ -532,6 +532,11 @@
         csvFileInput.addEventListener('change', function(e) {
             const file = e.target.files[0];
             if (!file) return;
+            const maxSize = 2 * 1024 * 1024; // 2 MB
+            if (file.size > maxSize) {
+                alert('Max file size is ' + maxSize + '. Your file is ' + file.size + 'bytes.');
+                fileInput.value = ''; // Clear the input
+            }
             loadingSpinner.style.display = 'block';
             const reader = new FileReader(); //FileReader API is used to read the contents of a file
             reader.onload = function(evt) {
@@ -562,8 +567,12 @@
                     csvUltrasonicLeft = parsed.ultrasonicLeft;
                     csvUltrasonicRight = parsed.ultrasonicRight;
                     csvParsed = true;
-                    loadingSpinner.style.display = 'none';
-                    alert('CSV loaded! Press Start Demo to visualize.');
+                    
+                    //calls dynamic thresholds function
+                    calculateDynamicThresholds().then(() => {
+                        loadingSpinner.style.display = 'none';
+                        alert('CSV loaded with dynamic thresholds! Press Start Demo to visualize.');
+                    });
                 } catch (err) {
                     loadingSpinner.style.display = 'none';
                     alert('Error parsing CSV: ' + err.message);
@@ -631,8 +640,8 @@
             demoIndex = 0;
             demoRunning = true;
 
-            demoInterval = setInterval(function() {
-                const dataPointsPerInterval = 10;
+            demoInterval = setInterval(async function() {
+                const dataPointsPerInterval = 20;
                 let arrayOfJson = Array(dataPointsPerInterval).fill(null);
                 let responseFromServer = null;
                 for (let i = 0; i < dataPointsPerInterval && demoIndex < csvTime.length; i++, demoIndex++) {
@@ -680,8 +689,11 @@
                     checkSpike(ultrasonicChart.data.datasets[0], ts);    // Left dist
                     checkSpike(ultrasonicChart.data.datasets[1], ts);    // Right dist
                 }
+                
+                // console.log("csvTime: " + csvTime.length);
+                
                 // TODO: consider if this needs to use CSRF tokens
-                fetch('/live_demo_prediction/', {
+                await fetch('/live_demo_prediction/', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -695,12 +707,15 @@
                     return response.json();
                 })
                 .then(data => {
-                    for (let i = 0; i < dataPointsPerInterval; i++) {
+                    for (let i = 0; i < dataPointsPerInterval && demoIndex < csvTime.length; i++) {
                         predictionChart.data.datasets[0].data.push(data[i]["Normal"]);
                         predictionChart.data.datasets[1].data.push(data[i]["Tremor"]);
                         predictionChart.data.datasets[2].data.push(data[i]["Tonic"]);
                         predictionChart.data.datasets[3].data.push(data[i]["Postural"]);
                     }
+                })
+                .catch(error => {
+                    console.error('Error getting predictions:', error);
                 });
                 
                 accelerometerChart.update();
@@ -711,7 +726,7 @@
                     clearInterval(demoInterval);
                     demoRunning = false;
                 }
-            }, 1000);//1000ms = 1s in real life, 10 data points per interval
+            }, 1000);//1000ms = 1s in real life, 20 data points per interval
         });
 
         //Event: Stop Demo event listener implemented 4-30-2025 (SCRUM Sprint 4)
@@ -725,6 +740,10 @@
             //Clears the data export table; added 5-12-2025 (SCRUM Sprint 5)
             exportTableRows = [];
             exportTableBody.innerHTML = '';
+
+            //clears any existing toast alerts
+            const toastContainer = document.getElementById('toastContainer');
+            toastContainer.innerHTML = '';
 
             if (demoInterval) clearInterval(demoInterval);
             demoRunning = false;
@@ -754,15 +773,29 @@
          (added 5-17-2025 SCRUM Sprint 6)
         */
 
-        //toast alert for 4s
-        function showToast(message) {
+        const MAX_TOASTS = 3; //max number of toasts to display at once (to limit the number of toasts displayed)
+
+        //toast alert for 4s with maximum limit of 3 toasts
+        function showToast(message, backgroundColor) {
             const container = document.getElementById('toastContainer');
+            
+            //checks to see if we have reached the maximum number of toasts
+            const existingToasts = container.querySelectorAll('.toast');
+            if (existingToasts.length >= MAX_TOASTS) {
+                //removes the oldest toast to make room
+                const oldestToast = existingToasts[0];
+                if (oldestToast) {
+                    oldestToast.remove();
+                }
+            }
 
             const toastEl = document.createElement('div');
-            toastEl.className = 'toast align-items-center text-bg-danger border-0';
+            toastEl.className = 'toast align-items-center border-0';
             toastEl.role = 'alert';
             toastEl.setAttribute('aria-live', 'assertive');
             toastEl.setAttribute('aria-atomic', 'true');
+            toastEl.style.backgroundColor = backgroundColor;
+            toastEl.style.color = 'white';
             toastEl.innerHTML = `
                 <div class="d-flex">
                     <div class="toast-body">${message}</div>
@@ -780,16 +813,47 @@
             toastEl.addEventListener('hidden.bs.toast', () => toastEl.remove());
         }
 
-        //threshold values for each dataset (TODO: change after data collection phase is complete)
-        const datasetThresholds = {
-            'Accel X':   { min: -0.9, max: 0.9 },
-            'Accel Y':   { min: -0.9, max: 1.2 },
-            'Accel Z':   { min: 0,    max: 1.4 },
-            'Gyro X':    { min: -200, max: 200 },
-            'Gyro Y':    { min: -125, max: 150 },
-            'Gyro Z':    { min: -175, max: 140 },
-            'Left Distance (cm)':  { min: -10, max: 180 },
-            'Right Distance (cm)': { min: -10, max: 180 }
+        //threshold values for each dataset (dynamically calculated below)
+        let datasetThresholds = {};
+
+        //calculate dynamic thresholds for major spike detection only (implemented 6-8-2025)
+        async function calculateDynamicThresholds() {
+            try {
+                const response = await fetch('/calculate_thresholds/', { //fetches the dynamic thresholds from the server
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': document.querySelector('[name=csrf-token]').content
+                    },
+                    body: JSON.stringify({
+                        accel: { x: csvAccel.x, y: csvAccel.y, z: csvAccel.z },
+                        gyro: { x: csvGyro.x, y: csvGyro.y, z: csvGyro.z },
+                        ultrasonic: { left: csvUltrasonicLeft, right: csvUltrasonicRight }
+                    })
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.thresholds) {
+                        datasetThresholds = data.thresholds;
+                        console.log('Dynamic thresholds calculated:', datasetThresholds);
+                    }
+                }
+            } catch (error) {
+                console.error('Error calculating thresholds:', error);
+            }
+        }
+
+        //color mapping for each dataset to match chart colors exactly as defined in chart.js
+        const datasetColors = {
+            'Accel X': 'rgba(52, 152, 219, 1)',      
+            'Accel Y': 'rgba(39, 174, 96, 1)',       
+            'Accel Z': 'rgba(231, 76, 60, 1)',      
+            'Gyro X': 'rgba(155, 89, 182, 1)',       
+            'Gyro Y': 'rgba(241, 196, 15, 1)',       
+            'Gyro Z': 'rgba(26, 188, 156, 1)',      
+            'Left Distance (cm)': 'rgba(39, 174, 96, 1)',   
+            'Right Distance (cm)': 'rgba(231, 76, 60, 1)'   
         };
 
         //checks if the value is outside the min/max threshold defined in datasetThresholds
@@ -803,9 +867,11 @@
             if (thresh.min !== null && val < thresh.min) outOfRange = true;
             if (thresh.max !== null && val > thresh.max) outOfRange = true;
             if (outOfRange) {
+                const color = datasetColors[ds.label];
                 showToast(
                     `Spike detected on ${ds.label}: `
-                    + `${val.toFixed(2)} @ ${timestamp}s`
+                    + `${val.toFixed(2)} @ ${timestamp}s`,
+                    color
                 );
             }
         }

@@ -49,10 +49,10 @@
     3. <strong>Feature Extraction:</strong> Statistical and frequency-based features are extracted to represent motion patterns.
   </p>
   <p class="text-muted fs-5" style="text-align: justify;">
-    4. <strong>ML Methods:</strong> Machine learning models (e.g., Random Forest, SVM) are trained on labeled datasets.
+    4. <strong>Deep Learning Models:</strong> Convolutional Neural Networks (CNN) and Recurrent Neural Networks (RNN) are trained on labeled sensor data to learn complex temporal and spatial motion patterns.
   </p>
   <p class="text-muted fs-5" style="text-align: justify;">
-    5. <strong>Classification:</strong> The system classifies each time window as either “Seizure” or “Non-Seizure.”
+    5. <strong>Classification:</strong> The system classifies each time window into one of four categories: <em>Normal</em>, <em>Tremor</em>, <em>Tonic</em>, or <em>Postural</em>. This multi-class approach enables a more detailed understanding of the user's motion state and supports early intervention.
   </p>
   <p class="text-muted fs-5" style="text-align: justify;">
     6. <strong>Performance Evaluation:</strong> Accuracy, precision, recall, and confusion matrix are used to assess system effectiveness.
@@ -63,12 +63,15 @@
 <section class="card shadow-lg p-4 mb-5 rounded" data-aos="fade-up">
   <h2 class="fw-bold text-primary mb-4">Data Collection</h2>
   <div class="row mb-3">
-    <div class="col-md-6">
-      <img src="{% static 'main_app/img/hardware3.jpeg' %}" alt="Internal Hardware View" class="img-fluid shadow rounded mx-auto d-block" style="max-height: 504px;">
-    </div>
-    <div class="col-md-6">
-      <img src="{% static 'main_app/img/hardware_outside.jpg' %}" alt="External Interface View" class="img-fluid shadow rounded mx-auto d-block" style="max-height: 504px;">
-    </div>
+
+    <!-- Video Section -->
+  <div class="text-center mb-4">
+    <iframe src="https://drive.google.com/file/d/1w37-cSmyt9YvLO1PV605YOLsjQ1F473R/preview" width="640" height="480" allow="autoplay" class="rounded shadow"></iframe>
+    <p class="text-muted small mt-2">
+      <em>Joshua talking about the arduino hardware device and the data collection process.</em>
+    </p>
+  </div>
+    
   </div>
   <p class="text-muted fs-5" style="text-align: justify;">
     The wearable device is housed in a custom-built cardboard enclosure and includes a set of sensors and electronics for motion and distance tracking. 
@@ -136,9 +139,16 @@
 <!--Machine Learning Methods-->
 <section class="card shadow-lg p-4 mb-5 rounded" data-aos="fade-up">
   <h2 class="fw-bold text-primary mb-4">Methods</h2>
+   
+    <figfure class ="text-center">
+    <img src="{% static 'main_app/img/CNN-Image.png' %}" alt="CNN-Image" class="img-fluid shadow rounded mx-auto d-block mb-4" style="max-width: 1000px;">
+    <figcaption class="text-muted fw-semibold">CNN Model</figcaption>
+  </figure>
+
+  
 
   <p class="text-muted fs-5" style="text-align: justify;">
-    Our system leverages a <strong>Semi-Supervised Learning</strong> approach to overcome the challenge of limited labeled sensor data. Initially, a small set of motion samples (such as Normal, Tonic-Clonic, Myoclonic, and Fall) were manually annotated. These samples were used to train a baseline model.
+    Our system leverages a <strong>Semi-Supervised Learning</strong> approach to overcome the challenge of limited labeled sensor data. Initially, a small set of motion samples (such as Normal, Tonic, Tremor, and Postural) were manually annotated. These samples were used to train a baseline model.
   </p>
 
   <p class="text-muted fs-5" style="text-align: justify;">
@@ -173,6 +183,14 @@
       <h2 class="fw-bold text-primary mb-4">Classification</h2>
       <img src="{% static 'main_app/img/classifications.png' %}" alt="Classifications" class="img-fluid shadow rounded mx-auto d-block mb-3" style="max-width: 1000px;">
     
+       <!-- Video Section -->
+  <div class="text-center mb-4">
+    <iframe src="https://drive.google.com/file/d/1zqORxlVMf3LzKz86m1tWnw6p0p7Beprp/preview" width="980" height="480" allow="autoplay" class="rounded shadow"></iframe>
+    <p class="text-muted small mt-2">
+      <em>Telmen acting out some of the different data classification types.</em>
+    </p>
+  </div>
+
       <p class="text-muted fs-5" style="text-align: justify;">
         Our seizure detection system classifies motion into four categories based on sensor input. These categories help distinguish between everyday movement and potentially dangerous seizure activity.
       </p>
@@ -201,6 +219,19 @@
         These classifications allow the system to provide real-time alerts, support caregivers, and improve safety for individuals with epilepsy by monitoring movement patterns continuously and non-invasively.
       </p>
     </section>
+
+    <!--
+    <section class="card shadow-lg p-4 mb-5 rounded" data-aos="fade-up">
+        <h2 class="fw-bold text-primary mb-4">Video</h2>
+         <div class="d-flex justify-content-center gap-3 mt-4 flex-wrap">
+        <a href="{% url 'main_app:structure' %}" class="btn btn-primary btn-lg px-4">Video Instruction</a>
+      
+      </div>
+
+
+
+    </section>
+    Video Instruction-->
 
     <!-- Performance Evaluation Section 
     <section class="card shadow-lg p-4 mb-5 rounded" data-aos="fade-up">
