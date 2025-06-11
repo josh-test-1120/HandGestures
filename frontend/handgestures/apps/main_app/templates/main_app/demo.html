@@ -161,7 +161,7 @@
       </div>
     </section>
 
-    <!-- Predictions Section -->
+    {% comment %} <!-- Predictions Section -->
     <section class="mb-5">
       <h3 class="text-center fw-bold mb-4" data-aos="fade-up">Prediction</h3>
       <div class="row mb-4">
@@ -180,6 +180,24 @@
           </div>
         </div>
       </div>
+    </section> {% endcomment %}
+
+    <!-- New Predictions Section -->
+    <section class="mb-5">
+      <h3 class="text-center fw-bold mb-4" data-aos="fade-up">Prediction</h3>
+      <div class="row mb-4">
+        <div class="col-md-12">
+          <div class="card shadow-sm p-4 mb-5 rounded" data-aos="fade-up">
+            <h5 class="card-title mb-4">Prediction</h5>
+            <div class="d-flex justify-content-between mb-3">
+              <div>Normal<br>Probability:<br><span class="fw-bold" id="normal-percent">-</span></div>
+              <div>Tremor<br>Probability:<br><span class="fw-bold" id="tremor-percent">-</span></div>
+              <div>Tonic<br>Probability:<br><span class="fw-bold" id="tonic-percent">-</span></div>
+              <div>Postural<br>Probability:<br><span class="fw-bold" id="postural-percent">-</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
     </section>
 
   </main>
@@ -191,25 +209,14 @@
   <script>
     AOS.init({ duration: 1000, once: true });
   </script>
+  <!-- Updated Fetch script for predictions and chart data -->
   <script>
-    let waitingForRequest = false;
-    let demoUpdateIntervalId = 0;
-
     document.addEventListener('DOMContentLoaded', function () {
       updateDemoInfo();
-    });
-
-    document.addEventListener('beforeunload', function () {
-      if (demoUpdateIntervalId) {
-        clearInterval(demoUpdateIntervalId);
-        demoUpdateIntervalId = 0;
-      }
+      fetchPredictionData(); // Updated feetch predictions
     });
 
     function updateDemoInfo() {
-      if (waitingForRequest) return;
-      waitingForRequest = true;
-
       fetch('/demo_csv_data_update/')
         .then(response => response.json())
         .then(data => {
@@ -227,16 +234,35 @@
           document.getElementById('first-max-rot-text').textContent = data.first_fastest_rot;
           document.getElementById('second-max-rot-text').textContent = data.second_fastest_rot;
           document.getElementById('third-max-rot-text').textContent = data.third_fastest_rot;
-          
+
           if (data.file_error) console.log('CSV File Error:', data.file_error);
-          console.log('CSV rows processed:', data.data_points);
+          console.log('CSV Demo fetch rows processed:', data.data_points);
         })
         .catch(error => {
           console.error('Error getting CSV info:', error);
         })
         .finally(() => {
-          waitingForRequest = false;
           document.getElementById('loading-text-id').textContent = 'Accelerometer Readings';
+        });
+    }
+
+    function fetchPredictionData() {
+      fetch('/live_demo_prediction/')
+        .then(response => response.json())
+        .then(data => {
+          document.getElementById('normal-percent').textContent = data['normal'].toFixed(4);
+          document.getElementById('tremor-percent').textContent = data['tremor'].toFixed(4);
+          document.getElementById('tonic-percent').textContent = data['tonic'].toFixed(4);
+          document.getElementById('postural-percent').textContent = data['postural'].toFixed(4);
+
+          if (data.file_error) console.log('CSV File Error:', data.file_error);
+          console.log('CSV Prediction fetch rows processed:', data.data_points);
+        })
+        .catch(error => {
+          console.error('Error getting prediction info:', error);
+        })
+        .finally(() => {
+          document.getElementById('loading-text-id').textContent = 'Predictions Analysis';
         });
     }
   </script>
@@ -258,7 +284,7 @@
         prediction: { normal: [], tremor: [], tonic: [], postural: [] }
       };
 
-      fetch("{% static 'main_app/data/Josh59.csv' %}")
+      fetch("{% static 'main_app/data/tonic/standing/Josh59.csv' %}")
         .then(response => response.text())
         .then(csvText => {
           parseCSV(csvText, data);
