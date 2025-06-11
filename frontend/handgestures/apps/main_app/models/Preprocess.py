@@ -1,7 +1,16 @@
+import torch
+import torch.nn.functional as F
+import numpy as np
+import pandas as pd
+import pywt
+from tqdm import tqdm
+from scipy.interpolate import interp1d
+from pathlib import Path
+
 class ProcessCWTSingle():
     def __init__(self, device=None, base_freq=50, target_len=127, **kwargs):
-        self.target_len = 127
-        self.base_freq = 50
+        self.target_len = target_len
+        self.base_freq = base_freq
         self.scales=range(1, 128)
         self.waveletname = 'morl'
         
@@ -16,7 +25,7 @@ class ProcessCWTSingle():
     def _compute_cwt(self, signal_1d):
         signal_1d = signal_1d - signal_1d.median()
         coeff, _ = pywt.cwt(signal_1d.cpu().numpy(), self.scales, self.waveletname, 1)
-        tensor = torch.from_numpy(coeff[:, :target_len]).float().to(self.device)
+        tensor = torch.from_numpy(coeff[:, :self.target_len]).float().to(self.device)
         return self._normalize_cwt_tensor(tensor)
     
     def process_single_csv_cwt(self, csv_path):
@@ -62,7 +71,7 @@ class ProcessCWTSingle():
         duration_ms = timestamps[-1] - timestamps[0]
         duration_s = duration_ms / 1000.0
         
-        estimated_len = int(duration_s * base_freq)
+        estimated_len = int(duration_s * self.base_freq)
     
         for i in range(len(cols)):
             interp_func = interp1d(timestamps, signals[:, i], kind='linear', fill_value="extrapolate")
@@ -87,3 +96,56 @@ class ProcessCWTSingle():
                 for k in range(batch_tensor.shape[0]):
                     result[i + k, :, :, ch] = self._compute_cwt(batch_tensor[k])
         return result.cpu().numpy()
+
+    def predict_from_csv(self, csv_path, model, label_dict, index_to_label_id, label_id_to_index, id_to_label_name):
+        # Process CSV to get CWT tensor
+        cwt_tensor = self.process_single_csv_cwt(csv_path)  # shape: (1, 127, 127, 6)
+        x_single = torch.from_numpy(cwt_tensor).permute(0, 3, 1, 2).float().to(self.device)  # (1, 6, 127, 127)
+        x_single = x_single.unsqueeze(1)  # (1, 1, 6, 127, 127)
+
+        # Infer label from path (ignoring 'variants')
+        p = Path(csv_path)
+        parts = list(p.parents)
+        label_parts = []
+        for part in parts:
+            if part.name.lower() != 'variants':
+                label_parts.append(part.name.lower())
+            if len(label_parts) == 2:
+                break
+        if len(label_parts) < 2:
+            label_name = "unknown"
+        else:
+            label_name = label_parts[1]
+        
+        # Map true label
+        true_label_id = label_dict.get(label_name)
+        true_idx = label_id_to_index.get(true_label_id, -1)
+        true_label_name = label_name if true_label_id is not None else "UNKNOWN"
+
+        # Inference
+        model.to(self.device)
+        model.eval()
+        with torch.no_grad():
+            outputs = model(x_single)
+            probs = F.softmax(outputs, dim=1)[0].cpu().numpy()
+
+        pred_idx = int(probs.argmax())
+        pred_label_id = index_to_label_id.get(pred_idx, None)
+        pred_label_name = id_to_label_name.get(pred_label_id, "UNKNOWN")
+
+        # Build probability dict
+        prob_dict = {}
+        for i, p in enumerate(probs):
+            label_id = index_to_label_id[i]
+            label = id_to_label_name.get(label_id, f"ID_{label_id}")
+            prob_dict[label] = float(p)
+
+        return {
+            "predicted_label": pred_label_name,
+            "predicted_label_id": pred_label_id,
+            "predicted_index": pred_idx,
+            "true_label": true_label_name,
+            "true_label_id": true_label_id,
+            "true_index": true_idx,
+            "probabilities": prob_dict
+        }

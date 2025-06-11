@@ -4,6 +4,8 @@ from django.urls import reverse, resolve, NoReverseMatch
 from django.http import JsonResponse, HttpResponse
 from django import forms
 from django.views.decorators.csrf import csrf_exempt
+from .models.LSTMCNN import CNNLSTM
+from .models.Preprocess import ProcessCWTSingle
 
 import json
 import csv
@@ -72,9 +74,6 @@ def get_mysql_connection():
 
 
 def load_model():
-    import __main__
-    from .models.LSTMCNN import CNNLSTM
-
     model_file_path = os.path.join(
         os.path.dirname(os.path.abspath(__file__)),
         'static',
@@ -107,21 +106,56 @@ def load_model():
     return model
 
 def preprocess_cwt():
-    # Include the proprocess class
-    from .models.Preprocess import ProcessCWTSingle
+    """
+    This function will preprocess a dataset with CWT,
+    so that it can be used in model evaluation and predictions
+
+    Returns:
+        dict: This is a dictionary of the probabilities for the labels
+    """
+    # Get the label data
+    cwt_file_path = os.path.join(
+        os.path.dirname(os.path.abspath(__file__)),
+        'static',
+        'main_app',
+        'data',
+        'cwt_NeuroTech.pt'
+    )
+    # Initial device state
+    device = torch.device("cpu")
+    # Load the file to get the labels
+    cwt_data = torch.load(cwt_file_path, map_location="cpu", weights_only=False)
+    # Get the labels
+    label_dict = cwt_data['label_dict']
+    # Reverse label dict
+    id_to_label_name = {v: k for k, v in label_dict.items()}
+    index_to_label_id = {i: lid for i, lid in enumerate(sorted(label_dict.values()))}
+    label_id_to_index = {lid: i for i, lid in index_to_label_id.items()}
+    
     # Set the file path for the CSV
     csv_file_path = os.path.join(
         os.path.dirname(os.path.abspath(__file__)),
         'static',
         'main_app',
         'data',
+        'tonic',
+        'standing',
         'Josh59.csv'
     )
     
     # Proprocess the single file for inference
-    cwt_tensor = ProcessCWTSingle()
-    result = cwt_tensor.process_single_csv_cwt(csv_file_path)
-    return result
+    cwt_processor = ProcessCWTSingle()
+    result = cwt_processor.predict_from_csv(
+        csv_path=csv_file_path,
+        model=live_demo_prediction.loaded_model,
+        label_dict=label_dict,
+        index_to_label_id=index_to_label_id,
+        label_id_to_index=label_id_to_index,
+        id_to_label_name=id_to_label_name
+    )
+    # Get the probabilities and return them
+    probabilities = result.get('probabilities', None)
+    return probabilities
 
 # Create your views here.
 def index(request):
@@ -291,7 +325,9 @@ def demo_csv_data_update(request): #(added 6-5-2025 SCRUM Sprint 9)
         'main_app', 
         'static', 
         'main_app', 
-        'data', 
+        'data',
+        'tonic',
+        'standing',
         'Josh59.csv'
     )
     
@@ -374,61 +410,66 @@ def demo_csv_data_update(request): #(added 6-5-2025 SCRUM Sprint 9)
     return JsonResponse(demo_data)
 
 
+
+
 # TODO: consider if this needs to use CSRF tokens
 # TODO: send data to the neural network once it's made.
 @csrf_exempt
 def live_demo_prediction(request):
-    label_map = {
-        "normal": 0,
-        "tremor": 1,
-        "tonic": 2,
-        "postural": 3
-    }
+    # Default get request
+    if request.method == 'GET':
+
+        results = preprocess_cwt()
+        print(results)
+        
+        return JsonResponse(results)
     
-    if request.method == 'POST':
-        data = json.loads(request.body)
+    # This needs to be updated. This is a TODO
+    elif request.method == 'POST':
+        data = json.loads(request.body)    
         
-        # replace below with neural network output once it's ready
-        predictions_this_request = len(data)
-        predictions = [None] * predictions_this_request
         
-        for idx in range(predictions_this_request):
-            if not (
-                all([(isinstance(v, float) or isinstance(v, int)) for v in data[idx].values()])
-                and set(data[idx]) == {"time", "accelx", "accely", "accelz", "gyrox", "gyroy", "gyroz", "distanceLeft", "distanceRight"}
-            ):
-                return JsonResponse({'error': 'Invalid data'}, status=400)
+        # # replace below with neural network output once it's ready
+        # predictions_this_request = len(data)
+        # predictions = [None] * predictions_this_request
+        
+        # for idx in range(predictions_this_request):
+        #     if not (
+        #         all([(isinstance(v, float) or isinstance(v, int)) for v in data[idx].values()])
+        #         and set(data[idx]) == {"time", "accelx", "accely", "accelz", "gyrox", "gyroy", "gyroz", "distanceLeft", "distanceRight"}
+        #     ):
+        #         return JsonResponse({'error': 'Invalid data'}, status=400)
             
-            current_data = data[idx]
+        #     current_data = data[idx]
             
-            data_list = torch.tensor([[[
-                current_data["time"],
-                current_data["accelx"],
-                current_data["accely"],
-                current_data["accelz"],
-                current_data["gyrox"],
-                current_data["gyroy"],
-                current_data["gyroz"],
-                current_data["distanceLeft"],
-                current_data["distanceRight"],
-            ]]], dtype=torch.float32)
+        #     data_list = torch.tensor([[[
+        #         current_data["time"],
+        #         current_data["accelx"],
+        #         current_data["accely"],
+        #         current_data["accelz"],
+        #         current_data["gyrox"],
+        #         current_data["gyroy"],
+        #         current_data["gyroz"],
+        #         current_data["distanceLeft"],
+        #         current_data["distanceRight"],
+        #     ]]], dtype=torch.float32)
             
-            prediction = list(map(float, nn.functional.softmax(live_demo_prediction.loaded_model(data_list)[0], dim=-1)))
+        #     prediction = list(map(float, nn.functional.softmax(live_demo_prediction.loaded_model(data_list)[0], dim=-1)))
             
-            prediction_dict = {
-                "Normal": prediction[label_map["normal"]],
-                "Tremor": prediction[label_map["tremor"]],
-                "Tonic": prediction[label_map["tonic"]],
-                "Postural": prediction[label_map["postural"]],
-            }
+        #     prediction_dict = {
+        #         "Normal": prediction[label_map["normal"]],
+        #         "Tremor": prediction[label_map["tremor"]],
+        #         "Tonic": prediction[label_map["tonic"]],
+        #         "Postural": prediction[label_map["postural"]],
+        #     }
             
-            # print(prediction_dict)
+        #     # print(prediction_dict)
             
-            predictions[idx] = prediction_dict
+        #     predictions[idx] = prediction_dict
         
         return JsonResponse(dict(zip(range(predictions_this_request), predictions)))
     
-    return JsonResponse({'error': 'Invalid request'}, status=400)
+    else: return JsonResponse({'error': 'Invalid request'}, status=400)
 
 live_demo_prediction.loaded_model = load_model()
 
