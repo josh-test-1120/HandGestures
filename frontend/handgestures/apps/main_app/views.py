@@ -81,21 +81,19 @@ def load_model():
         'data',
         'NeuroTech-1.pt'
     )
-    cwt_file_path = os.path.join(
+    # Label File location
+    labels_file_path = os.path.join(
         os.path.dirname(os.path.abspath(__file__)),
         'static',
         'main_app',
         'data',
-        'cwt_NeuroTech.pt'
+        'label_map.json'
     )
     # Initial device state
     device = torch.device("cpu")
     # Load the file to get the labels
-    # Load dataset
-    cwt_data = torch.load(cwt_file_path, map_location="cpu", weights_only=False)
-    x_test = cwt_data["x_test"]
-    y_test = cwt_data["y_test"]
-    label_dict = cwt_data['label_dict']
+    with open(labels_file_path, 'r') as f:
+        label_dict = json.load(f)
     # Initialize the model, so we can send it the weights
     model = CNNLSTM(input_channels=6, num_classes=len(label_dict)).to(device)
     # Load the data weights into the model
@@ -113,20 +111,20 @@ def preprocess_cwt():
     Returns:
         dict: This is a dictionary of the probabilities for the labels
     """
-    # Get the label data
-    cwt_file_path = os.path.join(
+    # Label File location
+    labels_file_path = os.path.join(
         os.path.dirname(os.path.abspath(__file__)),
         'static',
         'main_app',
         'data',
-        'cwt_NeuroTech.pt'
+        'label_map.json'
     )
     # Initial device state
     device = torch.device("cpu")
-    # Load the file to get the labels
-    cwt_data = torch.load(cwt_file_path, map_location="cpu", weights_only=False)
-    # Get the labels
-    label_dict = cwt_data['label_dict']
+    
+    # Get label data
+    with open(labels_file_path, 'r') as f:
+        label_dict = json.load(f)
     # Reverse label dict
     id_to_label_name = {v: k for k, v in label_dict.items()}
     index_to_label_id = {i: lid for i, lid in enumerate(sorted(label_dict.values()))}
