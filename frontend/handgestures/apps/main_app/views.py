@@ -74,12 +74,19 @@ def get_mysql_connection():
 
 
 def load_model():
+    """
+    This will load the model file and the labels
+    so that we can do inference work on data files
+
+    Returns:
+        torch.nn: Pytorch model for hand gestures
+    """
     model_file_path = os.path.join(
         os.path.dirname(os.path.abspath(__file__)),
         'static',
         'main_app',
         'data',
-        'NeuroTech-1.pt'
+        'handgestures_model.pt'
     )
     # Label File location
     labels_file_path = os.path.join(
@@ -141,7 +148,7 @@ def preprocess_cwt():
         'Josh59.csv'
     )
     
-    # Proprocess the single file for inference
+    # Preprocess the single file for inference
     cwt_processor = ProcessCWTSingle()
     result = cwt_processor.predict_from_csv(
         csv_path=csv_file_path,

@@ -89,8 +89,7 @@ class ProcessCWTSingle():
         result = torch.zeros((num_samples, target_len, target_len, num_channels), device=self.device)
     
         for ch in range(num_channels):
-            print(f"Processing channel {ch + 1}/{num_channels}")
-            for i in tqdm(range(0, num_samples, batch_size)):
+            for i in (range(0, num_samples, batch_size)):
                 batch = data[i:i + batch_size, :, ch]
                 batch_tensor = torch.from_numpy(batch).float().to(self.device)
                 for k in range(batch_tensor.shape[0]):
