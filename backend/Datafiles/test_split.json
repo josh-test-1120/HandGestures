@@ -1,0 +1,502 @@
+[
+  {
+    "path": "../data-collections/Josh/tremor/running/Josh134.csv",
+    "label": 0
+  },
+  {
+    "path": "../data-collections/Phillip/tremor/running/DATA2.CSV",
+    "label": 0
+  },
+  {
+    "path": "../data-collections/Phillip/tremor/running/DATA5.CSV",
+    "label": 0
+  },
+  {
+    "path": "../data-collections/Josh/tremor/running/Josh133.csv",
+    "label": 0
+  },
+  {
+    "path": "../data-collections/Phillip/tremor/running/DATA.CSV",
+    "label": 0
+  },
+  {
+    "path": "../data-collections/Phillip/tremor/falling/DATA2.CSV",
+    "label": 23
+  },
+  {
+    "path": "../data-collections/Phillip/tremor/falling/DATA5.CSV",
+    "label": 23
+  },
+  {
+    "path": "../data-collections/Telmen/tremor/falling/Telmen-052925-1.CSV",
+    "label": 23
+  },
+  {
+    "path": "../data-collections/Telmen/tremor/falling/Telmen-052925-5.CSV",
+    "label": 23
+  },
+  {
+    "path": "../data-collections/Phillip/tremor/falling/DATA4.CSV",
+    "label": 23
+  },
+  {
+    "path": "../data-collections/Josh/tremor/walking/Josh109.csv",
+    "label": 1
+  },
+  {
+    "path": "../data-collections/Josh/tremor/walking/Josh111.csv",
+    "label": 1
+  },
+  {
+    "path": "../data-collections/Josh/tremor/walking/Josh117.csv",
+    "label": 1
+  },
+  {
+    "path": "../data-collections/Josh/tremor/walking/Josh114.csv",
+    "label": 1
+  },
+  {
+    "path": "../data-collections/Telmen/tremor/walking/Telmen-052725-1.CSV",
+    "label": 1
+  },
+  {
+    "path": "../data-collections/Phillip/tremor/standing/DATA8.CSV",
+    "label": 2
+  },
+  {
+    "path": "../data-collections/Josh/tremor/standing/Josh105.csv",
+    "label": 2
+  },
+  {
+    "path": "../data-collections/Josh/tremor/standing/Josh103.csv",
+    "label": 2
+  },
+  {
+    "path": "../data-collections/Josh/tremor/standing/Josh107.csv",
+    "label": 2
+  },
+  {
+    "path": "../data-collections/Phillip/tremor/standing/DATA11.CSV",
+    "label": 2
+  },
+  {
+    "path": "../data-collections/Phillip/tremor/sitting/DATA.CSV",
+    "label": 3
+  },
+  {
+    "path": "../data-collections/Josh/tremor/sitting/Josh98.csv",
+    "label": 3
+  },
+  {
+    "path": "../data-collections/Josh/tremor/sitting/Josh95.csv",
+    "label": 3
+  },
+  {
+    "path": "../data-collections/Phillip/tremor/sitting/DATA4.CSV",
+    "label": 3
+  },
+  {
+    "path": "../data-collections/Phillip/tremor/sitting/DATA3.CSV",
+    "label": 3
+  },
+  {
+    "path": "../data-collections/Josh/tremor/laying/Josh143.csv",
+    "label": 4
+  },
+  {
+    "path": "../data-collections/Phillip/tremor/laying/DATA2.CSV",
+    "label": 4
+  },
+  {
+    "path": "../data-collections/Josh/tremor/laying/Josh136.csv",
+    "label": 4
+  },
+  {
+    "path": "../data-collections/Telmen/tremor/laying/Telmen-052925-4.CSV",
+    "label": 4
+  },
+  {
+    "path": "../data-collections/Josh/tremor/laying/Josh138.csv",
+    "label": 4
+  },
+  {
+    "path": "../data-collections/Phillip/postural/running/DATA2.CSV",
+    "label": 24
+  },
+  {
+    "path": "../data-collections/Phillip/postural/running/DATA.CSV",
+    "label": 24
+  },
+  {
+    "path": "../data-collections/Phillip/postural/running/DATA5.CSV",
+    "label": 24
+  },
+  {
+    "path": "../data-collections/Phillip/postural/running/DATA3.CSV",
+    "label": 24
+  },
+  {
+    "path": "../data-collections/Telmen/postural/running/Telmen-052925-1.CSV",
+    "label": 24
+  },
+  {
+    "path": "../data-collections/Telmen/postural/falling/Telmen1-052225.CSV",
+    "label": 6
+  },
+  {
+    "path": "../data-collections/Josh/postural/falling/Josh40.csv",
+    "label": 6
+  },
+  {
+    "path": "../data-collections/Josh/postural/falling/Josh41.csv",
+    "label": 6
+  },
+  {
+    "path": "../data-collections/Phillip/postural/falling/DATA5.CSV",
+    "label": 6
+  },
+  {
+    "path": "../data-collections/Telmen/postural/falling/Telmen-052925-2.CSV",
+    "label": 6
+  },
+  {
+    "path": "../data-collections/Phillip/postural/walking/DATA5.CSV",
+    "label": 7
+  },
+  {
+    "path": "../data-collections/Josh/postural/walking/Josh45.csv",
+    "label": 7
+  },
+  {
+    "path": "../data-collections/Telmen/postural/walking/Telmen-052925-4.CSV",
+    "label": 7
+  },
+  {
+    "path": "../data-collections/Telmen/postural/walking/Telmen-052925-3.CSV",
+    "label": 7
+  },
+  {
+    "path": "../data-collections/Phillip/postural/walking/DATA4.CSV",
+    "label": 7
+  },
+  {
+    "path": "../data-collections/Phillip/postural/standing/DATA2.CSV",
+    "label": 8
+  },
+  {
+    "path": "../data-collections/Telmen/postural/standing/Telmen-052925-2.CSV",
+    "label": 8
+  },
+  {
+    "path": "../data-collections/Phillip/postural/standing/DATA3.CSV",
+    "label": 8
+  },
+  {
+    "path": "../data-collections/Telmen/postural/standing/Telmen-052925-3.CSV",
+    "label": 8
+  },
+  {
+    "path": "../data-collections/Phillip/postural/standing/DATA.CSV",
+    "label": 8
+  },
+  {
+    "path": "../data-collections/Phillip/postural/sitting/DATA4.CSV",
+    "label": 9
+  },
+  {
+    "path": "../data-collections/Josh/postural/sitting/Josh23.csv",
+    "label": 9
+  },
+  {
+    "path": "../data-collections/Telmen/postural/sitting/Telmen-052925-4.CSV",
+    "label": 9
+  },
+  {
+    "path": "../data-collections/Phillip/postural/sitting/DATA5.CSV",
+    "label": 9
+  },
+  {
+    "path": "../data-collections/Phillip/postural/sitting/DATA3.CSV",
+    "label": 9
+  },
+  {
+    "path": "../data-collections/Telmen/postural/laying/Telmen-052925-5.CSV",
+    "label": 10
+  },
+  {
+    "path": "../data-collections/Phillip/postural/laying/DATA5.CSV",
+    "label": 10
+  },
+  {
+    "path": "../data-collections/Telmen/postural/laying/Telmen-052925-3.CSV",
+    "label": 10
+  },
+  {
+    "path": "../data-collections/Phillip/postural/laying/DATA3.CSV",
+    "label": 10
+  },
+  {
+    "path": "../data-collections/Josh/postural/laying/Josh17.csv",
+    "label": 10
+  },
+  {
+    "path": "../data-collections/Phillip/postural/stairs/DATA4.CSV",
+    "label": 25
+  },
+  {
+    "path": "../data-collections/Phillip/postural/stairs/DATA2.CSV",
+    "label": 25
+  },
+  {
+    "path": "../data-collections/Phillip/postural/stairs/DATA3.CSV",
+    "label": 25
+  },
+  {
+    "path": "../data-collections/Phillip/postural/stairs/DATA5.CSV",
+    "label": 25
+  },
+  {
+    "path": "../data-collections/Phillip/postural/stairs/DATA8.CSV",
+    "label": 25
+  },
+  {
+    "path": "../data-collections/Telmen/normal/running/Telmen10-052625.CSV",
+    "label": 11
+  },
+  {
+    "path": "../data-collections/Phillip/normal/running/DATA.CSV",
+    "label": 11
+  },
+  {
+    "path": "../data-collections/Telmen/normal/running/Telmen11-052625.CSV",
+    "label": 11
+  },
+  {
+    "path": "../data-collections/Telmen/normal/running/Telmen14-052625.CSV",
+    "label": 11
+  },
+  {
+    "path": "../data-collections/Josh/normal/running/Josh27.csv",
+    "label": 11
+  },
+  {
+    "path": "../data-collections/Telmen/normal/falling/Telmen-052725-2.CSV",
+    "label": 26
+  },
+  {
+    "path": "../data-collections/Phillip/normal/falling/DATA4.CSV",
+    "label": 26
+  },
+  {
+    "path": "../data-collections/Phillip/normal/falling/DATA3.CSV",
+    "label": 26
+  },
+  {
+    "path": "../data-collections/Telmen/normal/falling/Telmen-052725-1.CSV",
+    "label": 26
+  },
+  {
+    "path": "../data-collections/Telmen/normal/falling/Telmen-052725-5.CSV",
+    "label": 26
+  },
+  {
+    "path": "../data-collections/Telmen/normal/walking/Telmen16-052625.CSV",
+    "label": 12
+  },
+  {
+    "path": "../data-collections/Telmen/normal/walking/Telmens14-052625.CSV",
+    "label": 12
+  },
+  {
+    "path": "../data-collections/Telmen/normal/walking/Telmen5-052625.CSV",
+    "label": 12
+  },
+  {
+    "path": "../data-collections/Telmen/normal/walking/Telmens11-052625.CSV",
+    "label": 12
+  },
+  {
+    "path": "../data-collections/Telmen/normal/walking/Telmen9-052625.CSV",
+    "label": 12
+  },
+  {
+    "path": "../data-collections/Phillip/normal/standing/DATA.CSV",
+    "label": 13
+  },
+  {
+    "path": "../data-collections/Josh/normal/standing/Josh31.csv",
+    "label": 13
+  },
+  {
+    "path": "../data-collections/Telmen/normal/standing/Telmen2-052625.CSV",
+    "label": 13
+  },
+  {
+    "path": "../data-collections/Telmen/normal/standing/Telmen-052625-5.CSV",
+    "label": 13
+  },
+  {
+    "path": "../data-collections/Phillip/normal/standing/DATA5.CSV",
+    "label": 13
+  },
+  {
+    "path": "../data-collections/Telmen/normal/sitting/Telmens15-052625.CSV",
+    "label": 14
+  },
+  {
+    "path": "../data-collections/Josh/normal/sitting/Josh30.csv",
+    "label": 14
+  },
+  {
+    "path": "../data-collections/Telmen/normal/sitting/Telmen4-052625.CSV",
+    "label": 14
+  },
+  {
+    "path": "../data-collections/Telmen/normal/sitting/Telmens10-052625.CSV",
+    "label": 14
+  },
+  {
+    "path": "../data-collections/Phillip/normal/sitting/DATA5.CSV",
+    "label": 14
+  },
+  {
+    "path": "../data-collections/Phillip/normal/laying/DATA9.CSV",
+    "label": 15
+  },
+  {
+    "path": "../data-collections/Telmen/normal/laying/Telmen9-052625.CSV",
+    "label": 15
+  },
+  {
+    "path": "../data-collections/Telmen/normal/laying/Telmen16-052625.CSV",
+    "label": 15
+  },
+  {
+    "path": "../data-collections/Telmen/normal/laying/Telmen6-052625.CSV",
+    "label": 15
+  },
+  {
+    "path": "../data-collections/Telmen/normal/laying/Telmen7-052625.CSV",
+    "label": 15
+  },
+  {
+    "path": "../data-collections/Telmen/tonic/running/Telmen-052925-4.CSV",
+    "label": 17
+  },
+  {
+    "path": "../data-collections/Josh/tonic/running/Josh158.csv",
+    "label": 17
+  },
+  {
+    "path": "../data-collections/Josh/tonic/running/Josh154.csv",
+    "label": 17
+  },
+  {
+    "path": "../data-collections/Josh/tonic/running/Josh155.csv",
+    "label": 17
+  },
+  {
+    "path": "../data-collections/Telmen/tonic/running/Telmen-052925-2.CSV",
+    "label": 17
+  },
+  {
+    "path": "../data-collections/Telmen/tonic/falling/Telmen-052925-4.CSV",
+    "label": 27
+  },
+  {
+    "path": "../data-collections/Phillip/tonic/falling/DATA.CSV",
+    "label": 27
+  },
+  {
+    "path": "../data-collections/Phillip/tonic/falling/DATA5.CSV",
+    "label": 27
+  },
+  {
+    "path": "../data-collections/Telmen/tonic/falling/Telmen-052925-5.CSV",
+    "label": 27
+  },
+  {
+    "path": "../data-collections/Telmen/tonic/falling/Telmen-052925-1.CSV",
+    "label": 27
+  },
+  {
+    "path": "../data-collections/Josh/tonic/walking/Josh70.csv",
+    "label": 18
+  },
+  {
+    "path": "../data-collections/Josh/tonic/walking/Josh67.csv",
+    "label": 18
+  },
+  {
+    "path": "../data-collections/Phillip/tonic/walking/DATA3.CSV",
+    "label": 18
+  },
+  {
+    "path": "../data-collections/Telmen/tonic/walking/Telmen-052925-4.CSV",
+    "label": 18
+  },
+  {
+    "path": "../data-collections/Phillip/tonic/walking/DATA4.CSV",
+    "label": 18
+  },
+  {
+    "path": "../data-collections/Josh/tonic/standing/Josh61.csv",
+    "label": 19
+  },
+  {
+    "path": "../data-collections/Phillip/tonic/standing/DATA2.CSV",
+    "label": 19
+  },
+  {
+    "path": "../data-collections/Josh/tonic/standing/Josh59.csv",
+    "label": 19
+  },
+  {
+    "path": "../data-collections/Josh/tonic/standing/Josh60.csv",
+    "label": 19
+  },
+  {
+    "path": "../data-collections/Josh/tonic/standing/Josh64.csv",
+    "label": 19
+  },
+  {
+    "path": "../data-collections/Josh/tonic/sitting/Josh53.csv",
+    "label": 20
+  },
+  {
+    "path": "../data-collections/Josh/tonic/sitting/Josh57.csv",
+    "label": 20
+  },
+  {
+    "path": "../data-collections/Telmen/tonic/sitting/Telmen-052925-2.CSV",
+    "label": 20
+  },
+  {
+    "path": "../data-collections/Telmen/tonic/sitting/Telmen-052925-4.CSV",
+    "label": 20
+  },
+  {
+    "path": "../data-collections/Phillip/tonic/sitting/DATA3.CSV",
+    "label": 20
+  },
+  {
+    "path": "../data-collections/Phillip/tonic/laying/DATA3.CSV",
+    "label": 21
+  },
+  {
+    "path": "../data-collections/Josh/tonic/laying/Josh149.csv",
+    "label": 21
+  },
+  {
+    "path": "../data-collections/Telmen/tonic/laying/Telmen1-052225.CSV",
+    "label": 21
+  },
+  {
+    "path": "../data-collections/Josh/tonic/laying/Josh147.csv",
+    "label": 21
+  },
+  {
+    "path": "../data-collections/Phillip/tonic/laying/DATA.CSV",
+    "label": 21
+  }
+]
