@@ -1,0 +1,11 @@
+{
+  "WALKING": 0,
+  "WALKING_UPSTAIRS": 1,
+  "WALKING_DOWNSTAIRS": 2,
+  "SITTING": 3,
+  "STANDING": 4,
+  "LAYING": 5,
+  "RUNNING": 6,
+  "STAIRS": 7,
+  "FALLING": 8
+}
